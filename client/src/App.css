@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "@heroui/styles"; 
+.container{
+    height: 100vh;
+    width: 100vw;
+}

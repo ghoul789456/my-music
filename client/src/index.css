@@ -1,0 +1,11 @@
+:root {
+  --header-bg: #ffffff;
+  --header-text: #333333;
+  --header-border: #eeeeee;
+}
+
+:root.dark {
+  --header-bg: #1a1a1a;
+  --header-text: #f5f5f5;
+  --header-border: #333333;
+}
