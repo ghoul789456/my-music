@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-
 type Theme = 'light' | 'dark'
 
 interface ThemeContextType {
@@ -30,3 +29,4 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         </ThemeContext.Provider>
     );
 };
+

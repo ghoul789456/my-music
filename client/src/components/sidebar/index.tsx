@@ -23,3 +23,4 @@ export default function Sidebar({paths}:SidebarProps) {
     </div>
   );
 }
+
