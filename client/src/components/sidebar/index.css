@@ -1,0 +1,33 @@
+.sideBar {
+    width: 10%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    background-color: var(--surface);
+    color: var(--surface-foreground);
+    border-right: 1px solid var(--muted);
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+.sideBar::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-item {
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+}
+
+/* .nav-item:hover {
+    background-color: var(--sidebar-hover);
+}
+
+.nav-item.nav-active {
+    background-color: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+} */
