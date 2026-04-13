@@ -1,3 +1,4 @@
+/* ===== Sidebar Glass ===== */
 .sideBar {
     width: 10%;
     height: 100%;
@@ -5,29 +6,101 @@
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
-    background-color: var(--surface);
-    color: var(--surface-foreground);
-    border-right: 1px solid var(--muted);
     padding: 0.5rem;
+    margin: 0.5rem;
     box-sizing: border-box;
+    border-radius: 0.75rem;
+
+    /* Glass base */
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
+    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
+
+    /* Layered border for glass edge highlight */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),   /* top inner highlight */
+        inset 0 -1px 0 rgba(0, 0, 0, 0.08),         /* bottom inner shadow */
+        0 8px 32px rgba(0, 0, 0, 0.12),              /* outer shadow */
+        0 2px 8px rgba(0, 0, 0, 0.08);
+
+    color: var(--surface-foreground);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+    .sideBar {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.12),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* If using class-based dark mode (e.g. .dark on <html>) */
+.dark .sideBar {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .sideBar::-webkit-scrollbar {
     display: none;
 }
 
+/* ===== Nav Items ===== */
 .nav-item {
     padding: 0.5rem 1rem;
-    border-radius: 0.2rem;
+    border-radius: 0.4rem;
     font-size: 0.8rem;
     box-sizing: border-box;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    color: var(--surface-foreground);
+    position: relative;
 }
 
-/* .nav-item:hover {
-    background-color: var(--sidebar-hover);
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.18);
+    /* 亮模式悬停：白色叠加 */
 }
 
 .nav-item.nav-active {
-    background-color: var(--sidebar-active);
-    color: var(--sidebar-active-text);
-} */
+    background: rgba(255, 255, 255, 0.28);
+    /* 亮模式激活：更强白色叠加 */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode nav items */
+@media (prefers-color-scheme: dark) {
+    .nav-item:hover {
+        background: rgba(255, 255, 255, 0.10);
+    }
+    .nav-item.nav-active {
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.dark .nav-item:hover {
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.dark .nav-item.nav-active {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 1px 3px rgba(0, 0, 0, 0.3);
+}

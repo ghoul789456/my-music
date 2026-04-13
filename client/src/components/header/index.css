@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 50px;
+    padding: 0 0.5rem;
     box-sizing: border-box;
     background-color: var(--background);
     color: var(--foreground);                   
@@ -15,7 +15,7 @@
     height: 2rem;
     width: auto;
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .logo-img {
@@ -24,16 +24,24 @@
 
 }
 
-.setting img {
+/* .setting img {
     height: 2rem;
     width: 2rem;
     border-radius: 50%;
-}
+} */
 
-.setting img,
+/* .setting img, */
 .logo-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 
+}
+.avatar-box{
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0);
+    
+}
+.avatar-img{
+    object-fit: contain;
 }
