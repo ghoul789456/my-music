@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useContext } from 'react'
 import { Moon, Sun } from "@gravity-ui/icons";
-import { Switch, Avatar, Input } from "@heroui/react";
+import { Switch, Avatar, SearchField } from "@heroui/react";
 import ThemeContext from '../../contexts/ThemeContext';
 import defaultImg from '../../assets/default.jpg';
 import './index.css'
@@ -15,12 +15,17 @@ export default function Header() {
             <div className='logo-img'>
                 <img src="" alt="logo" />
             </div>
-            <div><Input aria-label="Name" className="w-64" placeholder="想播放什么？" /></div>
+            <div><SearchField name="search">
+                <SearchField.Group>
+                    <SearchField.SearchIcon />
+                    <SearchField.Input className="w-80" placeholder="想播放什么？" />
+                    <SearchField.ClearButton />
+                </SearchField.Group>
+            </SearchField></div>
             <div className='setting'>
-                {/* <img src={defaultImg} alt="个人中心" /> */}
                 <Avatar className='avatar-box'>
-                    <Avatar.Image  className='avatar-img' alt="John Doe" src={defaultImg} />
-                    <Avatar.Fallback>JD</Avatar.Fallback>
+                    <Avatar.Image className='avatar-img' alt="John Doe" src={defaultImg} />
+                    <Avatar.Fallback>user</Avatar.Fallback>
                 </Avatar>
 
 

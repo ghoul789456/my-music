@@ -1,0 +1,16 @@
+// 修正：给参数默认值，例如 row
+@mixin flexBox($direction: row) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: $direction;
+}
+
+// 修正：给参数数值默认值
+@mixin gridBox($column: 1, $row: 1) {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat($column, 1fr);
+  grid-template-rows: repeat($row, 1fr);
+  align-items: center;
+}

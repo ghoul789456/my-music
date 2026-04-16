@@ -2,6 +2,7 @@ import {type ReactNode} from 'react'
 import { Route, Routes, NavLink } from "react-router-dom";
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
+import Footer from './components/footer';
 import Home from "./views/home/index";
 import Playlist from "./views/song_list";
 import MyLike from "./views/my-like";
@@ -45,6 +46,7 @@ return (
         ))}
       </Routes>
     </main>
+    <Footer/>
   </div>
 );
 
