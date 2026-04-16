@@ -1,0 +1,32 @@
+@use "../../styles/layout";
+
+.music-item {
+  @include layout.flexBox($direction: column);
+  flex-shrink: 0;
+  width: 120px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  .item-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .item-name {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    text-align: center;
+    // 防止标题过长换行
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+}
