@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  // provider = "prisma-client"
+  // output   = "../generated/prisma"
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 音乐项目用户表
+model User {
+  id        Int      @id @default(autoincrement()) // 自动递增的主键
+  email     String   @unique                      // 唯一邮箱，用于登录
+  username  String   @unique                      // 唯一用户名
+  password  String                                // 加密后的密码
+  avatar    String?                               // 头像 URL（可选）
+  role      Role     @default(USER)               // 用户角色（默认普通用户）
+  
+  createdAt DateTime @default(now())              // 注册时间
+  updatedAt DateTime @updatedAt                   // 资料最后更新时间
+
+  // 未来扩展：一个用户可以拥有多个歌单 (Playlist)
+  // playlists Playlist[] 
+}
+
+// 定义用户角色枚举
+enum Role {
+  USER
+  ADMIN
+}
