@@ -1,11 +1,17 @@
-import React from "react";
 import { useState, useContext } from "react";
-import { Moon, Sun } from "@gravity-ui/icons";
-import { Switch, Avatar, SearchField, Dropdown, Button } from "@heroui/react";
+import {
+  Moon,
+  Sun,
+  ArrowRightFromSquare,
+  Gear,
+  Persons,
+} from "@gravity-ui/icons";
+import { Switch, Avatar, SearchField, Dropdown, Label } from "@heroui/react";
 import ThemeContext from "../../contexts/ThemeContext";
 import defaultImg from "../../assets/default.jpg";
-import "./index.css";
+import styles from "./index.module.css";
 import { useNavigate } from "react-router";
+
 export default function Header() {
   const themes = useContext(ThemeContext);
   if (!themes) throw new Error("no theme");
@@ -15,9 +21,28 @@ export default function Header() {
   const goHome = () => {
     navigate("/");
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+  // 1. 判断本地是否有 token (建议封装成工具函数)
+  // 即使有 token，实际开发中可能还需要判断是否过期，这里先做基础判断
+  console.log(localStorage.getItem("token"));
+  console.log(!localStorage.getItem("token"));
+  const isLoggedIn = !!localStorage.getItem("token");
+
+  const handleOpenChange = (isOpen: boolean) => {
+    console.log("isOpen", isOpen);
+    console.log("isLoggedIn", isLoggedIn);
+    if (isOpen && !isLoggedIn) {
+      navigate("/auth");
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
-    <div className="header">
-      <div className="logo-img" onClick={goHome}>
+    <div className={styles.header}>
+      <div className={styles.logoImg} onClick={goHome}>
         <img src="" alt="logo" />
       </div>
       <div>
@@ -29,18 +54,10 @@ export default function Header() {
           </SearchField.Group>
         </SearchField>
       </div>
-      <div className="setting">
-        {/* <Avatar className='avatar-box'>
-                    <Avatar.Image className='avatar-img' alt="John Doe" src={defaultImg} />
-                    <Avatar.Fallback>user</Avatar.Fallback>
-                </Avatar> */}
-        <Dropdown>
-          <Button
-            isIconOnly
-            variant="outline"
-            className="bg-transparent hover:bg-default-100 min-w-0 p-0 h-auto"
-          >
-            <Avatar className="avatar-box">
+      <div className={styles.setting}>
+        <Dropdown isOpen={isOpen} onOpenChange={handleOpenChange}>
+          <Dropdown.Trigger className="rounded-full">
+            <Avatar className={styles.avatarBox}>
               <Avatar.Image
                 className="avatar-img"
                 alt="John Doe"
@@ -48,8 +65,9 @@ export default function Header() {
               />
               <Avatar.Fallback>user</Avatar.Fallback>
             </Avatar>
-          </Button>
-          <Dropdown.Popover>
+          </Dropdown.Trigger>
+
+          {/* <Dropdown.Popover>
             <Dropdown.Menu>
               <Dropdown.Item id="profile" textValue="Profile">
                 个人主页
@@ -59,6 +77,52 @@ export default function Header() {
               </Dropdown.Item>
               <Dropdown.Item id="logout" textValue="Logout">
                 退出登录
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Popover> */}
+
+          <Dropdown.Popover>
+            <div className="px-3 pt-3 pb-1">
+              <div className="flex items-center gap-2">
+                <Avatar size="sm">
+                  <Avatar.Image
+                    alt="Jane"
+                    src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                  />
+                  <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+                </Avatar>
+                <div className="flex flex-col gap-0">
+                  <p className="text-sm leading-5 font-medium">Jane Doe</p>
+                  <p className="text-xs leading-none text-muted">
+                    jane@example.com
+                  </p>
+                </div>
+              </div>
+            </div>
+            <Dropdown.Menu>
+              <Dropdown.Item id="dashboard" textValue="Dashboard">
+                <Label>Dashboard</Label>
+              </Dropdown.Item>
+              <Dropdown.Item id="profile" textValue="Profile">
+                <Label>Profile</Label>
+              </Dropdown.Item>
+              <Dropdown.Item id="settings" textValue="Settings">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <Label>Settings</Label>
+                  <Gear className="size-3.5 text-muted" />
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item id="new-project" textValue="New project">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <Label>Create Team</Label>
+                  <Persons className="size-3.5 text-muted" />
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item id="logout" textValue="Logout" variant="danger">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <Label>Log Out</Label>
+                  <ArrowRightFromSquare className="size-3.5 text-danger" />
+                </div>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown.Popover>

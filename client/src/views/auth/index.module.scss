@@ -1,0 +1,717 @@
+/*
+ * LoginPage.module.css
+ * 需在全局 CSS 或 index.html 引入字体：
+ * @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap');
+ */
+
+/* ─────────────────────────────────────────────
+   CSS 变量
+───────────────────────────────────────────── */
+
+.page {
+  --gold: #c8923a;
+  --gold-dim: rgba(200, 146, 58, 0.5);
+  --cream: #f0e8d8;
+  --bg: #0a0a0f;
+  --font-mono: "DM Mono", monospace;
+  --font-serif: "Playfair Display", serif;
+}
+
+/* ─────────────────────────────────────────────
+   页面布局
+───────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgGlow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(180, 120, 60, 0.12) 0%,
+    transparent 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 40px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    gap: 40px;
+    padding: 24px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   黑胶唱片
+───────────────────────────────────────────── */
+
+.vinylWrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 280px;
+  height: 280px;
+}
+
+.vinyl {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    #1a1a1a 0px,
+    #111 2px,
+    #1c1c1c 4px,
+    #0f0f0f 6px
+  );
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    inset 0 0 30px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  border: none;
+  overflow: hidden;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vinyl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 255, 255, 0.03) 0deg,
+    transparent 60deg,
+    rgba(255, 255, 255, 0.015) 120deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.03) 240deg,
+    transparent 300deg,
+    rgba(255, 255, 255, 0.015) 360deg
+  );
+}
+
+.vinylSpinning {
+  animation: spin 6s linear infinite;
+}
+
+.vinylLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    #c8923a 0%,
+    #e8b86d 40%,
+    #a06828 70%,
+    #c8923a 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.vinylLabel::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.labelTop,
+.labelBottom {
+  font-family: var(--font-mono);
+  color: rgba(10, 10, 15, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.labelTop {
+  font-size: 7px;
+  margin-bottom: 22px;
+}
+.labelBottom {
+  font-size: 6px;
+  margin-top: 18px;
+}
+
+/* ─────────────────────────────────────────────
+   唱臂
+───────────────────────────────────────────── */
+
+.tonearm {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 100px;
+  height: 140px;
+  transform-origin: top right;
+  transform: rotate(-20deg);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tonearm svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tonearmPlaying {
+  animation: tonearmSway 6s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────
+   声波条
+───────────────────────────────────────────── */
+
+.waveform {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 20px;
+}
+
+.bar {
+  display: block;
+  width: 2px;
+  background: rgba(200, 146, 58, 0.45);
+  border-radius: 1px;
+  opacity: 0.3;
+}
+
+.barAnimated {
+  opacity: 1;
+  animation: wave 0.8s ease-in-out infinite alternate;
+}
+
+/* ─────────────────────────────────────────────
+   表单面板
+───────────────────────────────────────────── */
+
+.formSide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.titleFading {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ─────────────────────────────────────────────
+   表单内容区
+───────────────────────────────────────────── */
+
+.formBody {
+  flex: 1;
+  position: relative;
+}
+
+/* 注册表单：正常文档流，撑开 formBody 高度 */
+.formSliderRegister {
+  will-change: transform, opacity;
+}
+
+/* 登录表单：绝对定位叠在注册表单上方，不占文档流高度 */
+.formSliderLogin {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+/* 居中可见（当前激活态） */
+.slideCenter {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 完全隐藏（非动画状态下的非激活表单） */
+.slideHidden {
+  transform: translateX(0);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* 进入：从右滑入（login → register，register 面板） */
+.slideInFromRight {
+  animation: slideInFromRight 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: auto;
+}
+
+/* 进入：从左滑入（register → login，login 面板） */
+.slideInFromLeft {
+  animation: slideInFromLeft 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: auto;
+}
+
+/* 退出：向左飞出（login → register，login 面板） */
+.slideOutToLeft {
+  animation: slideOutToLeft 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: none;
+}
+
+/* 退出：向右飞出（register → login，register 面板） */
+.slideOutToRight {
+  animation: slideOutToRight 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   输入字段
+───────────────────────────────────────────── */
+
+.field {
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.inputWrap {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--cream);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 9px 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(240, 232, 216, 0.2);
+  }
+
+  &:focus {
+    background: rgba(200, 146, 58, 0.05);
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(200, 146, 58, 0.2);
+  }
+}
+
+.fieldIcon,
+.togglePw {
+  position: absolute;
+  right: 12px;
+  bottom: 11px;
+  color: var(--gold-dim);
+  font-size: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.togglePw:hover {
+  color: rgba(200, 146, 58, 0.8);
+}
+
+.error {
+  font-size: 10px;
+  color: rgba(220, 80, 80, 0.8);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+.errorForm {
+  margin-bottom: 12px;
+}
+
+/* ─────────────────────────────────────────────
+   记住我 & 忘记密码
+───────────────────────────────────────────── */
+
+.optionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 24px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: rgba(240, 232, 216, 0.6);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.checkbox {
+  appearance: none;
+  border: 1.5px solid var(--gold-dim);
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.checkbox:checked {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 4px;
+  height: 7px;
+  border-right: 1.5px solid var(--bg);
+  border-bottom: 1.5px solid var(--bg);
+  transform: rotate(45deg);
+}
+
+.forgot {
+  font-size: 10px;
+  color: rgba(200, 146, 58, 0.5);
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+
+.forgot:hover {
+  color: rgba(200, 146, 58, 0.9);
+}
+
+/* ─────────────────────────────────────────────
+   提交按钮
+───────────────────────────────────────────── */
+
+.btnLogin {
+  width: 100%;
+  padding: 11px 0;
+  background: var(--gold);
+  border: none;
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 3px;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover:not(:disabled)::before {
+    transform: scaleX(1);
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--cream);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(200, 146, 58, 0.3);
+    color: var(--bg);
+    border-color: var(--gold);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  span {
+    color: inherit;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   分割线
+───────────────────────────────────────────── */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.divider span {
+  font-size: 11px;
+  color: rgba(240, 232, 216, 0.4);
+  padding: 0 10px;
+  letter-spacing: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   第三方登录
+───────────────────────────────────────────── */
+
+.socialRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.socialBtn {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--cream);
+  font-weight: 400;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  text-align: center;
+
+  &:hover {
+    color: rgba(240, 232, 216, 0.8);
+    border-color: var(--gold);
+    background: rgba(200, 146, 58, 0.1);
+  }
+}
+
+.signupRow {
+  font-size: 10px;
+  color: rgba(240, 232, 216, 0.2);
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.signupRow a {
+  color: rgba(200, 146, 58, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.signupRow a:hover {
+  color: var(--gold);
+}
+
+/* 用于表单内切换链接（button 模拟 a 样式） */
+.switchLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(200, 146, 58, 0.6);
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--gold);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   关键帧
+───────────────────────────────────────────── */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tonearmSway {
+  0%,
+  100% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(-13deg);
+  }
+}
+
+@keyframes wave {
+  from {
+    transform: scaleY(1);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleY(0.3);
+    opacity: 0.9;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+}

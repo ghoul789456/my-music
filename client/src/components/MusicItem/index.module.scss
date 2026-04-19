@@ -1,6 +1,6 @@
 @use "../../styles/layout";
 
-.music-item {
+.musicItem {
   @include layout.flexBox($direction: column);
   flex-shrink: 0;
   width: 120px;
@@ -11,14 +11,14 @@
     transform: scale(1.05);
   }
 
-  .item-image {
+  .itemImage {
     width: 120px;
     height: 120px;
     object-fit: cover;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  .item-name {
+  .itemName {
     margin-top: 0.75rem;
     font-size: 0.9rem;
     color: #ccc;

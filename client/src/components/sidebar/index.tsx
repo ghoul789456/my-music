@@ -1,6 +1,7 @@
 import React, { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import "./index.scss";
+import styles from "./index.module.scss";
+
 interface PathType {
   id: string;
   name: string;
@@ -11,13 +12,14 @@ interface PathType {
 interface SidebarProps {
   paths: PathType[];
 }
+
 export default function Sidebar({ paths }: SidebarProps) {
   return (
-    <div className="sideBar">
+    <div className={styles.sideBar}>
       {paths.map((path) => (
         <NavLink
           className={({ isActive }) =>
-            isActive ? "nav-item nav-active" : "nav-item"
+            isActive ? `${styles.navItem} ${styles.navActive}` : styles.navItem
           }
           key={path.id}
           to={path.path}
