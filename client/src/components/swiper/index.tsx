@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import img1 from "../../assets/1.png";
+import img2 from "../../assets/2.png";
+import img3 from "../../assets/3.png";
+import img4 from "../../assets/4.png";
+import img5 from "../../assets/5.png";
 
 // 引入 Swiper 样式
 import "swiper/css";
@@ -16,13 +21,13 @@ interface SlideItem {
 
 const defaultSlides: SlideItem[] = [
   {
-    src: "https://picsum.photos/700/420?random=11",
+    src: img1,
     label: "Mountain Serenity",
   },
-  { src: "https://picsum.photos/700/420?random=22", label: "Ocean Horizon" },
-  { src: "https://picsum.photos/700/420?random=33", label: "City Lights" },
-  { src: "https://picsum.photos/700/420?random=44", label: "Forest Path" },
-  { src: "https://picsum.photos/700/420?random=55", label: "Golden Hour" },
+  { src: img2, label: "Ocean Horizon" },
+  { src: img3, label: "City Lights" },
+  { src: img4, label: "City Lights" },
+  { src: img5, label: "City Lights" },
 ];
 
 export default function SwiperOverlapCarousel() {

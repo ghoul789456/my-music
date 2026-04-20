@@ -36,7 +36,6 @@ export default function Header() {
       } else {
         setIsOpen(false);
       }
-
     } else {
       navigate("/auth");
       setIsOpen(false);
@@ -46,7 +45,73 @@ export default function Header() {
   return (
     <div className={styles.header}>
       <div className={styles.logoImg} onClick={goHome}>
-        <img src="" alt="logo" />
+        {/* <img src={defaultLogo} alt="logo" /> */}
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 100"
+          width="35"
+          height="35"
+        >
+          <circle cx="50" cy="50" r="50" fill="#111111" />
+          <ellipse
+            cx="33"
+            cy="64"
+            rx="10"
+            ry="7"
+            transform="rotate(-22 33 64)"
+            fill="white"
+          />
+          <line
+            x1="42"
+            y1="58"
+            x2="42"
+            y2="25"
+            stroke="white"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+          <ellipse
+            cx="60"
+            cy="55"
+            rx="10"
+            ry="7"
+            transform="rotate(-22 60 55)"
+            fill="white"
+          />
+          <line
+            x1="69"
+            y1="49"
+            x2="69"
+            y2="16"
+            stroke="white"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+          <path
+            d="M42 25 Q55.5 16 69 16"
+            stroke="white"
+            stroke-width="4.5"
+            fill="none"
+            stroke-linecap="round"
+          />
+          <path
+            d="M73 30 Q82 25 83 35 Q84 45 73 49"
+            stroke="white"
+            stroke-width="1.8"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          <path
+            d="M76 20 Q91 13 93 30 Q95 47 77 54"
+            stroke="white"
+            stroke-width="1.5"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.35"
+          />
+        </svg>
       </div>
       <div>
         <SearchField name="search">
