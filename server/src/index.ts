@@ -1,12 +1,13 @@
 import express from 'express';
 import 'dotenv/config'; // 确保在实例化前加载了 .env
 import authRoutes from './routes/auth.js';
+import cors from 'cors'
 const app = express();
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
-
+app.use(cors())
 // 注册接口
 app.use('/api/auth', authRoutes);
 

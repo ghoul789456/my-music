@@ -152,7 +152,7 @@ router.post('/login', async (req: Request, res: Response) => {
     );
 
     // 6. 返回结果（不包含密码）
-    res.json({
+    res.status(200).json({
       message: '登录成功',
       token,
       user: {

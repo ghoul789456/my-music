@@ -25,18 +25,21 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   // 1. 判断本地是否有 token (建议封装成工具函数)
   // 即使有 token，实际开发中可能还需要判断是否过期，这里先做基础判断
-  console.log(localStorage.getItem("token"));
-  console.log(!localStorage.getItem("token"));
-  const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("auth_data");
 
   const handleOpenChange = (isOpen: boolean) => {
     console.log("isOpen", isOpen);
     console.log("isLoggedIn", isLoggedIn);
-    if (isOpen && !isLoggedIn) {
+    if (isLoggedIn) {
+      if (isOpen) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+
+    } else {
       navigate("/auth");
       setIsOpen(false);
-    } else {
-      setIsOpen(true);
     }
   };
 

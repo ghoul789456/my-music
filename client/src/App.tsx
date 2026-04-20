@@ -1,12 +1,14 @@
 import { type ReactNode } from "react";
-import { Route, Routes, NavLink, Outlet, Navigate } from "react-router-dom";
+import { Route, Routes, NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
+import server from "./axios/server";
+
 import Header from "./components/header/index";
 import Sidebar from "./components/sidebar/index";
 import Footer from "./components/footer/index";
 import Home from "./views/home/index";
 import Playlist from "./views/song_list/index";
 import MyLike from "./views/my-like/index";
-import Auth from "./views/auth/index";
+import Auth, { type LoginCredentials, type RegisterCredentials } from "./views/auth/index";
 import "./App.css";
 function App() {
   interface PathType {
@@ -51,11 +53,49 @@ function App() {
       <Footer />
     </div>
   );
+  const navigate = useNavigate()
+  // 1. 定义后端返回的数据结构
+  interface LoginResponse {
+    message: string;
+    token: string;
+    user: {
+      id: number;
+      username: string;
+      email: string;
+    };
+  }
+  // 处理登录
+  const handleLogin = async (data: LoginCredentials) => {
+    console.log("正在提交登录请求:", data);
+    try {
+      const { email, password } = data;
+
+      /* <any, LoginResponse> 泛型，Axios的post方法的前两个参数：第一个指的是你发给后端的数据类型（即 request.data）。填 any 意味着：“我发给后端的东西随便什么类型都行，不需要 TS 帮我检查”。
+       第二个指的是请求执行完后，最终返回给你的 res 的类型。填 LoginResponse是告诉ts已经返回的是response.data，不是response， 意味着：“我已经知道拦截器把壳剥掉了，最终拿到的 res 就是我定义的那个包含 token 的对象”。*/
+      const res = await server.post<any, LoginResponse>('/api/auth/login', { email, password })
+      console.log("res", res);
+    
+      const loginInfo = {
+          token: res.token,
+          expiry: Date.now() + 7 * 24 * 60 * 60 * 1000 // 当前时间 + 7天的毫秒数
+        };
+        localStorage.setItem('auth_data', JSON.stringify(loginInfo));
+      navigate('/')
+    } catch (error) {
+      throw new Error("邮箱或密码错误")
+    }
+  };
+
+  // 处理注册
+  const handleRegister = async (data: RegisterCredentials) => {
+    console.log("正在提交注册请求:", data);
+    // 同样对接你的注册 API
+  };
 
   return (
     <Routes>
       {/* 登录页完全独立 */}
-      <Route path="/auth" element={<Auth />} />
+      <Route path="/auth" element={<Auth onLogin={handleLogin} onRegister={handleRegister} />} />
 
       {/* 不写 path 属性时，这个路由就变成了一个纯粹的容器。它不参与 URL 匹配，它会“无条件”地包裹住它内部的所有子路由，当子路由（如 /home）被匹配到时，React Router 会先渲染父级的 element（即 MainLayout），然后把匹配到的子组件（如 Home）填充到 MainLayout 中 <Outlet /> 出现的位置 */}
       <Route element={<MainLayout paths={paths} />}>

@@ -208,6 +208,7 @@ function VinylPlayer({
         onClick={onToggle}
         aria-label={isPlaying ? "暂停" : "播放"}
       >
+
         <div className={styles.vinylLabel}>
           <span className={styles.labelTop}>Side A</span>
           <span className={styles.labelBottom}>33⅓ RPM</span>
@@ -270,7 +271,7 @@ function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <form onSubmit={(e) => submit(e, onLogin)} noValidate>
+    <form className={styles.form} onSubmit={(e) => submit(e, onLogin)} noValidate>
       <div className={styles.field}>
         <label htmlFor="lp-email" className={styles.fieldLabel}>
           Email
@@ -658,7 +659,6 @@ interface AuthPageProps {
 
 export default function Auth({ onLogin, onRegister }: AuthPageProps) {
   const [isPlaying, setIsPlaying] = useState(true);
-
   const handleLogin = async (credentials: LoginCredentials) => {
     if (onLogin) {
       await onLogin(credentials);
