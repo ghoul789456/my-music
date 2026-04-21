@@ -1,34 +1,32 @@
 import axios from "axios";
-import { useNavigate } from "react-router";
 
 const server = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: "http://localhost:3000",
   timeout: 5000,
-  headers: { "Content-Type": "application/json", }
-})
-const whiteList = ['/login', '/register'];
+  headers: { "Content-Type": "application/json" },
+});
+const whiteList = ["/login", "/register"];
 
-const authData = JSON.parse(localStorage.getItem('auth_data') || '{}');
+const authData = JSON.parse(localStorage.getItem("auth_data") || "{}");
 if (authData.expiry && Date.now() > authData.expiry) {
-  localStorage.removeItem('auth_data');
+  localStorage.removeItem("auth_data");
   // 引导去登录
- window.location.href ='/auth';
+  window.location.href = "/auth";
 }
 // 请求拦截器
 server.interceptors.request.use(
   (config) => {
     console.log("config", config.url);
-    const url = config.url || '';
-    const isWhiteListed = whiteList.some(path => url.includes(path));
+    const url = config.url || "";
+    const isWhiteListed = whiteList.some((path) => url.includes(path));
     if (!isWhiteListed) {
       //注入 Token,用于把token放在请求头中发给后端
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) config.headers.Authorization = `Bearer ${token}`;
-
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // 响应拦截器
@@ -46,8 +44,8 @@ server.interceptors.response.use(
         case 401:
           // 精准打击：只有 401 才清理并跳登录
           console.error("身份过期或无效");
-          localStorage.removeItem('token');
-          window.location.href ='/auth';
+          localStorage.removeItem("token");
+          window.location.href = "/auth";
           break;
         case 403:
           // 提示用户权限不足，但不删 Token
@@ -65,6 +63,6 @@ server.interceptors.response.use(
     }
     // 必须返回 reject，否则业务代码里的 .catch 就捕获不到错误了
     return Promise.reject(error);
-  }
+  },
 );
 export default server;

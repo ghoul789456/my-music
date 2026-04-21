@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, type Key } from "react";
 import {
   Moon,
   Sun,
@@ -23,10 +23,8 @@ export default function Header() {
   };
 
   const [isOpen, setIsOpen] = useState(false);
-  // 1. 判断本地是否有 token (建议封装成工具函数)
-  // 即使有 token，实际开发中可能还需要判断是否过期，这里先做基础判断
+  //判断是否登录
   const isLoggedIn = !!localStorage.getItem("auth_data");
-
   const handleOpenChange = (isOpen: boolean) => {
     console.log("isOpen", isOpen);
     console.log("isLoggedIn", isLoggedIn);
@@ -39,6 +37,21 @@ export default function Header() {
     } else {
       navigate("/auth");
       setIsOpen(false);
+    }
+  };
+  //处理头像下拉框选项
+  const handleAction = (key: Key) => {
+    switch (key) {
+      case "logout":
+        localStorage.removeItem("auth_data");
+        navigate("/auth");
+        break;
+      case "profile":
+        break;
+      case "setting":
+        break;
+      default:
+        break;
     }
   };
 
@@ -135,20 +148,6 @@ export default function Header() {
             </Avatar>
           </Dropdown.Trigger>
 
-          {/* <Dropdown.Popover>
-            <Dropdown.Menu>
-              <Dropdown.Item id="profile" textValue="Profile">
-                个人主页
-              </Dropdown.Item>
-              <Dropdown.Item id="settings" textValue="Settings">
-                设置
-              </Dropdown.Item>
-              <Dropdown.Item id="logout" textValue="Logout">
-                退出登录
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Popover> */}
-
           <Dropdown.Popover>
             <div className="px-3 pt-3 pb-1">
               <div className="flex items-center gap-2">
@@ -167,16 +166,13 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <Dropdown.Menu>
-              <Dropdown.Item id="dashboard" textValue="Dashboard">
-                <Label>Dashboard</Label>
-              </Dropdown.Item>
+            <Dropdown.Menu onAction={handleAction}>
               <Dropdown.Item id="profile" textValue="Profile">
-                <Label>Profile</Label>
+                <Label>个人资料</Label>
               </Dropdown.Item>
               <Dropdown.Item id="settings" textValue="Settings">
                 <div className="flex w-full items-center justify-between gap-2">
-                  <Label>Settings</Label>
+                  <Label>设置</Label>
                   <Gear className="size-3.5 text-muted" />
                 </div>
               </Dropdown.Item>
@@ -188,7 +184,7 @@ export default function Header() {
               </Dropdown.Item>
               <Dropdown.Item id="logout" textValue="Logout" variant="danger">
                 <div className="flex w-full items-center justify-between gap-2">
-                  <Label>Log Out</Label>
+                  <Label>退出</Label>
                   <ArrowRightFromSquare className="size-3.5 text-danger" />
                 </div>
               </Dropdown.Item>
