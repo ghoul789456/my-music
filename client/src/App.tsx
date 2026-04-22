@@ -87,9 +87,7 @@ function App() {
       // 检查是否过期
       if (Date.now() < expiry) {
         server
-          .get<any, MeResponse>("/api/auth/me", {
-            params: { id: userId },
-          })
+          .get<any, MeResponse>("/api/auth/me")
           .then((res) => {
             dispatch(setUserInfo(res.user)); // 把获取到的最新用户信息存入 Redux
           })
@@ -112,10 +110,13 @@ function App() {
     };
   }
   // 处理登录
+  // data: LoginCredentials(类型注解) ：声明变量必须为指定的LoginCredentials格式
   const handleLogin = async (data: LoginCredentials) => {
     console.log("正在提交登录请求:", data);
     try {
       const { email, password } = data;
+
+      // server.post<LoginResponse>()(泛型参数):通常出现在函数名后面。它是告诉函数内部：“我这次调用，希望处理的是 MyTokenPayload 这种类型的数据。”,也就是函数返回的值的类型是LoginResponse
 
       /* <any, LoginResponse> 泛型，Axios的post方法的前两个参数：第一个指的是你发给后端的数据类型（即 request.data）。填 any 意味着：“我发给后端的东西随便什么类型都行，不需要 TS 帮我检查”。
        第二个指的是请求执行完后，最终返回给你的 res 的类型。填 LoginResponse是告诉ts已经返回的是response.data，不是response， 意味着：“我已经知道拦截器把壳剥掉了，最终拿到的 res 就是我定义的那个包含 token 的对象”。*/

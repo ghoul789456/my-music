@@ -19,7 +19,7 @@ const getInitialAuth = () => {
   if (!authData) return { token: null, isLoggedIn: false };
 
   try {
-    const { token, expiry } = JSON.parse(authData);
+    const { token, userId, expiry } = JSON.parse(authData);
     // 检查是否过期
     if (Date.now() > expiry) {
       localStorage.removeItem("auth_data");

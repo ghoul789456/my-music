@@ -21,8 +21,19 @@ server.interceptors.request.use(
     const isWhiteListed = whiteList.some((path) => url.includes(path));
     if (!isWhiteListed) {
       //注入 Token,用于把token放在请求头中发给后端
-      const token = localStorage.getItem("token");
-      if (token) config.headers.Authorization = `Bearer ${token}`;
+      const authData = localStorage.getItem("auth_data");
+      if (authData) {
+        const { token } = JSON.parse(authData);
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    const authData = localStorage.getItem("auth_data");
+
+    if (authData) {
+      const { token } = JSON.parse(authData);
+      // 标准做法：在 Authorization 字段中使用 Bearer 方案
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

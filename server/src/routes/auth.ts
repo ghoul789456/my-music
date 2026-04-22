@@ -107,7 +107,7 @@ router.post("/register", async (req: Request, res: Response) => {
     res.status(500).json({ message: "服务器内部错误" });
   }
 });
-
+//登录接口
 router.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
@@ -156,6 +156,47 @@ router.post("/login", async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("登录报错:", error);
+    res.status(500).json({ message: "服务器内部错误" });
+  }
+});
+//type(类型别名):用于声明一个类型，这个类型的值只能为指定的值，例如type Sex = 'male' | 'male'，Sex这个类型的值只能为male或male
+//interface (接口)：更适合定义“对象的形状”,用于声明一个对象的类型
+interface MyTokenPayload {
+  userId: number;
+  email: string;
+  iat?: number;
+  exp?: number;
+}
+//获取个人信息接口
+router.get("/me", async (req: Request, res: Response) => {
+  //获取请求头中的authorization(包含token)
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "未提供 Token" });
+  }
+
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("环境变量中未配置 JWT_SECRET");
+    }
+    //验证并解析 Token
+    //双重断言=> as unknown：先把变量变成不知道类型,让TS别报错，as MyTokenPayload：再把它变成想要的类型
+    const decoded = jwt.verify(token, secret) as unknown as MyTokenPayload;
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, username: true, email: true, avatar: true },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "用户不存在" });
+    }
+    console.log("user", user);
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("获取个人信息报错:", error);
     res.status(500).json({ message: "服务器内部错误" });
   }
 });

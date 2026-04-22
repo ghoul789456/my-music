@@ -8,9 +8,11 @@ import {
 } from "@gravity-ui/icons";
 import { Switch, Avatar, SearchField, Dropdown, Label } from "@heroui/react";
 import ThemeContext from "../../contexts/ThemeContext";
-import defaultImg from "../../assets/default.jpg";
 import styles from "./index.module.css";
 import { useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { type RootState, type AppDispatch } from "../../store/store";
+import { logout } from "../../store/userSlice";
 
 export default function Header() {
   const themes = useContext(ThemeContext);
@@ -22,9 +24,15 @@ export default function Header() {
     navigate("/");
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  //获取个人信息
+  const { userInfo, isLoggedIn } = useSelector(
+    (state: RootState) => state.user,
+  );
+  const dispatch = useDispatch();
+  console.log("userInfo", userInfo);
+
   //判断是否登录
-  const isLoggedIn = !!localStorage.getItem("auth_data");
+  const [isOpen, setIsOpen] = useState(false);
   const handleOpenChange = (isOpen: boolean) => {
     console.log("isOpen", isOpen);
     console.log("isLoggedIn", isLoggedIn);
@@ -44,7 +52,7 @@ export default function Header() {
     switch (key) {
       case "logout":
         localStorage.removeItem("auth_data");
-        navigate("/auth");
+        dispatch(logout());
         break;
       case "profile":
         break;
@@ -140,11 +148,13 @@ export default function Header() {
           <Dropdown.Trigger className="rounded-full">
             <Avatar className={styles.avatarBox}>
               <Avatar.Image
-                className="avatar-img"
-                alt="John Doe"
-                src={defaultImg}
+                alt="user"
+                src={
+                  userInfo?.avatar ||
+                  "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                }
               />
-              <Avatar.Fallback>user</Avatar.Fallback>
+              <Avatar.Fallback>{userInfo?.username}</Avatar.Fallback>
             </Avatar>
           </Dropdown.Trigger>
 
@@ -153,15 +163,22 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 <Avatar size="sm">
                   <Avatar.Image
-                    alt="Jane"
-                    src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                    alt="user"
+                    src={
+                      userInfo?.avatar ||
+                      "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                    }
                   />
-                  <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+                  <Avatar.Fallback delayMs={600}>
+                    {userInfo?.username}
+                  </Avatar.Fallback>
                 </Avatar>
                 <div className="flex flex-col gap-0">
-                  <p className="text-sm leading-5 font-medium">Jane Doe</p>
+                  <p className="text-sm leading-5 font-medium">
+                    {userInfo?.username}
+                  </p>
                   <p className="text-xs leading-none text-muted">
-                    jane@example.com
+                    {userInfo?.email}
                   </p>
                 </div>
               </div>
