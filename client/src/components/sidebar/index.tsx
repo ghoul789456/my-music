@@ -7,6 +7,7 @@ interface PathType {
   name: string;
   path: string;
   element: ReactNode;
+  hidden?: boolean;
 }
 
 interface SidebarProps {
@@ -14,9 +15,10 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ paths }: SidebarProps) {
+  const menuItems = paths.filter((item) => !item.hidden);
   return (
     <div className={styles.sideBar}>
-      {paths.map((path) => (
+      {menuItems.map((path) => (
         <NavLink
           className={({ isActive }) =>
             isActive ? `${styles.navItem} ${styles.navActive}` : styles.navItem

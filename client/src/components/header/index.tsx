@@ -28,7 +28,7 @@ export default function Header() {
   const { userInfo, isLoggedIn } = useSelector(
     (state: RootState) => state.user,
   );
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   console.log("userInfo", userInfo);
 
   //判断是否登录
@@ -55,6 +55,7 @@ export default function Header() {
         dispatch(logout());
         break;
       case "profile":
+        navigate("/profile");
         break;
       case "setting":
         break;

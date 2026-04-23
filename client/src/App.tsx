@@ -17,6 +17,7 @@ import Footer from "./components/footer/index";
 import Home from "./views/home/index";
 import Playlist from "./views/song_list/index";
 import MyLike from "./views/my-like/index";
+import Profile from "./views/personal_center/index.tsx";
 import Auth, {
   type LoginCredentials,
   type RegisterCredentials,
@@ -28,6 +29,7 @@ function App() {
     name: string;
     path: string;
     element: ReactNode;
+    hidden?: boolean;
   }
   const paths: PathType[] = [
     {
@@ -47,6 +49,13 @@ function App() {
       name: "我的喜欢",
       path: "/myLike",
       element: <MyLike />,
+    },
+    {
+      id: "profile",
+      name: "个人资料",
+      path: "/profile",
+      element: <Profile />,
+      hidden: true,
     },
   ];
   interface MainLayoutProps {
