@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Avatar, Card, Button } from "@heroui/react";
+import React, { useEffect, useState } from "react";
+import { Avatar, Card, Button, Modal, Label, Input } from "@heroui/react";
+import { Gear } from "@gravity-ui/icons";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../../store/store";
@@ -14,6 +15,14 @@ export default function Profile() {
       navigate("/auth");
     }
   }, [isLoggedIn, navigate]);
+
+  const [tempUsername, setTempUsername] = useState("");
+  useEffect(() => {
+    if (userInfo?.username) {
+      setTempUsername(userInfo.username);
+    }
+  }, [userInfo]);
+  const handleSave = () => {};
 
   return (
     <div className={styles.profileContainer}>
@@ -61,9 +70,53 @@ export default function Profile() {
             </div>
           </p>
         </div>
-        <Button size="sm" variant="primary">
-          编辑资料
-        </Button>
+
+        <Modal>
+          <Button isIconOnly variant="tertiary">
+            <Gear />
+          </Button>
+          <Modal.Backdrop>
+            <Modal.Container>
+              <Modal.Dialog>
+                <Modal.CloseTrigger /> {/* Optional: Close button */}
+                <Modal.Header>
+                  <Modal.Heading>个人资料</Modal.Heading>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className={styles.avatarWrapper}>
+                    <div className={styles.avatarBox}>
+                      <Avatar size="lg">
+                        <Avatar.Image
+                          alt="user"
+                          src={
+                            userInfo?.avatar ||
+                            "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                          }
+                        />
+                        <Avatar.Fallback>
+                          {userInfo?.username?.[0]?.toUpperCase() || "U"}
+                        </Avatar.Fallback>
+                      </Avatar>
+                      <div className={styles.avatarOverlay}>
+                        <span>更换</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.fieldGroup}>
+                      <Label htmlFor="username">用户名</Label>
+                      <Input id="username" value={tempUsername} type="text" />
+                    </div>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="tertiary" onClick={handleSave}>
+                    保存
+                  </Button>
+                </Modal.Footer>
+              </Modal.Dialog>
+            </Modal.Container>
+          </Modal.Backdrop>
+        </Modal>
       </div>
 
       <div className="songList">

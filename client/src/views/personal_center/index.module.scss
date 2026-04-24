@@ -116,3 +116,42 @@
     }
   }
 }
+.avatarWrapper {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 5px;
+  place-items: center;
+  padding: 5px;
+}
+
+.avatarBox {
+  position: relative;
+  cursor: pointer;
+
+  &:hover .avatarOverlay {
+    opacity: 1;
+  }
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  span {
+    color: #fff;
+    font-size: 12px;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

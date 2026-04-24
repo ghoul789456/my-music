@@ -5,8 +5,16 @@ import {
   ArrowRightFromSquare,
   Gear,
   Persons,
+  ChevronLeft,
 } from "@gravity-ui/icons";
-import { Switch, Avatar, SearchField, Dropdown, Label } from "@heroui/react";
+import {
+  Switch,
+  Avatar,
+  SearchField,
+  Dropdown,
+  Label,
+  Button,
+} from "@heroui/react";
 import ThemeContext from "../../contexts/ThemeContext";
 import styles from "./index.module.css";
 import { useNavigate } from "react-router";
@@ -64,34 +72,37 @@ export default function Header() {
     }
   };
 
+  //回退
+  const backup = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.header}>
       <div className={styles.logoImg} onClick={goHome}>
-        {/* <img src={defaultLogo} alt="logo" /> */}
-
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 100 100"
-          width="35"
-          height="35"
+          width="100%"
+          height="100%"
         >
-          <circle cx="50" cy="50" r="50" fill="#111111" />
+          <circle cx="50" cy="50" r="50" fill={isDark ? "#111111" : "white"} />
           <ellipse
             cx="33"
             cy="64"
             rx="10"
             ry="7"
             transform="rotate(-22 33 64)"
-            fill="white"
+            fill={isDark ? "white" : "#111111"}
           />
           <line
             x1="42"
             y1="58"
             x2="42"
             y2="25"
-            stroke="white"
-            stroke-width="3"
-            stroke-linecap="round"
+            stroke={isDark ? "white" : "#111111"}
+            strokeWidth="3"
+            strokeLinecap="round"
           />
           <ellipse
             cx="60"
@@ -99,43 +110,46 @@ export default function Header() {
             rx="10"
             ry="7"
             transform="rotate(-22 60 55)"
-            fill="white"
+            fill={isDark ? "white" : "#111111"}
           />
           <line
             x1="69"
             y1="49"
             x2="69"
             y2="16"
-            stroke="white"
-            stroke-width="3"
-            stroke-linecap="round"
+            stroke={isDark ? "white" : "#111111"}
+            strokeWidth="3"
+            strokeLinecap="round"
           />
           <path
             d="M42 25 Q55.5 16 69 16"
-            stroke="white"
-            stroke-width="4.5"
+            stroke={isDark ? "white" : "#111111"}
+            strokeWidth="4.5"
             fill="none"
-            stroke-linecap="round"
+            strokeLinecap="round"
           />
           <path
             d="M73 30 Q82 25 83 35 Q84 45 73 49"
-            stroke="white"
-            stroke-width="1.8"
+            stroke={isDark ? "white" : "#111111"}
+            strokeWidth="1.8"
             fill="none"
-            stroke-linecap="round"
-            opacity="0.7"
+            strokeLinecap="round"
+            opacity={isDark ? 0.7 : 0.65}
           />
           <path
             d="M76 20 Q91 13 93 30 Q95 47 77 54"
-            stroke="white"
-            stroke-width="1.5"
+            stroke={isDark ? "white" : "#111111"}
+            strokeWidth="1.5"
             fill="none"
-            stroke-linecap="round"
-            opacity="0.35"
+            strokeLinecap="round"
+            opacity={isDark ? 0.35 : 0.32}
           />
         </svg>
       </div>
-      <div>
+      <div className={styles.backBtn}>
+        <Button isIconOnly variant="tertiary" onClick={backup}>
+          <ChevronLeft />
+        </Button>
         <SearchField name="search">
           <SearchField.Group>
             <SearchField.SearchIcon />
