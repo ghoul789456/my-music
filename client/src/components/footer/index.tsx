@@ -5,9 +5,7 @@ import styles from "./index.module.scss";
 export default function Footer() {
   return (
     <Card className={styles.foot}>
-      <Card.Content>
-        <img src="" alt="" />
-      </Card.Content>
+      <Card.Content></Card.Content>
     </Card>
   );
 }

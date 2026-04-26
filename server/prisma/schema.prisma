@@ -35,3 +35,47 @@ enum Role {
   ADMIN
 }
 
+
+// 歌曲模型
+model Song {
+  id          Int      @id @default(autoincrement())
+  title       String
+  duration    Int      // 时长（秒）
+  filePath    String
+  coverUrl    String?
+  playCount   Int      @default(0)
+  
+  // 关联到歌手
+  artistId    Int
+  artist      Artist   @relation(fields: [artistId], references: [id])
+  //相当于=> artist_id INT,FOREIGN KEY (artist_id) REFERENCES artist(id)
+  
+  // 关联到专辑
+  albumId     Int?
+  album       Album?   @relation(fields: [albumId], references: [id])
+
+  createdAt   DateTime @default(now()) //插入时间，自动
+  updatedAt   DateTime @updatedAt //更新时间，自动
+}
+
+// 歌手模型
+model Artist {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  bio       String?
+  avatar    String?
+  songs     Song[]   // 一个歌手有多首歌曲,不是字段，只是映射
+  albums    Album[]  // 一个歌手有多个专辑,不是字段，只是映射
+}
+
+// 专辑模型
+model Album {
+  id          Int      @id @default(autoincrement())
+  title       String
+  coverUrl    String?
+  releaseDate DateTime?
+  
+  artistId    Int
+  artist      Artist   @relation(fields: [artistId], references: [id])
+  songs       Song[]   // 一个专辑有多首歌曲,不是字段，只是映射
+}

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Avatar, Card, Button, Modal, Label, Input } from "@heroui/react";
 import { Gear } from "@gravity-ui/icons";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../../store/store";
+import imageCompression from "browser-image-compression";
+
 import styles from "./index.module.scss";
 export default function Profile() {
   const { userInfo, isLoggedIn } = useSelector(
@@ -22,6 +24,41 @@ export default function Profile() {
       setTempUsername(userInfo.username);
     }
   }, [userInfo]);
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState("");
+
+  const handleChooseAvatar = () => {
+    fileRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    const compressedFile = await compressImage(file);
+    console.log("compressedFile", compressedFile);
+
+    //  await uploadAvatar(compressedFile);
+  };
+
+  const compressImage = async (file: File) => {
+    const options = {
+      maxSizeMB: 1, // 最大1MB
+      maxWidthOrHeight: 800, // 最大宽高
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.error("压缩失败:", error);
+      return file;
+    }
+  };
+
   const handleSave = () => {};
 
   return (
@@ -47,7 +84,7 @@ export default function Profile() {
               粉丝
             </span>
           </div>
-          <p className={styles.introduction}>
+          <div className={styles.introduction}>
             <div className="flex items-center text-default-500">
               {/* SVG 图标 */}
               <svg
@@ -68,7 +105,7 @@ export default function Profile() {
               {/* 邮箱文本 */}
               <span>{userInfo?.email || "example@mail.com"}</span>
             </div>
-          </p>
+          </div>
         </div>
 
         <Modal>
@@ -84,11 +121,22 @@ export default function Profile() {
                 </Modal.Header>
                 <Modal.Body>
                   <div className={styles.avatarWrapper}>
-                    <div className={styles.avatarBox}>
+                    <div
+                      className={styles.avatarBox}
+                      onClick={handleChooseAvatar}
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
                       <Avatar size="lg">
                         <Avatar.Image
                           alt="user"
                           src={
+                            preview ||
                             userInfo?.avatar ||
                             "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
                           }

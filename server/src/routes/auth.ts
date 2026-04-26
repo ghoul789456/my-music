@@ -10,6 +10,14 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
+/*
+查询	        GET	      /songs
+新增	        POST	    /songs
+更新(全部)    PUT	      /songs/1
+更新(部分)	  PATCH	    /songs/1
+删除	        DELETE	  /songs/1
+*/
+
 // 注册接口
 router.post("/register", async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
@@ -192,12 +200,95 @@ router.get("/me", async (req: Request, res: Response) => {
     if (!user) {
       return res.status(401).json({ message: "用户不存在" });
     }
-    console.log("user", user);
 
     res.status(200).json({ user });
   } catch (error) {
     console.error("获取个人信息报错:", error);
     res.status(500).json({ message: "服务器内部错误" });
+  }
+});
+
+//更新个人信息接口
+router.patch("/profile", async (req: Request, res: Response) => {
+  //获取请求头中的authorization(包含token)
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "未提供 Token" });
+  }
+
+  const { username, avatar } = req.body;
+
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("环境变量中未配置 JWT_SECRET");
+    }
+    //验证并解析 Token
+    //双重断言=> as unknown：先把变量变成不知道类型,让TS别报错，as MyTokenPayload：再把它变成想要的类型
+    const decoded = jwt.verify(token, secret) as unknown as MyTokenPayload;
+    const user = await prisma.user.update({
+      where: { id: decoded.userId },
+      data: { username: username, avatar: avatar },
+      select: { id: true, username: true, email: true, avatar: true },
+    });
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("修改个人信息报错:", error);
+    res.status(500).json({ message: "服务器内部错误" });
+  }
+});
+//修改密码接口
+router.patch("/password", async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "未提供 Token" });
+  }
+
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: "参数不完整" });
+  }
+
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error("JWT_SECRET 未配置");
+
+    const decoded = jwt.verify(token, secret) as unknown as MyTokenPayload;
+
+    // 1️ 查用户
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "用户不存在" });
+    }
+
+    // 2️ 校验旧密码
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "旧密码错误" });
+    }
+
+    // 3 加密新密码
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // 4️ 更新密码
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    res.json({ message: "密码修改成功" });
+  } catch (error) {
+    console.error("修改密码失败:", error);
+    res.status(500).json({ message: "服务器错误" });
   }
 });
 
