@@ -1,13 +1,18 @@
 @use "../../styles/layout";
 
 .homeBox {
-  width: 100%;
-  max-width: 1200px;
+  width: 88%;
   margin: 0 auto;
   height: 100%;
   padding: 1rem;
   box-sizing: border-box;
+  border-radius: 0.75rem;
   overflow-y: auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
 
   &::-webkit-scrollbar {
     display: none;
@@ -26,25 +31,8 @@
   margin-bottom: 0.5rem;
 }
 
-.singerList {
-  // 占位：HeroUI Card 透传的类名，可在此添加自定义样式
-}
 
-.singerBox {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1rem;
-  overflow-x: auto;
-  scrollbar-width: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.singerItem {
-  // 占位：对应 TSX 中 .singer-item，可在此添加自定义样式
-}
 
 .musicItem {
   @include layout.flexBox($direction: column);

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../../store/store";
 import imageCompression from "browser-image-compression";
-
+import SingerCard from '../../components/card'
 import styles from "./index.module.scss";
 export default function Profile() {
   const { userInfo, isLoggedIn } = useSelector(
@@ -168,22 +168,20 @@ export default function Profile() {
       </div>
 
       <div className="songList">
-        <Card className={styles.singerList}>
-          <Card.Content>
-            <p>我的歌单</p>
-          </Card.Content>
-          <Card.Content className={styles.singerBox}>
-            <div className={styles.singerItem}>
-              <img
-                alt="NEO Home Robot"
-                aria-hidden="true"
-                className="w-24 h-24 object-cover rounded-xl"
-                src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg"
-              />
-              <p>name</p>
-            </div>
-          </Card.Content>
-        </Card>
+        
+        <SingerCard
+                    title="我的歌单"
+                    list={[
+                      { id: '1', name: '1', url: 'https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg' },
+                      { id: '2', name: '2', url: 'https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg' }
+                    ]}
+                    onCardClick={() => {
+                      console.log('打开详情');
+                    }}
+                    onPlayClick={() => {
+                      console.log('播放');
+                    }}
+                  />
       </div>
     </div>
   );
