@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
-
+import songSlice from './songSlice'
 const store = configureStore({
   reducer: {
     user: userSlice,
+    player:songSlice
   },
 });
 //返回类型，指定state的类型是什么

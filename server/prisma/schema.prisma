@@ -41,9 +41,9 @@ model Song {
   id          Int      @id @default(autoincrement())
   title       String
   duration    Int      // 时长（秒）
-  filePath    String
-  coverUrl    String?
-  playCount   Int      @default(0)
+  filePath    String   // 音乐文件存储路径
+  coverUrl    String?  // 封面图 URL
+  playCount   Int      @default(0)  // 播放次数
   
   // 关联到歌手
   artistId    Int
