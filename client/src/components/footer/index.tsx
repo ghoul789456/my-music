@@ -1,33 +1,48 @@
-import { useRef } from 'react'
+import { useRef } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
-  togglePlay, nextSong, prevSong, selectCurrentSong,
-  setVolume, setMode,setCurrentTime
+  togglePlay,
+  nextSong,
+  prevSong,
+  selectCurrentSong,
+  setVolume,
+  setMode,
+  setCurrentTime,
 } from "../../store/songSlice";
 import type { RootState } from "../../store/store";
-import { Button, Spinner } from "@heroui/react";
+import { Button, Spinner, Slider } from "@heroui/react";
 import {
-  PauseFill, PlayFill, BackwardStepFill, ForwardStepFill,
-  VolumeLowFill, VolumeXmarkFill, ListUl
-} from '@gravity-ui/icons';
+  PauseFill,
+  PlayFill,
+  BackwardStepFill,
+  ForwardStepFill,
+  VolumeLowFill,
+  VolumeXmarkFill,
+  ListUl,
+} from "@gravity-ui/icons";
 import { Repeat, Repeat1, Shuffle } from "lucide-react";
-import AudioController from '../audio'
+import AudioController from "../audio";
 import styles from "./index.module.scss";
+import img from "../../assets/song.png";
 
 export default function Footer() {
   const dispatch = useDispatch();
 
   const { isPlaying, volume, mode, isLoading, currentTime } = useSelector(
-    (state: RootState) => state.player
+    (state: RootState) => state.player,
   );
   const currentSong = useSelector(selectCurrentSong);
 
-  if (!currentSong) return null;
+  // if (!currentSong) return null;
 
   // 2. 处理模式切换逻辑
   const handleModeChange = () => {
-    const modes: ("loop" | "single" | "shuffle")[] = ["loop", "single", "shuffle"];
+    const modes: ("loop" | "single" | "shuffle")[] = [
+      "loop",
+      "single",
+      "shuffle",
+    ];
     const nextMode = modes[(modes.indexOf(mode) + 1) % modes.length];
     dispatch(setMode(nextMode));
   };
@@ -36,7 +51,7 @@ export default function Footer() {
   const modeIconMap = {
     loop: <Repeat />,
     single: <Repeat1 />,
-    shuffle: <Shuffle />
+    shuffle: <Shuffle />,
   };
 
   const modeIcon = modeIconMap[mode];
@@ -52,23 +67,16 @@ export default function Footer() {
     }
   };
 
-
-
   return (
     <div className={styles.foot}>
       <AudioController />
       <div className={styles.songInfo}>
         <div className={styles.cover}>
-          <img
-            src={currentSong.coverUrl || '/default-cover.png'}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/default-cover.png";
-            }}
-          />
+          <img src={currentSong?.coverUrl || img} />
         </div>
         <div className={styles.text}>
-          <p className={styles.title}>{currentSong.title}</p>
-          <p className={styles.artist}>{currentSong.artist || "未知歌手"}</p>
+          <p className={styles.title}>{currentSong?.title}</p>
+          <p className={styles.artist}>{currentSong?.artist}</p>
         </div>
       </div>
 
@@ -78,7 +86,11 @@ export default function Footer() {
             {modeIcon}
           </Button>
 
-          <Button isIconOnly variant="tertiary" onClick={() => dispatch(prevSong())}>
+          <Button
+            isIconOnly
+            variant="tertiary"
+            onClick={() => dispatch(prevSong())}
+          >
             <BackwardStepFill />
           </Button>
 
@@ -88,33 +100,57 @@ export default function Footer() {
             isDisabled={isLoading}
             onClick={() => dispatch(togglePlay())}
           >
-            {isLoading ? <Spinner size="sm" color="current" /> : (isPlaying ? <PauseFill /> : <PlayFill />)}
+            {isLoading ? (
+              <Spinner size="sm" color="current" />
+            ) : isPlaying ? (
+              <PauseFill />
+            ) : (
+              <PlayFill />
+            )}
           </Button>
 
-          <Button isIconOnly variant="tertiary" onClick={() => dispatch(nextSong())}>
+          <Button
+            isIconOnly
+            variant="tertiary"
+            onClick={() => dispatch(nextSong())}
+          >
             <ForwardStepFill />
           </Button>
         </div>
 
-
-        <input
+        {/* <input
           type="range"
           className={styles.progressBar}
           min={0}
-          max={currentSong.duration || 0}
+          max={currentSong?.duration || 0}
           value={currentTime}
           onChange={(e) => dispatch(setCurrentTime(Number(e.target.value)))}
-        />
+        /> */}
+
+        <Slider
+          className={styles.progressBar}
+          value={[currentTime]}
+          minValue={0}
+          maxValue={currentSong?.duration || 0}
+          step={1}
+          onChange={(val) => {
+            const time = Array.isArray(val) ? val[0] : val;
+            dispatch(setCurrentTime(time));
+          }}
+        >
+          <Slider.Track className={styles.sliderTrack}>
+            <Slider.Fill className={styles.sliderFill} />
+            <Slider.Thumb className={styles.sliderThumb} />
+          </Slider.Track>
+        </Slider>
       </div>
 
       <div className={styles.extra}>
-        <Button isIconOnly variant="tertiary"><ListUl /></Button>
+        <Button isIconOnly variant="tertiary">
+          <ListUl />
+        </Button>
         <div className={styles.volumeContainer}>
-          <Button
-            isIconOnly
-            variant="tertiary"
-            onClick={handleMute}
-          >
+          <Button isIconOnly variant="tertiary" onClick={handleMute}>
             {volume === 0 ? <VolumeXmarkFill /> : <VolumeLowFill />}
           </Button>
           <input
