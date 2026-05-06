@@ -76,29 +76,27 @@ async function fetchSongInfo(artist: string, title: string) {
     return null;
   }
 }
-
 async function fetchArtistImage(artistName: string): Promise<string | null> {
   try {
-    const url = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${process.env.LASTFM_API_KEY}&format=json`;
-    const res = await fetch(url);
+    const res = await fetch(
+      `https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=1`,
+    );
     const data = await res.json();
-    const images = data.artist?.image;
-    const mega = images?.find((i: any) => i.size === "mega")?.["#text"];
+    const artist = data.data?.[0];
 
-    if (!mega) return null;
+    if (!artist?.picture_xl) return null;
 
-    // 下载到本地，文件名和歌曲封面风格保持一致
-    const ext = path.extname(new URL(mega).pathname) || ".jpg";
-    const fileName = `artist_${artistName.replace(/[^a-zA-Z0-9]/g, "_")}${ext}`;
+    const fileName = `artist_${artistName.replace(/[^a-zA-Z0-9]/g, "_")}.jpg`;
     const savePath = path.join(RESOURCE_PATH, fileName);
 
     if (!fs.existsSync(savePath)) {
-      await downloadImage(mega, savePath);
+      await downloadImage(artist.picture_xl, savePath);
       console.log(`🎤 歌手图片已保存: ${fileName}`);
     }
 
-    return fileName; // 返回文件名，和 coverUrl 保持一致
-  } catch {
+    return fileName;
+  } catch (err: any) {
+    console.warn(`⚠️ Deezer 获取歌手图片失败 [${artistName}]:`, err.message);
     return null;
   }
 }
