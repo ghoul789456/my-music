@@ -1,13 +1,14 @@
-import React from 'react';
+import React from "react";
 import { Card, Button } from "@heroui/react";
-import { PlayFill } from '@gravity-ui/icons';
+import { PlayFill } from "@gravity-ui/icons";
 import styles from "./index.module.scss";
 
 // 定义 Props 接口
 interface SingerItem {
   id: string;
-  name: string;
   url: string;
+  primary: string;
+  secondary: string;
 }
 interface SingerCardProps {
   title: string;
@@ -17,12 +18,12 @@ interface SingerCardProps {
   onPlayClick?: (item: SingerItem) => void;
 }
 
-export default function  SingerCard({
+export default function SingerCard({
   title,
   list,
   isRound = false,
   onCardClick,
-  onPlayClick
+  onPlayClick,
 }: SingerCardProps) {
   return (
     <Card className={styles.singerList}>
@@ -39,10 +40,10 @@ export default function  SingerCard({
           >
             <div className={styles.singerImgWrapper}>
               <img
-                alt={item.name}
+                alt={item.primary}
                 src={item.url}
                 className={`object-cover ${
-                  isRound ? 'rounded-full' : 'rounded-xl'
+                  isRound ? "rounded-full" : "rounded-xl"
                 }`}
               />
 
@@ -59,7 +60,8 @@ export default function  SingerCard({
               </Button>
             </div>
 
-            <p className={styles.singerName}>{item.name}</p>
+            <p className={styles.songName}>{item.primary}</p>
+            <p className={styles.singerName}>{item.secondary}</p>
           </div>
         ))}
       </Card.Content>

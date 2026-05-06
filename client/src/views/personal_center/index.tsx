@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../../store/store";
 import imageCompression from "browser-image-compression";
-import SingerCard from '../../components/card'
+import SingerCard from "../../components/card";
 import styles from "./index.module.scss";
 export default function Profile() {
   const { userInfo, isLoggedIn } = useSelector(
@@ -168,20 +168,29 @@ export default function Profile() {
       </div>
 
       <div className="songList">
-        
         <SingerCard
-                    title="我的歌单"
-                    list={[
-                      { id: '1', name: '1', url: 'https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg' },
-                      { id: '2', name: '2', url: 'https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg' }
-                    ]}
-                    onCardClick={() => {
-                      console.log('打开详情');
-                    }}
-                    onPlayClick={() => {
-                      console.log('播放');
-                    }}
-                  />
+          title="我的歌单"
+          list={[
+            {
+              id: "1",
+              primary: "1",
+              url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
+              secondary: "艺人",
+            },
+            {
+              id: "2",
+              primary: "2",
+              url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
+              secondary: "艺人",
+            },
+          ]}
+          onCardClick={() => {
+            console.log("打开详情");
+          }}
+          onPlayClick={() => {
+            console.log("播放");
+          }}
+        />
       </div>
     </div>
   );
