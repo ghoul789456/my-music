@@ -82,7 +82,7 @@ export default function Footer() {
 
       <div className={styles.controls}>
         <div className={styles.buttons}>
-          <Button isIconOnly variant="tertiary" onClick={handleModeChange}>
+          <Button isIconOnly variant="tertiary" onClick={handleModeChange} >
             {modeIcon}
           </Button>
 

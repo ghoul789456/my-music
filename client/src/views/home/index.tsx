@@ -50,7 +50,7 @@ export default function Home() {
   useEffect(() => {
     server.get<any, HomeHotResponse>("/api/song/hot").then((res) => {
       const { songs, albums, artists } = res;
-
+setRawSongs(songs);
       setList(
         songs.map((s) => ({
           id: String(s.id),
@@ -81,6 +81,8 @@ export default function Home() {
   }, []);
   const dispatch = useDispatch();
   const handleSinglePlay = (id: string) => {
+    console.log("id",id);
+    
     // 根据 ID 找到对应的原始歌曲数据
     const target = rawSongs.find((s) => String(s.id) === id);
     if (target) {

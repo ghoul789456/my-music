@@ -12,7 +12,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const RESOURCE_PATH = "C:/Users/DGZ/Desktop/resource";
+const RESOURCE_PATH = "C:/Users/15175/Desktop/resource";
 
 // ===============================
 // 🎯 ffprobe 获取准确时长
@@ -52,18 +52,13 @@ async function fetchSongInfo(artist: string, title: string) {
     ).trim();
 
     const results = await fetchFromItunes(`${mainArtist} ${title}`);
+    if (!results || results.length === 0) return null;
     const result = results.find((item: any) => {
       const a = normalize(item.artistName || "");
-      const t = normalize(item.trackName || "");
-      const queryArtist = normalize(mainArtist); // 用 mainArtist 而不是完整 artist
+      const queryArtist = normalize(mainArtist);
+      return a.includes(queryArtist) || queryArtist.includes(a);
+    }) || results[0]; // <--- 兜底：如果没匹配到，直接用搜索结果的第一项
 
-      return (
-        (a.includes(queryArtist) || queryArtist.includes(a)) &&
-        (t.includes(normalize(title)) || normalize(title).includes(t))
-      );
-    });
-
-    if (!result) return null;
 
     return {
       title: result.trackName,
@@ -78,25 +73,42 @@ async function fetchSongInfo(artist: string, title: string) {
 }
 async function fetchArtistImage(artistName: string): Promise<string | null> {
   try {
-    const res = await fetch(
-      `https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=1`,
-    );
+    // 1. 优先使用 Deezer，因为它的歌手图是专门的写真，不是专辑封面
+    // 接口：https://api.deezer.com/search/artist?q=歌手名
+    const url = `https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=1`;
+
+    const res = await fetch(url, {
+      headers: {
+        // 有些 API 喜欢识别浏览器身份，加上这个更稳
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
+    if (!res.ok) throw new Error(`Deezer API error: ${res.status}`);
+
     const data = await res.json();
-    const artist = data.data?.[0];
+    const artistData = data.data?.[0];
 
-    if (!artist?.picture_xl) return null;
+    // 2. 检查拿到的结果是否匹配（防止搜错人）
+    if (artistData && artistData.picture_xl) {
+      const imageUrl = artistData.picture_xl;
+      const fileName = `artist_${artistName.replace(/[^a-zA-Z0-9]/g, "_")}.jpg`;
+      const savePath = path.join(RESOURCE_PATH, fileName);
 
-    const fileName = `artist_${artistName.replace(/[^a-zA-Z0-9]/g, "_")}.jpg`;
-    const savePath = path.join(RESOURCE_PATH, fileName);
-
-    if (!fs.existsSync(savePath)) {
-      await downloadImage(artist.picture_xl, savePath);
-      console.log(`🎤 歌手图片已保存: ${fileName}`);
+      if (!fs.existsSync(savePath)) {
+        await downloadImage(imageUrl, savePath);
+        console.log(`🎤 真正歌手写真已保存: ${fileName}`);
+      }
+      return fileName;
     }
 
-    return fileName;
+    // 3. 降级方案：如果 Deezer 没搜到，尝试 iTunes 的 musicArtist 实体
+    // 注意：iTunes 的 musicArtist 只有在极少数情况下提供视图，所以这里建议返回 null 或默认头像
+    console.warn(`⚠️ Deezer 未找到歌手写真: ${artistName}`);
+    return null;
+
   } catch (err: any) {
-    console.warn(`⚠️ Deezer 获取歌手图片失败 [${artistName}]:`, err.message);
+    console.error(`❌ 获取歌手图片失败 [${artistName}]:`, err.message);
     return null;
   }
 }
@@ -200,39 +212,35 @@ async function scanAndSync() {
     let coverFileName: string | null = null;
 
     // =========================
-    // 4️⃣ 封面
+    // 4️⃣ 封面（尝试提取内嵌）
     // =========================
     const pic = metadata.common.picture?.[0];
-    console.log(
-      "🖼️ 内嵌封面:",
-      pic ? `${pic.format}, ${pic.data?.length} bytes` : "无",
-    );
     if (pic?.data) {
       coverFileName = `${baseName}.jpg`;
       fs.writeFileSync(path.join(RESOURCE_PATH, coverFileName), pic.data);
+      console.log("💾 已从内嵌元数据保存封面");
     }
 
     // =========================
-    // 5️⃣ iTunes 补全
+    // 5️⃣ 补全逻辑（重点修改）
     // =========================
-    if (!album && artist !== "Unknown Artist") {
+    // 只要本地没图，就去网上找
+    if (!coverFileName && artist !== "Unknown Artist") {
+      console.log(`🔍 正在为 ${title} 寻找在线封面...`);
       const info = await fetchSongInfo(artist, title);
-      console.log("🍎 iTunes 结果:", info);
-      if (info) {
-        // title = info.title || title;
-        // artist = info.artist || artist;
-        album = info.album || album;
 
-        if (!coverFileName && info.cover) {
-          coverFileName = `${baseName}.jpg`;
-          await downloadImage(
-            info.cover,
-            path.join(RESOURCE_PATH, coverFileName),
-          );
+      if (info && info.cover) {
+        console.log(`🌐 发现 iTunes 封面: ${info.cover}`);
+        coverFileName = `${baseName}.jpg`;
+        try {
+          await downloadImage(info.cover, path.join(RESOURCE_PATH, coverFileName));
+          console.log("✅ 下载并保存成功");
+        } catch (err) {
+          console.error("❌ 下载封面图片失败:", err);
         }
+      } else {
+        console.warn("⚠️ iTunes 未匹配到结果或无封面URL");
       }
-
-      await new Promise((r) => setTimeout(r, 200));
     }
 
     // =========================
@@ -274,7 +282,7 @@ async function scanAndSync() {
             artistId: mainArtist.id,
           },
         },
-        update: {},
+        update: {coverUrl: coverFileName},
         create: {
           title: album,
           artistId: mainArtist.id,

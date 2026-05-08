@@ -63,7 +63,8 @@ model User {
 3.2 同步指令
 Bash
 # 1. 生成数据库迁移文件并更新表结构
-npx prisma migrate dev --name init
+npx prisma db push  快速把 schema 同步到数据库,不生成 migration 文件，开发用
+npx prisma migrate dev --name init  正式生成数据库迁移记录，有历史记录migration 文件，正式用
 
 # 2. 生成本地 TypeScript 类型库 (关键步骤)
 npx prisma generate
