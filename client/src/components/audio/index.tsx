@@ -30,7 +30,7 @@ const AudioController = () => {
         audio.play().catch(() => {});
       }
     }
-  }, [currentSong]); // isPlaying 故意不加，切歌逻辑独立处理
+  }, [currentSong]);
 
   // 播放/暂停控制
   useEffect(() => {
@@ -55,10 +55,16 @@ const AudioController = () => {
   // ✅ 新增：store currentTime 变化 → seek audio（用户拖动进度条）
   useEffect(() => {
     const audio = audioRef.current;
+
     if (Math.abs(audio.currentTime - currentTime) > 1) {
       audio.currentTime = currentTime;
+
+      // 如果是播放状态，重新播放
+      if (isPlaying) {
+        audio.play().catch(() => {});
+      }
     }
-  }, [currentTime]);
+  }, [currentTime, isPlaying]);
 
   // 播放结束 → 下一首
   useEffect(() => {

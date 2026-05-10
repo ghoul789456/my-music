@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { Card, Button } from "@heroui/react";
-import { PlayFill } from "@gravity-ui/icons";
 import server from "../../axios/server";
 
 import { useDispatch } from "react-redux";
-import { playSong } from "../../store/songSlice";
+import { setCurrentIndex, setPlaylist } from "../../store/songSlice";
 import Swiperbox from "../../components/swiper";
 import SingerCard from "../../components/card";
 import styles from "./index.module.scss";
@@ -50,7 +48,7 @@ export default function Home() {
   useEffect(() => {
     server.get<any, HomeHotResponse>("/api/song/hot").then((res) => {
       const { songs, albums, artists } = res;
-setRawSongs(songs);
+      setRawSongs(songs);
       setList(
         songs.map((s) => ({
           id: String(s.id),
@@ -80,29 +78,30 @@ setRawSongs(songs);
     });
   }, []);
   const dispatch = useDispatch();
-  const handleSinglePlay = (id: string) => {
-    console.log("id",id);
-    
-    // 根据 ID 找到对应的原始歌曲数据
-    const target = rawSongs.find((s) => String(s.id) === id);
-    if (target) {
-      dispatch(
-        playSong({
-          id: target.id,
-          title: target.title,
-          duration: target.duration,
-          filePath: target.filePath,
-          coverUrl: target.coverUrl,
-          playCount: target.playCount,
-          artist: target.artists.map((a) => a.name).join("/"),
-        }),
-      );
-    }
+  const handlePlay = (id: string) => {
+    const index = rawSongs.findIndex((s) => String(s.id) === id);
+
+    if (index === -1) return;
+
+    dispatch(
+      setPlaylist({
+        list: rawSongs.map((s) => ({
+          id: s.id,
+          title: s.title,
+          duration: s.duration,
+          filePath: s.filePath,
+          coverUrl: s.coverUrl,
+          playCount: s.playCount,
+          artist: s.artists.map((a) => a.name).join("/"),
+        })),
+        startIndex: index,
+      }),
+    );
   };
 
   return (
     <div className={styles.homeBox}>
-      <Swiperbox />
+      {/*<Swiperbox />*/}
       <div className={styles.listItem}>
         <div>
           <SingerCard
@@ -112,7 +111,7 @@ setRawSongs(songs);
               console.log("打开详情");
             }}
             onPlayClick={(item: any) => {
-              handleSinglePlay(item.id);
+              handlePlay(item.id);
             }}
           />
         </div>

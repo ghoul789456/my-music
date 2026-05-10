@@ -11,8 +11,8 @@ interface SongInfo {
 }
 
 interface PlayerState {
-  playlist: SongInfo[];      // 播放队列
-  currentIndex: number;      // 当前播放歌曲的下标
+  playlist: SongInfo[]; // 播放队列
+  currentIndex: number; // 当前播放歌曲的下标
   isPlaying: boolean;
   volume: number;
   mode: "loop" | "single" | "shuffle";
@@ -23,13 +23,13 @@ interface PlayerState {
 
 const initialState: PlayerState = {
   playlist: [],
-  currentIndex: -1,          // -1 表示当前没有歌曲在播放
+  currentIndex: -1, // -1 表示当前没有歌曲在播放
   isPlaying: false,
   volume: 0.5,
   mode: "loop",
   currentTime: 0,
   isLoading: false,
-  error: null
+  error: null,
 };
 
 const songSlice = createSlice({
@@ -37,28 +37,23 @@ const songSlice = createSlice({
   initialState,
   reducers: {
     // 设置整个播放列表并播放第一首
-    setPlaylist: (state, action: PayloadAction<SongInfo[]>) => {
-      state.playlist = action.payload;
-      if (action.payload.length > 0) {
-        state.currentIndex = 0;
+    setPlaylist: (
+      state,
+      action: PayloadAction<{
+        list: SongInfo[];
+        startIndex?: number;
+      }>,
+    ) => {
+      state.playlist = action.payload.list;
+
+      if (action.payload.list.length > 0) {
+        state.currentIndex = action.payload.startIndex ?? 0;
         state.isPlaying = true;
+        state.currentTime = 0;
       } else {
         state.currentIndex = -1;
         state.isPlaying = false;
       }
-    },
-
-    // 播放特定歌曲（如果列表中有则跳转索引，没有则插入）
-    playSong: (state, action: PayloadAction<SongInfo>) => {
-      const index = state.playlist.findIndex(s => s.id === action.payload.id);
-      if (index !== -1) {
-        state.currentIndex = index;
-      } else {
-        state.playlist.push(action.payload);
-        state.currentIndex = state.playlist.length - 1;
-      }
-      state.isPlaying = true;
-      state.currentTime = 0;
     },
 
     // 下一曲
@@ -78,7 +73,16 @@ const songSlice = createSlice({
         state.currentTime = 0;
       } else {
         // 列表循环
-        state.currentIndex = (state.currentIndex + 1) % len;
+        const nextIndex = (state.currentIndex + 1) % len;
+
+        if (nextIndex === state.currentIndex) {
+          // 只有一首歌
+          state.currentTime = 0;
+        } else {
+          state.currentIndex = nextIndex;
+        }
+
+        state.isPlaying = true;
       }
 
       state.isPlaying = true;
@@ -88,7 +92,9 @@ const songSlice = createSlice({
     prevSong: (state) => {
       if (state.playlist.length === 0) return;
       // 循环播放逻辑：如果是第一首，则跳到最后一首
-      state.currentIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length;
+      state.currentIndex =
+        (state.currentIndex - 1 + state.playlist.length) %
+        state.playlist.length;
       state.isPlaying = true;
       state.currentTime = 0;
     },
@@ -144,26 +150,36 @@ const songSlice = createSlice({
       state.currentIndex = -1;
       state.isPlaying = false;
     },
-  }
+
+    setCurrentIndex: (state, action: PayloadAction<number>) => {
+      if (action.payload >= 0 && action.payload < state.playlist.length) {
+        state.currentIndex = action.payload;
+        state.currentTime = 0;
+        state.isPlaying = true;
+      }
+    },
+  },
 });
 
-export const { 
-  setPlaylist, 
-  playSong, 
-  nextSong, 
-  prevSong, 
-  togglePlay, 
-  setVolume, 
+export const {
+  setPlaylist,
+  nextSong,
+  prevSong,
+  togglePlay,
+  setVolume,
   removeSong,
   setCurrentTime,
   setMode,
   setLoading,
   setError,
-  clearPlaylist
+  clearPlaylist,
+  setCurrentIndex,
 } = songSlice.actions;
 
 //方便直接获取当前正在播的那首歌
 export const selectCurrentSong = (state: { player: PlayerState }) =>
-  state.player.currentIndex !== -1 ? state.player.playlist[state.player.currentIndex] : null;
+  state.player.currentIndex !== -1
+    ? state.player.playlist[state.player.currentIndex]
+    : null;
 
 export default songSlice.reducer;
