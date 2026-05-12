@@ -60,7 +60,7 @@ model Song {
 model Artist {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  bio       String?
+  bio       String?  //个人简介
   avatar    String?
   songs     Song[]   // 一个歌手有多首歌曲,不是字段，只是映射
   albums    Album[]  // 一个歌手有多个专辑,不是字段，只是映射

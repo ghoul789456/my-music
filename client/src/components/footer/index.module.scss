@@ -108,10 +108,20 @@
   //     border-radius: 2px;
   //   }
   // }
+  .progressRow {
+    display: flex;
+    gap: 10px;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+
+  }
 
   .progressBar {
     width: 60%;
     padding: 0;
+    display: flex;
+    align-items: center;
   }
 
   .sliderTrack {
@@ -132,12 +142,16 @@
     width: 10px;
     height: 10px;
     background: rgb(218, 176, 130);
+
     &::after {
       width: 100% !important;
       height: 100% !important;
       border-radius: 50%;
     }
+
+
   }
+
 }
 
 /* 右侧扩展区域 */
@@ -169,5 +183,35 @@
         border-radius: 50%;
       }
     }
+  }
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem;
+
+  .delBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.songLists {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .songItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
