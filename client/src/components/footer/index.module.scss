@@ -3,14 +3,39 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 7%;
+  height: 100vh;
+  background: #f5f5f5;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 收起：整体下移，只露出底部 miniPlayer（80px） */
+.fold {
+  transform: translateY(calc(100% - 80px));
+}
+
+/* 展开：完全显示 */
+.expand {
+  transform: translateY(0);
+}
+
+.fullPlayer {
+  height: calc(100vh - 80px);
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #111;
+}
+
+.miniPlayer {
+  height: 80px; 
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 5px 20px;
-  background: #f5f5f5;
   border-top: 1px solid #e5e5e5;
-  z-index: 100;
 }
 
 /* 左侧歌曲信息 */
@@ -199,19 +224,39 @@
   }
 }
 
-.songLists {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  overflow-y: scroll;
+.playListBox {
+  min-height: 200px;
+  max-height: 400px;
+  padding: 0.5rem;
+  width: 300px;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  .songItem {
+  .songLists {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .songItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+    }
+
+
   }
+}
+
+.listName {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.listDel {
+  font-size: 0.8rem;
 }

@@ -128,6 +128,13 @@ const songSlice = createSlice({
         }
       }
     },
+    //清空播放列表
+    removeAllSong: (state) => {
+      state.currentIndex = -1;
+      state.isPlaying = false;
+      state.playlist = [];
+      state.currentTime = 0;
+    },
     // 设置播放进度
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload;
@@ -174,6 +181,7 @@ export const {
   setError,
   clearPlaylist,
   setCurrentIndex,
+  removeAllSong
 } = songSlice.actions;
 
 //方便直接获取当前正在播的那首歌
