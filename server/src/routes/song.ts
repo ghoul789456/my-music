@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
+import fs from "fs/promises";
+import path from "path";
 
 const router = Router();
 
@@ -63,6 +65,34 @@ router.get("/hot", async (req: Request, res: Response) => {
       songs: formattedSongs,
       albums: formattedAlbums,
       artists: formattedArtists,
+    });
+  } catch (e) {
+    res.status(500).json({ message: "获取失败" });
+  }
+});
+
+
+// 获取歌词接口
+router.get("/lyric/:id", async (req: Request, res: Response) => {
+  try {
+    const songId = req.params.id
+    const song = await prisma.song.findFirst({
+      where: {
+        id: Number(songId)
+      }
+    })
+    if (song?.lyricPath) {
+      return res.json({
+        lyric: "",
+      });
+    }
+    const lyricFilePath = `${BASE_URL}/${song?.lyricPath}`
+    const lyric = await fs.readFile(
+      lyricFilePath,
+      "utf-8"
+    );
+    res.json({
+      lyric
     });
   } catch (e) {
     res.status(500).json({ message: "获取失败" });

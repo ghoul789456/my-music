@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect ,useState} from "react";
 import {
   Route,
   Routes,
@@ -14,6 +14,7 @@ import { setLoginInfo, setUserInfo } from "./store/userSlice.ts";
 import Header from "./components/header/index";
 import Sidebar from "./components/sidebar/index";
 import Footer from "./components/footer/index";
+import MiniPlayer from "./components/miniPlayer/index";
 import Home from "./views/home/index";
 import Playlist from "./views/song_list/index";
 import MyLike from "./views/my-like/index";
@@ -23,14 +24,36 @@ import Auth, {
   type RegisterCredentials,
 } from "./views/auth/index";
 import "./App.css";
-function App() {
-  interface PathType {
+interface PathType {
     id: string;
     name: string;
     path: string;
     element: ReactNode;
     hidden?: boolean;
   }
+interface MainLayoutProps {
+  paths: PathType[];
+  isFooterOpen: boolean;  // 新增：把状态传进来
+  setIsFooterOpen: (open: boolean) => void; // 新增
+}
+const MainLayout = ({ paths, isFooterOpen, setIsFooterOpen }: MainLayoutProps) => (
+  <div className="container">
+    <Header />
+    <main>
+      <Sidebar paths={paths} />
+      <Outlet />
+    </main>
+    {/* 这里使用传进来的状态 */}
+    <MiniPlayer onExpand={() => setIsFooterOpen(true)} />
+    <Footer isOpen={isFooterOpen} onClose={() => setIsFooterOpen(false)} />
+  </div>
+);
+function App() {
+
+  const [isFooterOpen, setIsFooterOpen] = useState(false);
+
+  
+  
   const paths: PathType[] = [
     {
       id: "home",
@@ -58,22 +81,8 @@ function App() {
       hidden: true,
     },
   ];
-  interface MainLayoutProps {
-    paths: PathType[];
-    children?: React.ReactNode;
-  }
-
-  const MainLayout = ({ paths }: MainLayoutProps) => (
-    <div className="container">
-      <Header />
-      <main>
-        <Sidebar paths={paths} />
-        {/* 嵌套路由用Outlet */}
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  );
+  
+  
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -197,7 +206,13 @@ function App() {
       />
 
       {/* 不写 path 属性时，这个路由就变成了一个纯粹的容器。它不参与 URL 匹配，它会“无条件”地包裹住它内部的所有子路由，当子路由（如 /home）被匹配到时，React Router 会先渲染父级的 element（即 MainLayout），然后把匹配到的子组件（如 Home）填充到 MainLayout 中 <Outlet /> 出现的位置 */}
-      <Route element={<MainLayout paths={paths} />}>
+      <Route element={
+        <MainLayout 
+          paths={paths} 
+          isFooterOpen={isFooterOpen} 
+          setIsFooterOpen={setIsFooterOpen} 
+        />
+      }>
         {paths.map((p) => (
           <Route key={p.id} path={p.path} element={p.element} />
         ))}

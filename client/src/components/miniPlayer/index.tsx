@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useMemo, type Key } from "react";
+import { useRef, useState, type Key } from "react";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   togglePlay,
@@ -12,7 +13,7 @@ import {
   removeAllSong
 } from "../../store/songSlice";
 import type { RootState } from "../../store/store";
-import { Button, Spinner, Slider, Popover, Dropdown, Label } from "@heroui/react";
+import { Button, Spinner, Slider, Popover, Avatar, Dropdown, Label } from "@heroui/react";
 import {
   PauseFill,
   PlayFill,
@@ -26,23 +27,16 @@ import {
   Plus,
   ArrowShapeTurnUpRight,
   MusicNote,
-  Person,
-  ChevronDown
+  Person
 } from "@gravity-ui/icons";
 import { Repeat, Repeat1, Shuffle } from "lucide-react";
-import server from "../../axios/server";
 import AudioController from "../audio";
-import img from "../../assets/song.png";
 import styles from "./index.module.scss";
-interface FooterProps {
-  isOpen: boolean;
-  onClose: () => void;
+import img from "../../assets/song.png";
+interface PlayerProps {
+  onExpand: () => void;
 }
-export default function Footer({ isOpen, onClose }: FooterProps) {
-
-
-
-
+export default function MiniPlayer({ onExpand }: PlayerProps) {
   const dispatch = useDispatch();
 
   const { isPlaying, volume, mode, isLoading, currentTime, playlist, currentIndex } = useSelector(
@@ -50,62 +44,9 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
   );
   const currentSong = useSelector(selectCurrentSong);
 
-  const [lyric, setLyric] = useState("");
-  useEffect(() => {
-    if (!currentSong?.id) return;
+  // if (!currentSong) return null;
 
-    const fetchLyric = async () => {
-      const res = await getLyric(Number(currentSong.id));
-
-      setLyric(res);
-    };
-
-    fetchLyric();
-  }, [currentSong]);
-
-  //获取歌词
-  const getLyric = async (id: number) => {
-    const res = await server.get(`/song/lyric/${id}`);
-
-    return res.data.lyric;
-  };
-  //解析歌词
-  const parseLyric = (lyric: string) => {
-    return lyric
-      .split("\n")
-      .map((line) => {
-        const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-
-        if (!match) return null;
-
-        const min = Number(match[1]);
-        const sec = Number(match[2]);
-
-        return {
-          time: min * 60 + sec,
-          text: match[3],
-        };
-      })
-      .filter(Boolean);
-  };
-
-  const parsedLyrics = useMemo(() => {
-    return parseLyric(lyric);
-  }, [lyric]);
-
-
-  const currentLyric = useMemo(() => {
-    return parsedLyrics.findIndex((item, index) => {
-      const next = parsedLyrics[index + 1];
-
-      return (
-        currentTime >= item.time &&
-        (!next || currentTime < next.time)
-      );
-    });
-  }, [parsedLyrics, currentTime]);
-
-  // 处理模式切换逻辑
+  // 2. 处理模式切换逻辑
   const handleModeChange = () => {
     const modes: ("loop" | "single" | "shuffle")[] = [
       "loop",
@@ -156,44 +97,18 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
     }
   };
 
-
-
   return (
-
-    <div className={`${styles.foot} ${isOpen ? styles.active : ""}`}>
-      <div className={styles.header}>
-        <Button isIconOnly variant="tertiary" onClick={onClose}>
-          <ChevronDown />
-        </Button>
-      </div>
-      <div className={styles.main}>
-        <div>
-          <img src={currentSong?.coverUrl || img} alt="cover" />
-        </div>
-        <div className={styles.lyricBox} ref={lyricRef}>
-          {parsedLyrics.map((item, index) => {
-            const isActive = index === currentLyric;
-
-            return (
-              <p
-                key={index}
-                className={`${styles.line} ${isActive ? styles.active : ""
-                  }`}
-              >
-                {item.text}
-              </p>
-            );
-          })}
-        </div>
-
-      </div>
-      <div className={styles.footer}>
-
-        <AudioController />
-
+    <div className={`${styles.miniPlayer}`} >
+      <AudioController />
+     
         <div className={styles.songInfo}>
-          <p className={styles.title}>{currentSong?.title}</p>
-          <p className={styles.artist}>{currentSong?.artist}</p>
+          <div className={styles.cover} onClick={onExpand}>
+            <img src={currentSong?.coverUrl || img} />
+          </div>
+          <div className={styles.text}>
+            <p className={styles.title}>{currentSong?.title}</p>
+            <p className={styles.artist}>{currentSong?.artist}</p>
+          </div>
         </div>
 
         <div className={styles.controls}>
@@ -362,11 +277,8 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
             />
           </div>
         </div>
-
-
-
       </div>
-    </div>
+
 
   );
 }
