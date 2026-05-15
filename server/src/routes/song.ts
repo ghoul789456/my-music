@@ -71,31 +71,45 @@ router.get("/hot", async (req: Request, res: Response) => {
   }
 });
 
-
+const resourcePath = "C:/Users/15175/Desktop/resource";
 // 获取歌词接口
-router.get("/lyric/:id", async (req: Request, res: Response) => {
+router.get("/:id/lyric", async (req: Request, res: Response) => {
   try {
-    const songId = req.params.id
+    const songId = req.params.id;
+
     const song = await prisma.song.findFirst({
       where: {
-        id: Number(songId)
-      }
-    })
-    if (song?.lyricPath) {
+        id: Number(songId),
+      },
+    });
+
+    if (!song?.lyricPath) {
       return res.json({
         lyric: "",
       });
     }
-    const lyricFilePath = `${BASE_URL}/${song?.lyricPath}`
+
+    // 拼接完整歌词路径
+    const lyricFilePath = path.join(
+      resourcePath,
+      song.lyricPath
+    );
+
     const lyric = await fs.readFile(
       lyricFilePath,
       "utf-8"
     );
+
     res.json({
-      lyric
+      message: "获取成功",
+      lyric,
     });
   } catch (e) {
-    res.status(500).json({ message: "获取失败" });
+    console.log(e);
+
+    res.status(500).json({
+      message: "获取失败",
+    });
   }
 });
 

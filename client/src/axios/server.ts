@@ -14,31 +14,19 @@ if (authData.expiry && Date.now() > authData.expiry) {
   window.location.href = "/auth";
 }
 // 请求拦截器
-server.interceptors.request.use(
-  (config) => {
-    console.log("config", config.url);
-    const url = config.url || "";
-    const isWhiteListed = whiteList.some((path) => url.includes(path));
-    if (!isWhiteListed) {
-      //注入 Token,用于把token放在请求头中发给后端
-      const authData = localStorage.getItem("auth_data");
-      if (authData) {
-        const { token } = JSON.parse(authData);
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
+server.interceptors.request.use((config) => {
+  const url = config.url || "";
+  const isWhiteListed = whiteList.some((path) => url.includes(path));
+  
+  if (!isWhiteListed) {
     const authData = localStorage.getItem("auth_data");
-
     if (authData) {
       const { token } = JSON.parse(authData);
-      // 标准做法：在 Authorization 字段中使用 Bearer 方案
       config.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+  }
+  return config;
+});
 
 // 响应拦截器
 server.interceptors.response.use(

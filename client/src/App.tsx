@@ -37,7 +37,7 @@ interface MainLayoutProps {
   setIsFooterOpen: (open: boolean) => void; // 新增
 }
 const MainLayout = ({ paths, isFooterOpen, setIsFooterOpen }: MainLayoutProps) => (
-  <div className="container">
+  <div className="appContainer">
     <Header />
     <main>
       <Sidebar paths={paths} />

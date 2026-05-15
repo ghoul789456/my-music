@@ -8,7 +8,7 @@ interface SongInfo {
   coverUrl: string | null;
   playCount: number | null;
   artist?: string;
-  lyricPath:string | null;
+  lyricPath?:string | null;
 }
 
 interface PlayerState {

@@ -15,6 +15,7 @@ export default function Home() {
     filePath: string;
     coverUrl: string | null;
     playCount: number | null;
+    lyricPath?: string | null;
     artists: {
       id: number;
       name: string;
@@ -93,6 +94,7 @@ export default function Home() {
           coverUrl: s.coverUrl,
           playCount: s.playCount,
           artist: s.artists.map((a) => a.name).join("/"),
+          lyricPath:s.lyricPath,
         })),
         startIndex: index,
       }),

@@ -38,9 +38,13 @@ interface FooterProps {
   isOpen: boolean;
   onClose: () => void;
 }
+interface MeResponse {
+  message: string;
+  lyric?: string
+}
 export default function Footer({ isOpen, onClose }: FooterProps) {
 
-
+  const lyricRef = useRef<HTMLDivElement | null>(null)
 
 
   const dispatch = useDispatch();
@@ -56,34 +60,39 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
     const fetchLyric = async () => {
       const res = await getLyric(Number(currentSong.id));
-
+      if (!res) return
       setLyric(res);
     };
 
     fetchLyric();
-  }, [currentSong]);
+  }, [currentSong?.id]);
 
   //获取歌词
   const getLyric = async (id: number) => {
-    const res = await server.get(`/song/lyric/${id}`);
-
-    return res.data.lyric;
+    const res = await server.get<any, MeResponse>(`/api/song/${id}/lyric`);
+console.log("歌词接口返回", res);
+    return res.lyric;
   };
   //解析歌词
   const parseLyric = (lyric: string) => {
     return lyric
       .split("\n")
       .map((line) => {
-        const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+        // 找到这一行第一个时间戳
+        const firstMatch = line.match(/\[(\d+):(\d+\.\d+)\]/);
+        if (!firstMatch) return null;
 
-        if (!match) return null;
+        const min = Number(firstMatch[1]);
+        const sec = Number(firstMatch[2]);
 
-        const min = Number(match[1]);
-        const sec = Number(match[2]);
+        // 把这一行所有的时间戳标记去掉，剩下的就是完整歌词文本
+        const text = line.replace(/\[\d+:\d+\.\d+\]/g, "").trim();
+
+        if (!text) return null; // 纯空行跳过
 
         return {
           time: min * 60 + sec,
-          text: match[3],
+          text,
         };
       })
       .filter(Boolean);
@@ -96,6 +105,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
   const currentLyric = useMemo(() => {
     return parsedLyrics.findIndex((item, index) => {
+      if (!item) return null
       const next = parsedLyrics[index + 1];
 
       return (
@@ -105,6 +115,18 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
     });
   }, [parsedLyrics, currentTime]);
 
+
+  useEffect(() => {
+    const container = lyricRef.current;
+    const activeLine = container?.querySelector(`.${styles.active}`) as HTMLElement;
+
+    if (container && activeLine) {
+      const targetScroll =
+        activeLine.offsetTop - container.clientHeight / 2 + activeLine.clientHeight / 2;
+
+      container.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
+  }, [currentLyric]);
   // 处理模式切换逻辑
   const handleModeChange = () => {
     const modes: ("loop" | "single" | "shuffle")[] = [
@@ -172,6 +194,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
         </div>
         <div className={styles.lyricBox} ref={lyricRef}>
           {parsedLyrics.map((item, index) => {
+            if (!item) return null
             const isActive = index === currentLyric;
 
             return (
