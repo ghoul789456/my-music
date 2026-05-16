@@ -147,7 +147,7 @@ export default function Header() {
         </svg>
       </div>
       <div className={styles.backBtn}>
-        <Button isIconOnly variant="tertiary" onClick={backup}>
+        <Button isIconOnly variant="tertiary" aria-label="上一页" onClick={backup}>
           <ChevronLeft />
         </Button>
         <SearchField name="search">
@@ -161,9 +161,10 @@ export default function Header() {
       <div className={styles.setting}>
         <Dropdown isOpen={isOpen} onOpenChange={handleOpenChange}>
           <Dropdown.Trigger className="rounded-full">
-            <Avatar className={styles.avatarBox}>
+            <Avatar aria-label="图片" className={styles.avatarBox}>
               <Avatar.Image
                 alt="user"
+                
                 src={
                   userInfo?.avatar ||
                   "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
@@ -176,7 +177,7 @@ export default function Header() {
           <Dropdown.Popover>
             <div className="px-3 pt-3 pb-1">
               <div className="flex items-center gap-2">
-                <Avatar size="sm">
+                <Avatar size="sm" aria-label="图片">
                   <Avatar.Image
                     alt="user"
                     src={

@@ -60,7 +60,9 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
     const fetchLyric = async () => {
       const res = await getLyric(Number(currentSong.id));
-      if (!res) return
+      if (res == null) return;
+      console.log("res",res);
+      
       setLyric(res);
     };
 
@@ -70,32 +72,52 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
   //获取歌词
   const getLyric = async (id: number) => {
     const res = await server.get<any, MeResponse>(`/api/song/${id}/lyric`);
-console.log("歌词接口返回", res);
+    console.log("歌词接口返回", res);
     return res.lyric;
   };
   //解析歌词
   const parseLyric = (lyric: string) => {
-    return lyric
+    const lines = lyric
       .split("\n")
-      .map((line) => {
-        // 找到这一行第一个时间戳
-        const firstMatch = line.match(/\[(\d+):(\d+\.\d+)\]/);
-        if (!firstMatch) return null;
-
-        const min = Number(firstMatch[1]);
-        const sec = Number(firstMatch[2]);
-
-        // 把这一行所有的时间戳标记去掉，剩下的就是完整歌词文本
-        const text = line.replace(/\[\d+:\d+\.\d+\]/g, "").trim();
-
-        if (!text) return null; // 纯空行跳过
-
-        return {
-          time: min * 60 + sec,
-          text,
-        };
-      })
+      .map((l) => l.trim())
       .filter(Boolean);
+
+    const result: { time: number; text: string; translation: string }[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const firstMatch = line.match(/\[(\d+):(\d+\.\d+)\]/);
+      if (!firstMatch) { i++; continue; }
+
+      const time = Number(firstMatch[1]) * 60 + Number(firstMatch[2]);
+      const text = line.replace(/\[\d+:\d+\.\d+\]/g, "").trim();
+
+      if (!text) { i++; continue; }
+
+      // 是中文行就跳过（会在下面作为译文被消费掉）
+      if (/[\u4e00-\u9fa5]/.test(text)) { i++; continue; }
+
+      // 看下一行是否是同时间戳的中文译文
+      let translation = "";
+      if (i + 1 < lines.length) {
+        const next = lines[i + 1];
+        const nextMatch = next.match(/\[(\d+):(\d+\.\d+)\]/);
+        if (nextMatch) {
+          const nextTime = Number(nextMatch[1]) * 60 + Number(nextMatch[2]);
+          const nextText = next.replace(/\[\d+:\d+\.\d+\]/g, "").trim();
+          if (nextTime === time && /[\u4e00-\u9fa5]/.test(nextText)) {
+            translation = nextText;
+            i++; // 译文行已消费
+          }
+        }
+      }
+
+      result.push({ time, text, translation });
+      i++;
+    }
+
+    return result;
   };
 
   const parsedLyrics = useMemo(() => {
@@ -127,6 +149,7 @@ console.log("歌词接口返回", res);
       container.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
   }, [currentLyric]);
+
   // 处理模式切换逻辑
   const handleModeChange = () => {
     const modes: ("loop" | "single" | "shuffle")[] = [
@@ -184,7 +207,7 @@ console.log("歌词接口返回", res);
 
     <div className={`${styles.foot} ${isOpen ? styles.active : ""}`}>
       <div className={styles.header}>
-        <Button isIconOnly variant="tertiary" onClick={onClose}>
+        <Button isIconOnly variant="tertiary" onClick={onClose} aria-label="折叠">
           <ChevronDown />
         </Button>
       </div>
@@ -193,20 +216,28 @@ console.log("歌词接口返回", res);
           <img src={currentSong?.coverUrl || img} alt="cover" />
         </div>
         <div className={styles.lyricBox} ref={lyricRef}>
-          {parsedLyrics.map((item, index) => {
-            if (!item) return null
+          {/* 顶部垫片：把第一行歌词挤到容器正中间 */}
+          <div className={styles.placeholder} />
+
+          {parsedLyrics.length > 0 ? parsedLyrics.map((item, index) => {
+            if (!item) return null;
             const isActive = index === currentLyric;
 
             return (
               <p
                 key={index}
-                className={`${styles.line} ${isActive ? styles.active : ""
-                  }`}
+                className={`${styles.line} ${isActive ? styles.active : ""}`}
               >
                 {item.text}
+                {item.translation && (
+                  <span className={styles.translation}>{item.translation}</span>
+                )}
               </p>
             );
-          })}
+          }):'暂无歌词'}
+
+          {/* 底部垫片：把最后一行歌词也能滚到容器正中间 */}
+          <div className={styles.placeholder} />
         </div>
 
       </div>
@@ -221,13 +252,14 @@ console.log("歌词接口返回", res);
 
         <div className={styles.controls}>
           <div className={styles.buttons}>
-            <Button isIconOnly variant="tertiary" onClick={handleModeChange} >
+            <Button isIconOnly variant="tertiary" onClick={handleModeChange} aria-label="循环模式">
               {modeIcon}
             </Button>
 
             <Button
               isIconOnly
               variant="tertiary"
+              aria-label="上一首"
               onClick={() => dispatch(prevSong())}
             >
               <BackwardStepFill />
@@ -237,6 +269,7 @@ console.log("歌词接口返回", res);
               isIconOnly
               variant="tertiary"
               isDisabled={isLoading}
+              aria-label="播放"
               onClick={() => dispatch(togglePlay())}
             >
               {isLoading ? (
@@ -251,6 +284,7 @@ console.log("歌词接口返回", res);
             <Button
               isIconOnly
               variant="tertiary"
+              aria-label="下一首"
               onClick={() => dispatch(nextSong())}
             >
               <ForwardStepFill />
@@ -286,7 +320,7 @@ console.log("歌词接口返回", res);
 
           <Popover>
             <Popover.Trigger aria-label="song lists">
-              <Button isIconOnly variant="tertiary">
+              <Button isIconOnly variant="tertiary" aria-label="播放列表">
                 <ListUl />
               </Button>
             </Popover.Trigger>
@@ -295,7 +329,7 @@ console.log("歌词接口返回", res);
                 <Popover.Heading>
                   <div className={styles.listHeader}>
                     <p className={styles.listName}>播放列表</p>
-                    <button onClick={clearSongList} className={styles.delBtn}>
+                    <button onClick={clearSongList} className={styles.delBtn} aria-label="清空">
                       <TrashBin />
                       <p className={styles.listDel}>清空</p>
                     </button>
@@ -316,7 +350,7 @@ console.log("歌词接口返回", res);
                         </div>
 
                         <Dropdown>
-                          <Button isIconOnly variant="tertiary">
+                          <Button isIconOnly variant="tertiary" aria-label="加入歌单">
                             <Ellipsis />
                           </Button>
                           <Dropdown.Popover>
@@ -372,7 +406,7 @@ console.log("歌词接口返回", res);
 
 
           <div className={styles.volumeContainer}>
-            <Button isIconOnly variant="tertiary" onClick={handleMute}>
+            <Button isIconOnly variant="tertiary" onClick={handleMute} aria-label="音量">
               {volume === 0 ? <VolumeXmarkFill /> : <VolumeLowFill />}
             </Button>
             <input

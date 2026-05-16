@@ -51,6 +51,7 @@ export default function SingerCard({
                 isIconOnly
                 variant="tertiary"
                 className={styles.playBtn}
+                aria-label="播放"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPlayClick?.(item);

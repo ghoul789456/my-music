@@ -8,6 +8,8 @@ import imageCompression from "browser-image-compression";
 import SingerCard from "../../components/card";
 import styles from "./index.module.scss";
 export default function Profile() {
+
+
   const { userInfo, isLoggedIn } = useSelector(
     (state: RootState) => state.user,
   );
@@ -64,7 +66,7 @@ export default function Profile() {
   return (
     <div className={styles.profileContainer}>
       <div className={styles.information}>
-        <Avatar size="lg" className={styles.avatarBox}>
+        <Avatar aria-label="图片" size="lg" className={styles.avatarBox}>
           <Avatar.Image
             alt="user"
             src={
@@ -109,7 +111,7 @@ export default function Profile() {
         </div>
 
         <Modal>
-          <Button isIconOnly variant="tertiary">
+          <Button aria-label="修改" isIconOnly variant="tertiary">
             <Gear />
           </Button>
           <Modal.Backdrop>
@@ -132,7 +134,7 @@ export default function Profile() {
                         style={{ display: "none" }}
                         onChange={handleFileChange}
                       />
-                      <Avatar size="lg">
+                      <Avatar size="lg" aria-label="图片">
                         <Avatar.Image
                           alt="user"
                           src={
@@ -152,12 +154,12 @@ export default function Profile() {
 
                     <div className={styles.fieldGroup}>
                       <Label htmlFor="username">用户名</Label>
-                      <Input id="username" value={tempUsername} type="text" />
+                      <Input id="username" value={tempUsername} type="text"  onChange={(e) => setTempUsername(e.target.value)} />
                     </div>
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button variant="tertiary" onClick={handleSave}>
+                  <Button aria-label="保存" variant="tertiary" onClick={handleSave}>
                     保存
                   </Button>
                 </Modal.Footer>

@@ -274,7 +274,7 @@ function LoginForm({
     <form className={styles.form} onSubmit={(e) => submit(e, onLogin)} noValidate>
       <div className={styles.field}>
         <label htmlFor="lp-email" className={styles.fieldLabel}>
-          Email
+          邮箱
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -298,7 +298,7 @@ function LoginForm({
 
       <div className={styles.field}>
         <label htmlFor="lp-password" className={styles.fieldLabel}>
-          Password
+          密码
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -336,10 +336,10 @@ function LoginForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          <span>Remember me</span>
+          <span>记住我</span>
         </label>
         <a href="/forgot-password" className={styles.forgot}>
-          Forgot password?
+          忘记密码?
         </a>
       </div>
 
@@ -349,7 +349,7 @@ function LoginForm({
         </p>
       )}
 
-      <button type="submit" className={styles.btnLogin} disabled={isLoading}>
+      <button aria-label="登录" type="submit" className={styles.btnLogin} disabled={isLoading}>
         <span>{isLoading ? "▸ Loading..." : "▶ Play Session"}</span>
       </button>
 
@@ -362,6 +362,7 @@ function LoginForm({
           <button
             key={provider}
             type="button"
+            aria-label="登录"
             className={styles.socialBtn}
             onClick={() => console.log(`Login with ${provider}`)}
           >
@@ -371,13 +372,14 @@ function LoginForm({
       </div>
 
       <p className={styles.signupRow}>
-        No account?{" "}
+        没有账号?{" "}
         <button
           type="button"
+          aria-label="注册"
           className={styles.switchLink}
           onClick={onSwitchToRegister}
         >
-          Join the session →
+          加入我们 →
         </button>
       </p>
     </form>
@@ -403,7 +405,7 @@ function RegisterForm({
     <form onSubmit={(e) => submit(e, onRegister)} noValidate>
       <div className={styles.field}>
         <label htmlFor="rp-username" className={styles.fieldLabel}>
-          Username
+          用户名
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -427,7 +429,7 @@ function RegisterForm({
 
       <div className={styles.field}>
         <label htmlFor="rp-email" className={styles.fieldLabel}>
-          Email
+          邮箱
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -451,7 +453,7 @@ function RegisterForm({
 
       <div className={styles.field}>
         <label htmlFor="rp-password" className={styles.fieldLabel}>
-          Password
+          密码
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -482,7 +484,7 @@ function RegisterForm({
 
       <div className={styles.field}>
         <label htmlFor="rp-confirm" className={styles.fieldLabel}>
-          Confirm Password
+         确认密码
         </label>
         <div className={styles.inputWrap}>
           <input
@@ -517,7 +519,7 @@ function RegisterForm({
         </p>
       )}
 
-      <button type="submit" className={styles.btnLogin} disabled={isLoading}>
+      <button aria-label="注册" type="submit" className={styles.btnLogin} disabled={isLoading}>
         <span>{isLoading ? "▸ Loading..." : "♪ Start Listening"}</span>
       </button>
 
@@ -531,6 +533,7 @@ function RegisterForm({
             key={provider}
             type="button"
             className={styles.socialBtn}
+            aria-label="登录"
             onClick={() => console.log(`Register with ${provider}`)}
           >
             {provider}
@@ -539,13 +542,14 @@ function RegisterForm({
       </div>
 
       <p className={styles.signupRow}>
-        Already have an account?{" "}
+        已经有账户?{" "}
         <button
           type="button"
+          aria-label="登录"
           className={styles.switchLink}
           onClick={onSwitchToLogin}
         >
-          Sign in →
+          登录 →
         </button>
       </p>
     </form>

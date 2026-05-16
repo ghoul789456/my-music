@@ -13,7 +13,7 @@ import {
   removeAllSong
 } from "../../store/songSlice";
 import type { RootState } from "../../store/store";
-import { Button, Spinner, Slider, Popover, Avatar, Dropdown, Label } from "@heroui/react";
+import { Button, Spinner, Slider, Popover,  Dropdown, Label } from "@heroui/react";
 import {
   PauseFill,
   PlayFill,
@@ -113,13 +113,14 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
 
         <div className={styles.controls}>
           <div className={styles.buttons}>
-            <Button isIconOnly variant="tertiary" onClick={handleModeChange} >
+            <Button isIconOnly variant="tertiary" onClick={handleModeChange} aria-label="循环模式">
               {modeIcon}
             </Button>
 
             <Button
               isIconOnly
               variant="tertiary"
+              aria-label="上一首"
               onClick={() => dispatch(prevSong())}
             >
               <BackwardStepFill />
@@ -129,6 +130,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
               isIconOnly
               variant="tertiary"
               isDisabled={isLoading}
+              aria-label="播放"
               onClick={() => dispatch(togglePlay())}
             >
               {isLoading ? (
@@ -143,6 +145,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
             <Button
               isIconOnly
               variant="tertiary"
+              aria-label="下一首"
               onClick={() => dispatch(nextSong())}
             >
               <ForwardStepFill />
@@ -187,7 +190,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
                 <Popover.Heading>
                   <div className={styles.listHeader}>
                     <p className={styles.listName}>播放列表</p>
-                    <button onClick={clearSongList} className={styles.delBtn}>
+                    <button onClick={clearSongList} aria-label="清空" className={styles.delBtn}>
                       <TrashBin />
                       <p className={styles.listDel}>清空</p>
                     </button>
@@ -208,7 +211,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
                         </div>
 
                         <Dropdown>
-                          <Button isIconOnly variant="tertiary">
+                          <Button isIconOnly variant="tertiary" aria-label="加入">
                             <Ellipsis />
                           </Button>
                           <Dropdown.Popover>
@@ -264,7 +267,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
 
 
           <div className={styles.volumeContainer}>
-            <Button isIconOnly variant="tertiary" onClick={handleMute}>
+            <Button isIconOnly variant="tertiary" onClick={handleMute} aria-label="音量">
               {volume === 0 ? <VolumeXmarkFill /> : <VolumeLowFill />}
             </Button>
             <input
