@@ -22,60 +22,64 @@
   }
 
   .main {
-  height: calc(93% - 60px);
-  display: flex;
-  align-items: center; /* 现在可以大胆居中了！ */
-  justify-content: space-around;
-  overflow: hidden;
+    height: calc(93% - 60px);
+    display: flex;
+    align-items: center;
+    /* 现在可以大胆居中了！ */
+    justify-content: space-around;
+    overflow: hidden;
 
-  .lyricBox {
-    height: 50%;
-    width: 45%; 
-    overflow-y: scroll;
-    position: relative; /* 确保 offsetParent 正确 */
-    text-align: center;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* 新增：空白占位块的样式 */
-    .placeholder {
-      height: 50%; /* 刚好是父容器高度的一半 */
-      flex-shrink: 0;
-    }
-
-    .line {
+    .lyricBox {
+      height: 50%;
+      width: 45%;
+      overflow-y: scroll;
+      position: relative;
+      /* 确保 offsetParent 正确 */
       text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 10px 0;
-      opacity: 0.45;
-      transition: opacity 0.3s, color 0.3s;
-      &:hover{
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* 新增：空白占位块的样式 */
+      .placeholder {
+        height: 50%;
+        /* 刚好是父容器高度的一半 */
+        flex-shrink: 0;
+      }
+
+      .line {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 10px 0;
+        opacity: 0.45;
+        transition: opacity 0.3s, color 0.3s;
+
+        &:hover {
+          color: #c8923a;
+        }
+      }
+
+      .line.active {
         color: #c8923a;
+        font-size: 1.5rem;
+        opacity: 1;
+      }
+
+
+      .translation {
+        display: block;
+        font-size: 0.85em;
+        opacity: 0.65;
+        margin-top: 2px;
+      }
+
+      .active .translation {
+        opacity: 1;
       }
     }
-
-    .line.active {
-      color: #c8923a;
-      font-size: 1.5rem;
-      opacity: 1;
-    }
-
-
-    .translation {
-      display: block;
-      font-size: 0.85em;
-      opacity: 0.65;
-      margin-top: 2px;
-    }
-    
-    .active .translation {
-      opacity: 1;
-    }
   }
-}
 }
 
 
@@ -95,22 +99,7 @@
   justify-content: center;
   width: 20%;
 
-  .title {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    margin: 0;
-    max-width: 140px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .artist {
-    font-size: 12px;
-    color: #999;
-    margin: 0;
-  }
 }
 
 
@@ -272,4 +261,65 @@
 
 .listDel {
   font-size: 0.8rem;
+}
+
+.song {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+
+}
+
+.cover {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cover img {
+  display: block;
+  height: 3rem;
+  width: 3rem;
+  object-fit: cover;
+  transition: filter 0.2s ease;
+}
+
+.playOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.cover:hover img {
+  filter: brightness(0.75);
+}
+
+.cover:hover .playOverlay {
+  opacity: 1;
+}
+.icon{
+  color: #fff;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
 }

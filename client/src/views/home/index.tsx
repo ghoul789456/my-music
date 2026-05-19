@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentIndex, setPlaylist } from "../../store/songSlice";
 import Swiperbox from "../../components/swiper";
 import SingerCard from "../../components/card";
+import AnimationTypes from "../../components/skeleton"
 import styles from "./index.module.scss";
 
 export default function Home() {
@@ -50,6 +51,8 @@ export default function Home() {
     server.get<any, HomeHotResponse>("/api/song/hot").then((res) => {
       const { songs, albums, artists } = res;
       setRawSongs(songs);
+
+
       setList(
         songs.map((s) => ({
           id: String(s.id),
@@ -76,6 +79,7 @@ export default function Home() {
           url: a.avatar,
         })),
       );
+
     });
   }, []);
   const dispatch = useDispatch();
@@ -94,7 +98,7 @@ export default function Home() {
           coverUrl: s.coverUrl,
           playCount: s.playCount,
           artist: s.artists.map((a) => a.name).join("/"),
-          lyricPath:s.lyricPath,
+          lyricPath: s.lyricPath,
         })),
         startIndex: index,
       }),
@@ -106,49 +110,62 @@ export default function Home() {
       {/*<Swiperbox />*/}
       <div className={styles.listItem}>
         <div>
-          <SingerCard
-            title="热播歌曲"
-            list={list}
-            onCardClick={() => {
-              console.log("打开详情");
-            }}
-            onPlayClick={(item: any) => {
-              handlePlay(item.id);
-            }}
-          />
+          {
+            list.length > 0 ? <SingerCard
+              title="热播歌曲"
+              list={list}
+              onCardClick={() => {
+                console.log("打开详情");
+              }}
+              onPlayClick={(item: any) => {
+                handlePlay(item.id);
+              }}
+            /> : <AnimationTypes count={6} />
+          }
+
         </div>
       </div>
       <div className={styles.listItem}>
         <div>
-          <SingerCard
-            title="当红歌手"
-            list={artistList}
-            isRound={true}
-            onCardClick={() => {
-              console.log("打开详情");
-            }}
-            onPlayClick={() => {
-              console.log("播放");
-            }}
-          />
+
+          {
+            artistList.length > 0 ? <SingerCard
+              title="当红歌手"
+              list={artistList}
+              isRound={true}
+              onCardClick={() => {
+                console.log("打开详情");
+              }}
+              onPlayClick={() => {
+                console.log("播放");
+              }}
+            /> : <AnimationTypes isRound count={6} />
+          }
+
         </div>
       </div>
       <div className={styles.listItem}>
         <div>
-          <SingerCard
-            title="热门专辑"
-            list={albumList}
-            onCardClick={() => {
-              console.log("打开详情");
-            }}
-            onPlayClick={() => {
-              console.log("播放");
-            }}
-          />
+          {
+            albumList.length > 0 ? <SingerCard
+              title="热门专辑"
+              list={albumList}
+              onCardClick={() => {
+                console.log("打开详情");
+              }}
+              onPlayClick={() => {
+                console.log("播放");
+              }}
+            /> : <AnimationTypes count={6} />
+          }
+
+
+
         </div>
       </div>
       <div className={styles.listItem}>
         <div>
+
           <SingerCard
             title="精选排行榜"
             list={[

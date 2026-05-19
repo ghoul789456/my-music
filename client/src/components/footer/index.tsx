@@ -9,7 +9,8 @@ import {
   setMode,
   setCurrentTime,
   removeSong,
-  removeAllSong
+  removeAllSong,
+  setCurrentIndex
 } from "../../store/songSlice";
 import type { RootState } from "../../store/store";
 import { Button, Spinner, Slider, Popover, Dropdown, Label } from "@heroui/react";
@@ -57,12 +58,12 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
   const [lyric, setLyric] = useState("");
   useEffect(() => {
     if (!currentSong?.id) return;
-
+    setLyric("");
     const fetchLyric = async () => {
       const res = await getLyric(Number(currentSong.id));
       if (res == null) return;
-      console.log("res",res);
-      
+      console.log("res", res);
+
       setLyric(res);
     };
 
@@ -203,6 +204,9 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
 
 
+
+
+
   return (
 
     <div className={`${styles.foot} ${isOpen ? styles.active : ""}`}>
@@ -234,7 +238,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
                 )}
               </p>
             );
-          }):'暂无歌词'}
+          }) : '暂无歌词'}
 
           {/* 底部垫片：把最后一行歌词也能滚到容器正中间 */}
           <div className={styles.placeholder} />
@@ -339,9 +343,24 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
                   {playlist.length !== 0 ? playlist.map((item, index) => {
                     return (
                       <div className={styles.songItem} key={item.id}>
-                        <div className={styles.songInfo} >
-                          <div className={styles.cover}>
+                        <div className={styles.song} >
+                          <div className={styles.cover} onClick={() => {
+                            if (currentSong?.id === item.id) {
+                              dispatch(togglePlay());   // 点当前歌 → 暂停/播放
+                            } else {
+                              dispatch(setCurrentIndex(index));  // 点其他歌 → 切换
+                            }
+                          }}>
                             <img src={item.coverUrl || img} />
+                            <div className={styles.playOverlay}>
+                              {
+                                isPlaying && currentSong?.id === item.id ? (
+                                  <PauseFill className={styles.icon} />
+                                ) : (
+                                  <PlayFill className={styles.icon} />
+                                )
+                              }
+                            </div>
                           </div>
                           <div className={styles.text}>
                             <p className={styles.title}>{item.title}</p>
