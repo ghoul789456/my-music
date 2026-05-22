@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import server from "../../axios/server";
+import { useNavigate } from "react-router";
 
 import { useDispatch } from "react-redux";
 import { setCurrentIndex, setPlaylist } from "../../store/songSlice";
@@ -47,6 +48,8 @@ export default function Home() {
   const [albumList, setAlbumList] = useState<any[]>([]);
   const [artistList, setArtistList] = useState<any[]>([]);
   const [rawSongs, setRawSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     server.get<any, HomeHotResponse>("/api/song/hot").then((res) => {
       const { songs, albums, artists } = res;
@@ -79,7 +82,7 @@ export default function Home() {
           url: a.avatar,
         })),
       );
-
+      setLoading(false);
     });
   }, []);
   const dispatch = useDispatch();
@@ -105,92 +108,91 @@ export default function Home() {
     );
   };
 
+  const navigate=useNavigate()
+
   return (
     <div className={styles.homeBox}>
-      {/*<Swiperbox />*/}
-      <div className={styles.listItem}>
-        <div>
-          {
-            list.length > 0 ? <SingerCard
-              title="热播歌曲"
-              list={list}
-              onCardClick={() => {
-                console.log("打开详情");
-              }}
-              onPlayClick={(item: any) => {
-                handlePlay(item.id);
-              }}
-            /> : <AnimationTypes count={6} />
-          }
+      {loading ? (
+        <AnimationTypes />
+      ) : (
+        <>
+          {/*<Swiperbox />*/}
+          <div className={styles.listItem}>
+            <div>
+              <SingerCard
+                title="热播歌曲"
+                list={list}
+                onCardClick={() => {
+                  console.log("打开详情");
+                }}
+                onPlayClick={(item: any) => {
+                  handlePlay(item.id);
+                }}
+              />
+            </div>
+          </div>
+          <div className={styles.listItem}>
+            <div>
+              <SingerCard
+                title="当红歌手"
+                list={artistList}
+                isRound={true}
+                onCardClick={() => {
+                  console.log("打开详情");
+                }}
+                onPlayClick={() => {
+                  console.log("播放");
+                }}
+              />
 
-        </div>
-      </div>
-      <div className={styles.listItem}>
-        <div>
-
-          {
-            artistList.length > 0 ? <SingerCard
-              title="当红歌手"
-              list={artistList}
-              isRound={true}
-              onCardClick={() => {
-                console.log("打开详情");
-              }}
-              onPlayClick={() => {
-                console.log("播放");
-              }}
-            /> : <AnimationTypes isRound count={6} />
-          }
-
-        </div>
-      </div>
-      <div className={styles.listItem}>
-        <div>
-          {
-            albumList.length > 0 ? <SingerCard
-              title="热门专辑"
-              list={albumList}
-              onCardClick={() => {
-                console.log("打开详情");
-              }}
-              onPlayClick={() => {
-                console.log("播放");
-              }}
-            /> : <AnimationTypes count={6} />
-          }
+            </div>
+          </div>
+          <div className={styles.listItem}>
+            <div>
+              <SingerCard
+                title="热门专辑"
+                list={albumList}
+                onCardClick={(item) => {
+                  navigate(`/album/${item.id}`)
+                }}
+                onPlayClick={() => {
+                  console.log("播放");
+                }}
+              />
 
 
+            </div>
+          </div>
+          <div className={styles.listItem}>
+            <div>
 
-        </div>
-      </div>
-      <div className={styles.listItem}>
-        <div>
-
-          <SingerCard
-            title="精选排行榜"
-            list={[
-              {
-                id: "1",
-                primary: "1",
-                url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
-                secondary: "艺人",
-              },
-              {
-                id: "2",
-                primary: "2",
-                url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
-                secondary: "艺人",
-              },
-            ]}
-            onCardClick={() => {
-              console.log("打开详情");
-            }}
-            onPlayClick={() => {
-              console.log("播放");
-            }}
-          />
-        </div>
-      </div>
+              <SingerCard
+                title="精选排行榜"
+                list={[
+                  {
+                    id: "1",
+                    primary: "1",
+                    url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
+                    secondary: "艺人",
+                  },
+                  {
+                    id: "2",
+                    primary: "2",
+                    url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/neo1.jpeg",
+                    secondary: "艺人",
+                  },
+                ]}
+                onCardClick={() => {
+                  console.log("打开详情");
+                }}
+                onPlayClick={() => {
+                  console.log("播放");
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

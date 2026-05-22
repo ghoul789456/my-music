@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect ,useState} from "react";
+import { type ReactNode, useEffect, useState, lazy, Suspense } from "react";
+import { Spinner } from '@heroui/react'
 import {
   Route,
   Routes,
@@ -11,26 +12,31 @@ import server from "./axios/server";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoginInfo, setUserInfo } from "./store/userSlice.ts";
 
-import Header from "./components/header/index";
-import Sidebar from "./components/sidebar/index";
-import Footer from "./components/footer/index";
-import MiniPlayer from "./components/miniPlayer/index";
-import Home from "./views/home/index";
-import Playlist from "./views/song_list/index";
-import MyLike from "./views/my-like/index";
-import Profile from "./views/personal_center/index.tsx";
-import Auth, {
+import Header from "./components/header";
+import Sidebar from "./components/sidebar";
+import Footer from "./components/footer";
+import MiniPlayer from "./components/miniPlayer";
+//懒加载子组件
+const Home = lazy(() => import('./views/home'));
+const Playlist = lazy(() => import('./views/song_list'));
+const MyLike = lazy(() => import('./views/my-like'));
+const Profile = lazy(() => import('./views/personal_center'));
+const Auth = lazy(() => import('./views/auth/'));
+const PageLoading  = lazy(() => import('./components/pageLoading'));
+const Album  = lazy(() => import('./views/album'));
+
+import {
   type LoginCredentials,
   type RegisterCredentials,
 } from "./views/auth/index";
 import "./App.css";
 interface PathType {
-    id: string;
-    name: string;
-    path: string;
-    element: ReactNode;
-    hidden?: boolean;
-  }
+  id: string;
+  name: string;
+  path: string;
+  element: ReactNode;
+  hidden?: boolean;
+}
 interface MainLayoutProps {
   paths: PathType[];
   isFooterOpen: boolean;  // 新增：把状态传进来
@@ -41,7 +47,12 @@ const MainLayout = ({ paths, isFooterOpen, setIsFooterOpen }: MainLayoutProps) =
     <Header />
     <main>
       <Sidebar paths={paths} />
-      <Outlet />
+      {/* Suspense用于处理异步操作的中间状态，避免手动管理加载逻辑，fallback用于当子组件未准备好时显示的内容 */}
+      <Suspense fallback={
+       <PageLoading/>
+      }>
+        <Outlet />
+      </Suspense>
     </main>
     {/* 这里使用传进来的状态 */}
     <MiniPlayer onExpand={() => setIsFooterOpen(true)} />
@@ -52,8 +63,8 @@ function App() {
 
   const [isFooterOpen, setIsFooterOpen] = useState(false);
 
-  
-  
+
+
   const paths: PathType[] = [
     {
       id: "home",
@@ -80,9 +91,16 @@ function App() {
       element: <Profile />,
       hidden: true,
     },
+    {
+      id: "album",
+      name: "专辑页",
+      path: "/album/:id",
+      element: <Album />,
+      hidden: true,
+    },
   ];
-  
-  
+
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -202,15 +220,21 @@ function App() {
       {/* 登录页完全独立 */}
       <Route
         path="/auth"
-        element={<Auth onLogin={handleLogin} onRegister={handleRegister} />}
+        element={
+          <Suspense fallback={
+            <PageLoading/>
+          }>
+            <Auth onLogin={handleLogin} onRegister={handleRegister} />
+          </Suspense>
+        }
       />
 
       {/* 不写 path 属性时，这个路由就变成了一个纯粹的容器。它不参与 URL 匹配，它会“无条件”地包裹住它内部的所有子路由，当子路由（如 /home）被匹配到时，React Router 会先渲染父级的 element（即 MainLayout），然后把匹配到的子组件（如 Home）填充到 MainLayout 中 <Outlet /> 出现的位置 */}
       <Route element={
-        <MainLayout 
-          paths={paths} 
-          isFooterOpen={isFooterOpen} 
-          setIsFooterOpen={setIsFooterOpen} 
+        <MainLayout
+          paths={paths}
+          isFooterOpen={isFooterOpen}
+          setIsFooterOpen={setIsFooterOpen}
         />
       }>
         {paths.map((p) => (

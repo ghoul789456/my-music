@@ -30,5 +30,9 @@ export default function Sidebar({ paths }: SidebarProps) {
         </NavLink>
       ))}
     </div>
+
+
+
+
   );
 }

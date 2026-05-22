@@ -113,4 +113,42 @@ router.get("/:id/lyric", async (req: Request, res: Response) => {
   }
 });
 
+// 获取专辑接口
+router.get("/album/:id", async (req: Request, res: Response) => {
+  try {
+    const albumId = req.params.id;
+
+    const albumlist = await prisma.album.findUnique({
+      where: {
+        id: Number(albumId),
+      },
+      include: {
+        artist: true,   // 歌手信息
+        songs: {        // 专辑下的歌曲
+          include: {
+            artists: true  // 每首歌关联的歌手
+          }
+        }
+      }
+    });
+
+    if (!albumlist) {
+      return res.status(404).json({ message: "专辑不存在" });
+    }
+    const album = {
+        ...albumlist,
+        coverUrl: albumlist.coverUrl ? `${BASE_URL }/${albumlist.coverUrl}` : null,
+      }
+
+    res.json({
+      message: "获取成功",
+      album
+    });
+
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "获取失败" });
+  }
+});
+
 export default router;

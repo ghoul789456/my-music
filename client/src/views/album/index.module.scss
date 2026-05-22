@@ -1,0 +1,84 @@
+.albumBox {
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.cover {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.artist, .release {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.actions {
+  margin-bottom: 1rem;
+  button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+.songList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.songItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background: rgba(255,255,255,0.05);
+  }
+}
+
+.index {
+  width: 1.5rem;
+  text-align: center;
+  color: #888;
+}
+
+.songInfo {
+  flex: 1;
+}
+
+.songTitle {
+  font-size: 0.95rem;
+}
+
+.songArtist {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.duration {
+  color: #888;
+  font-size: 0.85rem;
+}
