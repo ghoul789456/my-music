@@ -1,5 +1,8 @@
+@use "../../styles/page" as page;
+
 .albumBox {
-  padding: 2rem;
+  @include page.contentPanel;
+  @include page.contentPanelShadow;
 }
 
 .header {
@@ -13,6 +16,7 @@
   height: 200px;
   border-radius: 12px;
   object-fit: cover;
+  box-shadow: var(--surface-shadow);
 }
 
 .info {
@@ -24,20 +28,30 @@
 .title {
   font-size: 1.5rem;
   font-weight: bold;
+  color: var(--foreground);
 }
 
-.artist, .release {
-  color: #888;
+.artist,
+.release {
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
 .actions {
   margin-bottom: 1rem;
+
   button {
     padding: 0.5rem 1.5rem;
     border-radius: 999px;
     border: none;
     cursor: pointer;
+    background: var(--brand);
+    color: var(--snow);
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--brand-hover);
+    }
   }
 }
 
@@ -54,15 +68,17 @@
   padding: 0.75rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+  color: var(--foreground);
+
   &:hover {
-    background: rgba(255,255,255,0.05);
+    background: var(--hover-overlay);
   }
 }
 
 .index {
   width: 1.5rem;
   text-align: center;
-  color: #888;
+  color: var(--muted);
 }
 
 .songInfo {
@@ -71,14 +87,15 @@
 
 .songTitle {
   font-size: 0.95rem;
+  color: var(--foreground);
 }
 
 .songArtist {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--muted);
 }
 
 .duration {
-  color: #888;
+  color: var(--muted);
   font-size: 0.85rem;
 }

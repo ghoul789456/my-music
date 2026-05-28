@@ -1,37 +1,23 @@
-.profileContainer {
-  width: 88%;
-  margin: 0 auto;
-  height: 100%;
-  padding: 1rem;
-  box-sizing: border-box;
-  border-radius: 0.75rem;
-  overflow-y: auto;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+@use "../../styles/page" as page;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+.profileContainer {
+  @include page.contentPanel;
+  @include page.contentPanelShadow;
 
   .information {
     display: flex;
     align-items: center;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.1);
+    @include page.glassCard;
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
     .avatarBox {
       width: 100px;
       height: 100px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border: 3px solid #fff;
+      box-shadow: var(--surface-shadow);
+      border: 3px solid var(--border);
     }
 
     .briefIntroduction {
@@ -42,7 +28,7 @@
         font-size: 24px;
         font-weight: bold;
         margin: 0 0 8px 0;
-        color: #333;
+        color: var(--foreground);
       }
 
       .box {
@@ -52,13 +38,13 @@
 
         span {
           font-size: 14px;
-          color: #666;
+          color: var(--muted);
           cursor: pointer;
 
           &::before {
             content: attr(data-count);
             font-weight: 600;
-            color: #000;
+            color: var(--foreground);
             margin-right: 4px;
           }
         }
@@ -66,22 +52,22 @@
 
       .introduction {
         display: flex;
-        align-items: center; // 垂直居中
+        align-items: center;
         font-size: 14px;
-        color: #888;
+        color: var(--muted);
         margin-top: 8px;
 
         svg {
-          margin-right: 6px; // 图标与文字的间距
-          flex-shrink: 0; // 防止图标被压缩
-          opacity: 0.8; // 让图标颜色比文字稍淡，更有层级感
+          margin-right: 6px;
+          flex-shrink: 0;
+          opacity: 0.8;
         }
       }
     }
   }
 
   .singerList {
-    background: #fff;
+    @include page.glassCard;
     border-radius: 16px;
     padding: 10px;
 
@@ -89,6 +75,7 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 15px;
+      color: var(--foreground);
     }
 
     .singerBox {
@@ -113,13 +100,13 @@
           border-radius: 12px;
           object-fit: cover;
           margin-bottom: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          box-shadow: var(--surface-shadow);
         }
 
         p {
           font-size: 14px;
           text-align: center;
-          color: #444;
+          color: var(--foreground);
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -129,6 +116,7 @@
     }
   }
 }
+
 .avatarWrapper {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -158,7 +146,7 @@
   transition: opacity 0.2s ease;
 
   span {
-    color: #fff;
+    color: var(--snow);
     font-size: 12px;
   }
 }

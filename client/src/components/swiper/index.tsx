@@ -68,7 +68,7 @@ export default function SwiperOverlapCarousel() {
           {
             // 自定义导航箭头样式（可选）
             "--swiper-navigation-size": "20px",
-            "--swiper-theme-color": "#111",
+            "--swiper-theme-color": "var(--foreground)",
           } as React.CSSProperties
         }
       >

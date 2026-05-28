@@ -35,6 +35,12 @@
     --radius: 0.5rem;
     --field-radius: calc(var(--radius) * 1.5);
 
+    /* App brand (music player gold) */
+    --brand: #c8923a;
+    --brand-hover: #a06828;
+    --slider-track: oklch(85% 0.004 286.32);
+    --hover-overlay: rgba(0, 0, 0, 0.05);
+
     /* == Light Theme Variables == */
 
     /* Base Colors */
@@ -97,9 +103,15 @@
     --skeleton-animation: shimmer; /* shimmer, pulse, none */
   }
 
-  :root.dark
-   {
+  :root.dark,
+  .dark {
     color-scheme: dark;
+
+    --brand: #d4a04a;
+    --brand-hover: #e8b86d;
+    --slider-track: oklch(35% 0.006 286.033);
+    --hover-overlay: rgba(255, 255, 255, 0.08);
+
     /* == Dark Theme Variables == */
 
     /* Base Colors */

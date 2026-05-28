@@ -1,5 +1,6 @@
 .singerList {
   padding: 1rem;
+  color: var(--foreground);
 
   .singerBox {
     display: grid;
@@ -30,7 +31,8 @@
       }
 
       .playBtn {
-        background: rgba(255, 255, 255, 0.9);
+        background: var(--overlay);
+        color: var(--foreground);
         border: none;
         border-radius: 20px;
         cursor: pointer;
@@ -51,12 +53,14 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 0.8rem;
+        color: var(--muted);
       }
       .songName {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 1rem;
+        color: var(--foreground);
       }
     }
   }

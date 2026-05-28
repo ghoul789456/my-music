@@ -11,7 +11,8 @@ body,
 .appContainer{
     height: 100vh;
     width: 100vw;
-    background-color: var(--white);
+    background-color: var(--background);
+    color: var(--foreground);
     overflow: hidden;
 }
 main{

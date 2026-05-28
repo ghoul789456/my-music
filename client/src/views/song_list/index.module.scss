@@ -1,0 +1,18 @@
+@use "../../styles/page" as page;
+
+.pageBox {
+  @include page.contentPanel;
+  @include page.contentPanelShadow;
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+  }
+
+  .empty {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+}

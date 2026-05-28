@@ -1,4 +1,4 @@
-import { useState, useContext, type Key } from "react";
+import { useState, type Key } from "react";
 import {
   Moon,
   Sun,
@@ -15,7 +15,7 @@ import {
   Label,
   Button,
 } from "@heroui/react";
-import ThemeContext from "../../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./index.module.css";
 import { useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,9 +23,7 @@ import { type RootState, type AppDispatch } from "../../store/store";
 import { logout } from "../../store/userSlice";
 
 export default function Header() {
-  const themes = useContext(ThemeContext);
-  if (!themes) throw new Error("no theme");
-  const { isDark, toggleTheme } = themes;
+  const { isDark, setTheme } = useTheme();
 
   const navigate = useNavigate();
   const goHome = () => {
@@ -225,7 +223,12 @@ export default function Header() {
           </Dropdown.Popover>
         </Dropdown>
 
-        <Switch isSelected={isDark} onChange={toggleTheme} size="lg">
+        <Switch
+          isSelected={isDark}
+          onChange={(selected) => setTheme(selected ? "dark" : "light")}
+          size="lg"
+          aria-label="切换明暗主题"
+        >
           {({ isSelected }) => (
             <>
               <Switch.Control>
