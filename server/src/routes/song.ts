@@ -71,7 +71,7 @@ router.get("/hot", async (req: Request, res: Response) => {
   }
 });
 
-const resourcePath = "C:/Users/15175/Desktop/resource";
+const resourcePath = "C:/Users/DGZ/Desktop/resource";
 // 获取歌词接口
 router.get("/:id/lyric", async (req: Request, res: Response) => {
   try {
@@ -90,15 +90,9 @@ router.get("/:id/lyric", async (req: Request, res: Response) => {
     }
 
     // 拼接完整歌词路径
-    const lyricFilePath = path.join(
-      resourcePath,
-      song.lyricPath
-    );
+    const lyricFilePath = path.join(resourcePath, song.lyricPath);
 
-    const lyric = await fs.readFile(
-      lyricFilePath,
-      "utf-8"
-    );
+    const lyric = await fs.readFile(lyricFilePath, "utf-8");
 
     res.json({
       message: "获取成功",
@@ -123,28 +117,28 @@ router.get("/album/:id", async (req: Request, res: Response) => {
         id: Number(albumId),
       },
       include: {
-        artist: true,   // 歌手信息
-        songs: {        // 专辑下的歌曲
+        artist: true, // 歌手信息
+        songs: {
+          // 专辑下的歌曲
           include: {
-            artists: true  // 每首歌关联的歌手
-          }
-        }
-      }
+            artists: true, // 每首歌关联的歌手
+          },
+        },
+      },
     });
 
     if (!albumlist) {
       return res.status(404).json({ message: "专辑不存在" });
     }
     const album = {
-        ...albumlist,
-        coverUrl: albumlist.coverUrl ? `${BASE_URL }/${albumlist.coverUrl}` : null,
-      }
+      ...albumlist,
+      coverUrl: albumlist.coverUrl ? `${BASE_URL}/${albumlist.coverUrl}` : null,
+    };
 
     res.json({
       message: "获取成功",
-      album
+      album,
     });
-
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "获取失败" });

@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@heroui/styles"; 
+@import "@heroui/styles";
 html,
 body,
 #root {
@@ -8,15 +8,16 @@ body,
   margin: 0;
   padding: 0;
 }
-.appContainer{
-    height: 100vh;
-    width: 100vw;
-    background-color: var(--background);
-    color: var(--foreground);
-    overflow: hidden;
+.appContainer {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow: hidden;
 }
-main{
-    display: flex;
-    width: 100vw;
-    height: 86%;
+main {
+  display: flex;
+  width: 100vw;
+  height: 84%;
+  padding: 5px;
 }

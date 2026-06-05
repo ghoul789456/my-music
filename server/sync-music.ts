@@ -12,7 +12,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const RESOURCE_PATH = "C:/Users/15175/Desktop/resource";
+const RESOURCE_PATH = "C:/Users/DGZ/Desktop/resource";
 
 const FETCH_HEADERS = {
   "User-Agent":
@@ -78,7 +78,9 @@ function isDate(value: unknown): value is Date {
   return value instanceof Date;
 }
 
-function parseReleaseDateFromMetadata(metadata: mm.IAudioMetadata): Date | null {
+function parseReleaseDateFromMetadata(
+  metadata: mm.IAudioMetadata,
+): Date | null {
   const common = metadata.common;
   if (isDate(common.date) && !isNaN(common.date.getTime())) {
     return common.date;
@@ -179,7 +181,7 @@ function pickBestItunesMatch(
 
   scored.sort((a, b) => b.score - a.score);
   const best = scored[0];
-  return best && best.score > 0 ? best.item : results[0] ?? null;
+  return best && best.score > 0 ? best.item : (results[0] ?? null);
 }
 
 // ===============================
@@ -389,15 +391,15 @@ async function fetchArtistImage(artistName: string): Promise<string | null> {
 // ===============================
 // 🎯 歌手简介（TheAudioDB + Wikipedia 中文）
 // ===============================
-async function fetchBioFromAudioDB(
-  artistName: string,
-): Promise<string | null> {
+async function fetchBioFromAudioDB(artistName: string): Promise<string | null> {
   const data = await fetchJson<{
-    artists?: {
-      strArtist?: string;
-      strBiographyCN?: string;
-      strBiographyEN?: string;
-    }[] | null;
+    artists?:
+      | {
+          strArtist?: string;
+          strBiographyCN?: string;
+          strBiographyEN?: string;
+        }[]
+      | null;
   }>(
     `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`,
   );
@@ -577,7 +579,9 @@ async function scanAndSync() {
         if (!album && onlineInfo.album) album = onlineInfo.album;
         if (!releaseDate && onlineInfo.releaseDate) {
           releaseDate = onlineInfo.releaseDate;
-          console.log(`📅 从歌曲信息获取发行日: ${releaseDate.toISOString().slice(0, 10)}`);
+          console.log(
+            `📅 从歌曲信息获取发行日: ${releaseDate.toISOString().slice(0, 10)}`,
+          );
         }
       }
     }
@@ -609,9 +613,7 @@ async function scanAndSync() {
         const avatar = existing?.avatar
           ? existing.avatar
           : await fetchArtistImage(name);
-        const bio = existing?.bio
-          ? existing.bio
-          : await fetchArtistBio(name);
+        const bio = existing?.bio ? existing.bio : await fetchArtistBio(name);
         return { name, avatar, bio };
       }),
     );
@@ -697,7 +699,9 @@ async function scanAndSync() {
     const dateStr = releaseDate
       ? releaseDate.toISOString().slice(0, 10)
       : "未知";
-    console.log(`✅ 完成: ${title} - ${artist} (${album || "无专辑"}, 发行: ${dateStr})`);
+    console.log(
+      `✅ 完成: ${title} - ${artist} (${album || "无专辑"}, 发行: ${dateStr})`,
+    );
   }
 
   await prisma.$disconnect();

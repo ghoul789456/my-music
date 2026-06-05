@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 //允许浏览器访问c盘文件
-app.use("/static", express.static("C:/Users/15175/Desktop/resource"));
+app.use("/static", express.static("C:/Users/DGZ/Desktop/resource"));
 
 // 注册接口
 app.use("/api/auth", authRoutes);
