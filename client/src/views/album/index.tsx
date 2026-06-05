@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, type Key } from 'react'
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setPlaylist } from '../../store/songSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlaylist, togglePlay, selectCurrentSong } from '../../store/songSlice';
+import type { RootState } from '../../store/store';
+import { Dropdown, Button, Label } from '@heroui/react'
+import { Ellipsis, Plus, ArrowShapeTurnUpRight, Person } from '@gravity-ui/icons'
+
 import server from '../../axios/server';
 import PageLoading from '../../components/pageLoading';
+import TrackIndex from '../../components/trackIndex';
 import styles from './index.module.scss';
 
 interface AlbumDetailResponse {
@@ -44,6 +49,9 @@ export default function Album() {
   const dispatch = useDispatch();
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hoveredSongId, setHoveredSongId] = useState<number | null>(null);
+  const { isPlaying } = useSelector((state: RootState) => state.player);
+  const currentSong = useSelector(selectCurrentSong);
 
   useEffect(() => {
     if (!id) return;
@@ -61,44 +69,50 @@ export default function Album() {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  // 播放全部
+  const toPlaylist = () => {
+    if (!album) return [];
+    return album.songs.map(s => ({
+      id: s.id,
+      title: s.title,
+      duration: s.duration,
+      filePath: s.filePath,
+      coverUrl: s.coverUrl,
+      playCount: s.playCount,
+      lyricPath: s.lyricPath,
+      artist: s.artists.map(a => a.name).join('/'),
+    }));
+  };
+
   const handlePlayAll = () => {
     if (!album) return;
     dispatch(setPlaylist({
-      list: album.songs.map(s => ({
-        id: s.id,
-        title: s.title,
-        duration: s.duration,
-        filePath: s.filePath,
-        coverUrl: s.coverUrl,
-        playCount: s.playCount,
-        lyricPath: s.lyricPath,
-        artist: s.artists.map(a => a.name).join('/'),
-      })),
+      list: toPlaylist(),
       startIndex: 0,
     }));
   };
 
-  // 播放单曲
-  const handlePlayOne = (index: number) => {
+  // 播放 / 暂停单曲
+  const handleTrackToggle = (index: number, songId: number) => {
     if (!album) return;
+    if (currentSong?.id === songId) {
+      dispatch(togglePlay());
+      return;
+    }
     dispatch(setPlaylist({
-      list: album.songs.map(s => ({
-        id: s.id,
-        title: s.title,
-        duration: s.duration,
-        filePath: s.filePath,
-        coverUrl: s.coverUrl,
-        playCount: s.playCount,
-        lyricPath: s.lyricPath,
-        artist: s.artists.map(a => a.name).join('/'),
-      })),
+      list: toPlaylist(),
       startIndex: index,
     }));
   };
 
   if (loading) return <PageLoading />;
   if (!album) return <div>专辑不存在</div>;
+
+  const handleAction = (key: Key) => {
+    switch (key) {
+      default:
+        break;
+    }
+  };
 
   return (
     <div className={styles.albumBox}>
@@ -126,16 +140,68 @@ export default function Album() {
 
       {/* 曲目列表 */}
       <div className={styles.songList}>
-        {album.songs.map((song, index) => (
-          <div key={song.id} className={styles.songItem} onClick={() => handlePlayOne(index)}>
-            <span className={styles.index}>{index + 1}</span>
+        {album.songs.map((song, index) => {
+          const isActive = currentSong?.id === song.id;
+
+          return (
+          <div
+            key={song.id}
+            className={`${styles.songItem} ${isActive ? styles.active : ''}`}
+            onMouseEnter={() => setHoveredSongId(song.id)}
+            onMouseLeave={() => setHoveredSongId(null)}
+            onClick={() => handleTrackToggle(index, song.id)}
+          >
+            <TrackIndex
+              index={index}
+              isActive={isActive}
+              isPlaying={isActive && isPlaying}
+              hovered={hoveredSongId === song.id}
+              onToggle={() => handleTrackToggle(index, song.id)}
+            />
             <div className={styles.songInfo}>
               <p className={styles.songTitle}>{song.title}</p>
               <p className={styles.songArtist}>{song.artists.map(a => a.name).join('/')}</p>
             </div>
+
             <span className={styles.duration}>{formatDuration(song.duration)}</span>
+            <div onClick={(e) => e.stopPropagation()}>
+            <Dropdown>
+              <Button isIconOnly variant="tertiary" aria-label="加入歌单">
+                <Ellipsis />
+              </Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={handleAction}>
+                  <Dropdown.SubmenuTrigger>
+                    <Dropdown.Item id="add-list" textValue="New file">
+                      <Plus className="size-4 shrink-0 text-muted" />
+                      <Label>加入歌单</Label>
+                      <Dropdown.SubmenuIndicator />
+                    </Dropdown.Item>
+                    <Dropdown.Popover>
+                      <Dropdown.Menu>
+                        <Dropdown.Item id="whatsapp" textValue="WhatsApp">
+                          <Label>喜欢的音乐</Label>
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown.Popover>
+                  </Dropdown.SubmenuTrigger>
+                  <Dropdown.Item id="check-singer" textValue="Open file">
+                    <Person className="size-4 shrink-0 text-muted" />
+                    <Label>查看歌手</Label>
+                  </Dropdown.Item>
+
+                  <Dropdown.Item id="share-song" textValue="Save file">
+                    <ArrowShapeTurnUpRight className="size-4 shrink-0 text-muted" />
+                    <Label>分享歌曲</Label>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown>
+            </div>
+
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   );

@@ -73,12 +73,10 @@
   &:hover {
     background: var(--hover-overlay);
   }
-}
 
-.index {
-  width: 1.5rem;
-  text-align: center;
-  color: var(--muted);
+  &.active .songTitle {
+    color: var(--brand);
+  }
 }
 
 .songInfo {

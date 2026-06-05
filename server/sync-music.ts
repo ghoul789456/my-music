@@ -32,11 +32,11 @@ type ItunesResult = {
 };
 
 type SongInfo = {
-  title?: string;
-  artist?: string;
-  album?: string;
-  cover?: string;
-  releaseDate?: Date | null;
+  title: string | undefined;
+  artist: string | undefined;
+  album: string | undefined;
+  cover: string | undefined;
+  releaseDate: Date | null;
 };
 
 // ===============================
@@ -74,9 +74,13 @@ function upgradeArtworkUrl(url: string, size = 500): string {
     .replace("100x100", `${size}x${size}`);
 }
 
+function isDate(value: unknown): value is Date {
+  return value instanceof Date;
+}
+
 function parseReleaseDateFromMetadata(metadata: mm.IAudioMetadata): Date | null {
   const common = metadata.common;
-  if (common.date instanceof Date && !isNaN(common.date.getTime())) {
+  if (isDate(common.date) && !isNaN(common.date.getTime())) {
     return common.date;
   }
   if (typeof common.year === "number" && common.year > 1900) {
@@ -174,7 +178,8 @@ function pickBestItunesMatch(
   });
 
   scored.sort((a, b) => b.score - a.score);
-  return scored[0]?.score > 0 ? scored[0].item : results[0];
+  const best = scored[0];
+  return best && best.score > 0 ? best.item : results[0] ?? null;
 }
 
 // ===============================
@@ -382,6 +387,103 @@ async function fetchArtistImage(artistName: string): Promise<string | null> {
 }
 
 // ===============================
+// 🎯 歌手简介（TheAudioDB + Wikipedia 中文）
+// ===============================
+async function fetchBioFromAudioDB(
+  artistName: string,
+): Promise<string | null> {
+  const data = await fetchJson<{
+    artists?: {
+      strArtist?: string;
+      strBiographyCN?: string;
+      strBiographyEN?: string;
+    }[] | null;
+  }>(
+    `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`,
+  );
+
+  const artists = data?.artists;
+  if (!artists?.length) return null;
+
+  const match =
+    artists.find((a) => namesMatch(a.strArtist || "", artistName)) ??
+    artists[0];
+
+  // 优先中文简介
+  const bio = match?.strBiographyCN || match?.strBiographyEN || null;
+  if (bio && bio.length > 20) {
+    console.log(`📝 TheAudioDB 获取到简介: ${artistName} (${bio.length} 字符)`);
+    return bio;
+  }
+  return null;
+}
+
+async function fetchBioFromWikipedia(
+  artistName: string,
+): Promise<string | null> {
+  try {
+    // 1. 搜索中文维基百科
+    const searchData = await fetchJson<{
+      query?: { search?: { pageid: number; title: string }[] };
+    }>(
+      `https://zh.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(artistName)}&format=json&origin=*`,
+    );
+
+    const searchResults = searchData?.query?.search;
+    if (!searchResults?.length) return null;
+
+    // 找到名称匹配的页面
+    const match =
+      searchResults.find((r) => namesMatch(r.title, artistName)) ??
+      searchResults[0];
+    if (!match) return null;
+    const pageId = match.pageid;
+
+    // 2. 获取页面摘要
+    const extractData = await fetchJson<{
+      query?: { pages?: Record<string, { extract?: string }> };
+    }>(
+      `https://zh.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&pageids=${pageId}&format=json&origin=*`,
+    );
+
+    const pages = extractData?.query?.pages;
+    if (!pages) return null;
+
+    const page = pages[String(pageId)];
+    const extract = page?.extract;
+
+    if (extract && extract.length > 20) {
+      // 清理参考标记 [1] [2] 等
+      const cleaned = extract.replace(/\[\d+\]/g, "").trim();
+      console.log(
+        `📝 Wikipedia 获取到简介: ${artistName} (${cleaned.length} 字符)`,
+      );
+      return cleaned;
+    }
+    return null;
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`⚠️ Wikipedia 查询失败 [${artistName}]: ${msg}`);
+    return null;
+  }
+}
+
+async function fetchArtistBio(artistName: string): Promise<string | null> {
+  // 1. 先尝试 TheAudioDB
+  const audioDbBio = await fetchBioFromAudioDB(artistName);
+  if (audioDbBio) return audioDbBio;
+
+  await sleep(200);
+
+  // 2. 回退到 Wikipedia 中文
+  const wikiBio = await fetchBioFromWikipedia(artistName);
+  if (wikiBio) return wikiBio;
+
+  console.warn(`⚠️ 未找到歌手简介: ${artistName}`);
+  return null;
+}
+
+// ===============================
 // 🎯 下载封面
 // ===============================
 async function downloadImage(url: string, savePath: string) {
@@ -500,27 +602,32 @@ async function scanAndSync() {
 
     const artistList = parseArtists(artist);
 
-    const artistImages = await Promise.all(
+    // 并行获取每个歌手的头像和简介
+    const artistMeta = await Promise.all(
       artistList.map(async (name) => {
         const existing = await prisma.artist.findUnique({ where: { name } });
-        if (existing?.avatar) {
-          console.log(`🎤 歌手已有头像，跳过: ${name}`);
-          return existing.avatar;
-        }
-        return fetchArtistImage(name);
+        const avatar = existing?.avatar
+          ? existing.avatar
+          : await fetchArtistImage(name);
+        const bio = existing?.bio
+          ? existing.bio
+          : await fetchArtistBio(name);
+        return { name, avatar, bio };
       }),
     );
 
     const artistRecords = await Promise.all(
-      artistList.map((name, index) =>
+      artistMeta.map(({ name, avatar, bio }) =>
         prisma.artist.upsert({
           where: { name },
           update: {
-            ...(artistImages[index] ? { avatar: artistImages[index] } : {}),
+            ...(avatar ? { avatar } : {}),
+            ...(bio ? { bio } : {}),
           },
           create: {
             name,
-            avatar: artistImages[index] ?? null,
+            avatar: avatar ?? null,
+            bio: bio ?? null,
           },
         }),
       ),
