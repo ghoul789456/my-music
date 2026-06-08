@@ -1,38 +1,139 @@
+/* ===== Header ===== */
 .header {
-  height: 6%;
-  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 3.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 1.25rem;
   box-sizing: border-box;
-  background-color: var(--surface);
-  color: var(--foreground);
+  background: rgba(255, 248, 245, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201, 198, 190, 0.2);
 }
 
-.setting {
-  width: auto;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.logoImg {
-  height: 2rem;
-  width: 2rem;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+@media (min-width: 768px) {
+  .header {
+    left: 18rem;
+    height: 5rem;
+    padding: 0 1.5rem;
+    background: rgba(255, 248, 245, 0.8);
+    backdrop-filter: blur(24px);
   }
 }
 
-.avatarBox {
-  background-color: rgba(255, 255, 255, 0);
-}
-
-.backBtn {
+/* ===== Mobile Logo ===== */
+.mobileLogo {
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  user-select: none;
+}
+
+.desktopLeft {
+  flex: 1;
+}
+
+/* ===== Right Section ===== */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .headerRight {
+    gap: 1.5rem;
+  }
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--on-surface-variant, #484740);
+  font-size: 24px;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.iconBtn:hover {
+  color: var(--primary, #605e5c);
+  opacity: 0.85;
+}
+
+/* ===== User Section ===== */
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid rgba(201, 198, 190, 0.3);
+}
+
+.avatarTrigger {
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+
+.avatarTrigger:hover {
+  transform: scale(1.05);
+}
+
+.avatarBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(201, 198, 190, 0.4);
+}
+
+/* ===== 头像下拉弹窗 ===== */
+.userPopover {
+  min-width: 220px !important;
+  padding: 0 !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(30, 27, 24, 0.06), 0 1px 4px rgba(30, 27, 24, 0.04) !important;
+  border: 1px solid rgba(201, 198, 190, 0.3) !important;
+  background: var(--white, #ffffff) !important;
+}
+
+.popoverUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid rgba(201, 198, 190, 0.3);
+  background: var(--surface-container-low, #fbf2ed);
+}
+
+.popoverUserText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.popoverUserName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--foreground, #1e1b18);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popoverUserEmail {
+  font-size: 0.8rem;
+  color: var(--muted, #484740);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -2,10 +2,19 @@ import styles from "./index.module.scss";
 
 export default function Playlist() {
   return (
-    <div className={styles.pageBox}>
-      <h2 className={styles.title}>歌单</h2>
-      <p className={styles.empty}>暂无歌单内容</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.emptyState}>
+        <span
+          className="material-symbols-outlined"
+          style={{ fontSize: "4rem", color: "var(--muted)", opacity: 0.3 }}
+        >
+          queue_music
+        </span>
+        <h2 className={styles.heading}>Your Library</h2>
+        <p className={styles.subtext}>
+          Songs and albums you save will appear here.
+        </p>
+      </div>
     </div>
   );
 }
-

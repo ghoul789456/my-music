@@ -10,43 +10,33 @@ import {
   setMode,
   setCurrentTime,
   removeSong,
-  removeAllSong
+  removeAllSong,
 } from "../../store/songSlice";
 import type { RootState } from "../../store/store";
-import { Button, Spinner, Slider, Popover,  Dropdown, Label } from "@heroui/react";
-import {
-  PauseFill,
-  PlayFill,
-  BackwardStepFill,
-  ForwardStepFill,
-  VolumeLowFill,
-  VolumeXmarkFill,
-  ListUl,
-  TrashBin,
-  Ellipsis,
-  Plus,
-  ArrowShapeTurnUpRight,
-  MusicNote,
-  Person
-} from "@gravity-ui/icons";
-import { Repeat, Repeat1, Shuffle } from "lucide-react";
+import { Button, Spinner, Slider, Popover, Dropdown, Label } from "@heroui/react";
 import AudioController from "../audio";
 import styles from "./index.module.scss";
 import img from "../../assets/song.png";
+
 interface PlayerProps {
   onExpand: () => void;
 }
+
 export default function MiniPlayer({ onExpand }: PlayerProps) {
   const dispatch = useDispatch();
 
-  const { isPlaying, volume, mode, isLoading, currentTime, playlist, currentIndex } = useSelector(
-    (state: RootState) => state.player,
-  );
+  const {
+    isPlaying,
+    volume,
+    mode,
+    isLoading,
+    currentTime,
+    playlist,
+    currentIndex,
+  } = useSelector((state: RootState) => state.player);
   const currentSong = useSelector(selectCurrentSong);
 
-  // if (!currentSong) return null;
-
-  // 2. 处理模式切换逻辑
+  // 处理模式切换逻辑
   const handleModeChange = () => {
     const modes: ("loop" | "single" | "shuffle")[] = [
       "loop",
@@ -57,14 +47,12 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
     dispatch(setMode(nextMode));
   };
 
-  // 3. 根据模式选择图标
-  const modeIconMap = {
-    loop: <Repeat />,
-    single: <Repeat1 />,
-    shuffle: <Shuffle />,
+  // 根据模式选择 Material Symbol
+  const modeIcons: Record<string, string> = {
+    loop: "repeat",
+    single: "repeat_one",
+    shuffle: "shuffle",
   };
-
-  const modeIcon = modeIconMap[mode];
 
   const lastVolumeRef = useRef(0.5);
 
@@ -83,10 +71,12 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
     const m = Math.floor(s / 60);
     return `${m}:${String(s % 60).padStart(2, "0")}`;
   };
-  //情况播放列表
+
+  // 清空播放列表
   const clearSongList = () => {
-    dispatch(removeAllSong())
-  }
+    dispatch(removeAllSong());
+  };
+
   const handleAction = (key: Key) => {
     switch (key) {
       case "delete-song":
@@ -97,191 +87,185 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
     }
   };
 
+  if (!currentSong) {
+    return (
+      <div className={styles.emptyBar}>
+        <AudioController />
+        <p className={styles.emptyText}>No track selected</p>
+      </div>
+    );
+  }
+
   return (
-    <div className={`${styles.miniPlayer}`} >
+    <div className={styles.miniPlayer}>
       <AudioController />
-     
-        <div className={styles.songInfo}>
-          <div className={styles.cover} onClick={onExpand}>
-            <img src={currentSong?.coverUrl || img} />
-          </div>
-          <div className={styles.text}>
-            <p className={styles.title}>{currentSong?.title}</p>
-            <p className={styles.artist}>{currentSong?.artist}</p>
-          </div>
+
+      {/* Left: Song Info */}
+      <div className={styles.songSection}>
+        <div className={styles.cover} onClick={onExpand}>
+          <img src={currentSong?.coverUrl || img} alt={currentSong?.title} />
+        </div>
+        <div className={styles.songText}>
+          <p className={styles.title}>{currentSong?.title}</p>
+          <p className={styles.artist}>{currentSong?.artist}</p>
+        </div>
+        <button className={`material-symbols-outlined ${styles.likeBtn}`} aria-label="Like">
+          favorite
+        </button>
+      </div>
+
+      {/* Center: Controls + Progress */}
+      <div className={styles.controlSection}>
+        <div className={styles.buttons}>
+          <button
+            className={`material-symbols-outlined ${styles.ctrlBtn}`}
+            onClick={handleModeChange}
+            aria-label="Mode"
+          >
+            {modeIcons[mode]}
+          </button>
+
+          <button
+            className={`material-symbols-outlined ${styles.ctrlBtn} ${styles.skipBtn}`}
+            onClick={() => dispatch(prevSong())}
+            aria-label="Previous"
+          >
+            skip_previous
+          </button>
+
+          <button
+            className={styles.playBtn}
+            onClick={() => dispatch(togglePlay())}
+            aria-label={isPlaying ? "Pause" : "Play"}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Spinner size="sm" color="current" />
+            ) : (
+              <span className="material-symbols-outlined" style={{ fontSize: "1.75rem" }}>
+                {isPlaying ? "pause" : "play_arrow"}
+              </span>
+            )}
+          </button>
+
+          <button
+            className={`material-symbols-outlined ${styles.ctrlBtn} ${styles.skipBtn}`}
+            onClick={() => dispatch(nextSong())}
+            aria-label="Next"
+          >
+            skip_next
+          </button>
+
+          <button
+            className={`material-symbols-outlined ${styles.ctrlBtn}`}
+            onClick={handleModeChange}
+            aria-label="Repeat Mode"
+          >
+            {modeIcons[mode]}
+          </button>
         </div>
 
-        <div className={styles.controls}>
-          <div className={styles.buttons}>
-            <Button isIconOnly variant="tertiary" onClick={handleModeChange} aria-label="循环模式">
-              {modeIcon}
-            </Button>
-
-            <Button
-              isIconOnly
-              variant="tertiary"
-              aria-label="上一首"
-              onClick={() => dispatch(prevSong())}
-            >
-              <BackwardStepFill />
-            </Button>
-
-            <Button
-              isIconOnly
-              variant="tertiary"
-              isDisabled={isLoading}
-              aria-label="播放"
-              onClick={() => dispatch(togglePlay())}
-            >
-              {isLoading ? (
-                <Spinner size="sm" color="current" />
-              ) : isPlaying ? (
-                <PauseFill />
-              ) : (
-                <PlayFill />
-              )}
-            </Button>
-
-            <Button
-              isIconOnly
-              variant="tertiary"
-              aria-label="下一首"
-              onClick={() => dispatch(nextSong())}
-            >
-              <ForwardStepFill />
-            </Button>
-          </div>
-
-          <div className={styles.progressRow}>
-            <p className={styles.timeLabel}>{formatTime(currentTime)}</p>
-            <Slider
-              className={`${styles.progressBar}`}
-              value={[currentTime]}
-              minValue={0}
-              maxValue={currentSong?.duration || 0}
-              step={1}
-              onChange={(val) => {
-                const time = Array.isArray(val) ? val[0] : val;
-                dispatch(setCurrentTime(time));
-              }}
-            >
-              <Slider.Track className={styles.sliderTrack}>
-                <Slider.Fill className={styles.sliderFill} />
-                <Slider.Thumb className={styles.sliderThumb} />
-              </Slider.Track>
-            </Slider>
-            <p className={styles.timeLabel}>
-              {formatTime(currentSong?.duration || 0)}
-            </p>
-          </div>
-        </div>
-
-        <div className={styles.extra}>
-
-
-          <Popover>
-            <Popover.Trigger aria-label="song lists">
-              <Button isIconOnly variant="tertiary">
-                <ListUl />
-              </Button>
-            </Popover.Trigger>
-            <Popover.Content placement="top" className={styles.playListBox}>
-              <Popover.Dialog>
-                <Popover.Heading>
-                  <div className={styles.listHeader}>
-                    <p className={styles.listName}>播放列表</p>
-                    <button onClick={clearSongList} aria-label="清空" className={styles.delBtn}>
-                      <TrashBin />
-                      <p className={styles.listDel}>清空</p>
-                    </button>
-                  </div>
-                </Popover.Heading>
-                <div className={styles.songLists}>
-                  {playlist.length !== 0 ? playlist.map((item, index) => {
-                    return (
-                      <div className={styles.songItem} key={item.id}>
-                        <div className={styles.songInfo} >
-                          <div className={styles.cover}>
-                            <img src={item.coverUrl || img} />
-                          </div>
-                          <div className={styles.text}>
-                            <p className={styles.title}>{item.title}</p>
-                            <p className={styles.artist}>{item.artist}</p>
-                          </div>
-                        </div>
-
-                        <Dropdown>
-                          <Button isIconOnly variant="tertiary" aria-label="加入">
-                            <Ellipsis />
-                          </Button>
-                          <Dropdown.Popover>
-                            <Dropdown.Menu onAction={handleAction}>
-                              <Dropdown.SubmenuTrigger>
-                                <Dropdown.Item id="add-list" textValue="New file">
-                                  <Plus className="size-4 shrink-0 text-muted" />
-                                  <Label>加入歌单</Label>
-                                  <Dropdown.SubmenuIndicator />
-                                </Dropdown.Item>
-                                <Dropdown.Popover>
-                                  <Dropdown.Menu>
-                                    <Dropdown.Item id="whatsapp" textValue="WhatsApp">
-                                      <Label>喜欢的音乐</Label>
-                                    </Dropdown.Item>
-                                  </Dropdown.Menu>
-                                </Dropdown.Popover>
-                              </Dropdown.SubmenuTrigger>
-
-                              <Dropdown.Item id="check-album" textValue="Open file">
-                                <MusicNote className="size-4 shrink-0 text-muted" />
-                                <Label>查看专辑</Label>
-                              </Dropdown.Item>
-                              <Dropdown.Item id="check-singer" textValue="Open file">
-                                <Person className="size-4 shrink-0 text-muted" />
-                                <Label>查看歌手</Label>
-                              </Dropdown.Item>
-
-                              <Dropdown.Item id="share-song" textValue="Save file">
-                                <ArrowShapeTurnUpRight className="size-4 shrink-0 text-muted" />
-                                <Label>分享歌曲</Label>
-                              </Dropdown.Item>
-                              <Dropdown.Item id="delete-song" textValue="Delete file" variant="danger">
-                                <TrashBin className="size-4 shrink-0 text-danger" />
-                                <Label>删除歌曲</Label>
-                              </Dropdown.Item>
-
-
-                            </Dropdown.Menu>
-                          </Dropdown.Popover>
-                        </Dropdown>
-
-
-                      </div>
-                    )
-                  }) : '暂无播放列表'}
-                </div>
-
-              </Popover.Dialog>
-            </Popover.Content>
-          </Popover>
-
-
-
-          <div className={styles.volumeContainer}>
-            <Button isIconOnly variant="tertiary" onClick={handleMute} aria-label="音量">
-              {volume === 0 ? <VolumeXmarkFill /> : <VolumeLowFill />}
-            </Button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(e) => dispatch(setVolume(Number(e.target.value)))}
-            />
-          </div>
+        <div className={styles.progressRow}>
+          <span className={styles.timeLabel}>{formatTime(currentTime)}</span>
+          <Slider
+            className={styles.progressBar}
+            value={[currentTime]}
+            minValue={0}
+            maxValue={currentSong?.duration || 1}
+            step={1}
+            onChange={(val) => {
+              const time = Array.isArray(val) ? val[0] : val;
+              dispatch(setCurrentTime(time));
+            }}
+          >
+            <Slider.Track className={styles.sliderTrack}>
+              <Slider.Fill className={styles.sliderFill} />
+              <Slider.Thumb className={styles.sliderThumb} />
+            </Slider.Track>
+          </Slider>
+          <span className={styles.timeLabel}>
+            {formatTime(currentSong?.duration || 0)}
+          </span>
         </div>
       </div>
 
+      {/* Right: Extras */}
+      <div className={styles.extraSection}>
+        <Popover>
+          <Popover.Trigger aria-label="Playlist">
+            <Button isIconOnly variant="tertiary" className={styles.ghostBtn}>
+              <span className="material-symbols-outlined">queue_music</span>
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content placement="top" className={styles.playListBox}>
+            <Popover.Dialog>
+              <Popover.Heading>
+                <div className={styles.listHeader}>
+                  <p className={styles.listName}>Playlist</p>
+                  <button
+                    onClick={clearSongList}
+                    aria-label="Clear"
+                    className={styles.delBtn}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
+                      delete
+                    </span>
+                    <p className={styles.listDel}>Clear</p>
+                  </button>
+                </div>
+              </Popover.Heading>
+              <div className={styles.songLists}>
+                {playlist.length !== 0
+                  ? playlist.map((item, index) => (
+                      <div className={styles.songItem} key={item.id}>
+                        <div className={styles.playlistSong}>
+                          <div className={styles.psCover}>
+                            <img src={item.coverUrl || img} alt={item.title} />
+                          </div>
+                          <div className={styles.psText}>
+                            <p className={styles.psTitle}>{item.title}</p>
+                            <p className={styles.psArtist}>{item.artist}</p>
+                          </div>
+                        </div>
+                        <Dropdown>
+                          <Button isIconOnly variant="tertiary" aria-label="More">
+                            <span className="material-symbols-outlined">more_vert</span>
+                          </Button>
+                          <Dropdown.Popover>
+                            <Dropdown.Menu onAction={handleAction}>
+                              <Dropdown.Item id="delete-song" textValue="Delete" variant="danger">
+                                <Label>Remove</Label>
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown.Popover>
+                        </Dropdown>
+                      </div>
+                    ))
+                  : "No songs in queue"}
+              </div>
+            </Popover.Dialog>
+          </Popover.Content>
+        </Popover>
 
+        <div className={styles.volumeContainer}>
+          <button
+            className={`material-symbols-outlined ${styles.ghostBtn}`}
+            onClick={handleMute}
+            aria-label="Volume"
+          >
+            {volume === 0 ? "volume_off" : "volume_up"}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => dispatch(setVolume(Number(e.target.value)))}
+            className={styles.volumeSlider}
+          />
+        </div>
+      </div>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const RESOURCE_PATH = "C:/Users/DGZ/Desktop/resource";
+const RESOURCE_PATH = "C:/Users/15175/Desktop/resource";
 
 const FETCH_HEADERS = {
   "User-Agent":
@@ -394,15 +394,16 @@ async function fetchArtistImage(artistName: string): Promise<string | null> {
 async function fetchBioFromAudioDB(artistName: string): Promise<string | null> {
   const data = await fetchJson<{
     artists?:
-      | {
-          strArtist?: string;
-          strBiographyCN?: string;
-          strBiographyEN?: string;
-        }[]
-      | null;
+    | {
+      strArtist?: string;
+      strBiographyCN?: string;
+      strBiography?: string;
+    }[]
+    | null;
   }>(
-    `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`,
+    `https://www.theaudiodb.com/api/v1/json/123/search.php?s=${encodeURIComponent(artistName)}`,
   );
+  console.log(`https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`);
 
   const artists = data?.artists;
   if (!artists?.length) return null;
@@ -412,7 +413,7 @@ async function fetchBioFromAudioDB(artistName: string): Promise<string | null> {
     artists[0];
 
   // 优先中文简介
-  const bio = match?.strBiographyCN || match?.strBiographyEN || null;
+  const bio = match?.strBiographyCN || match?.strBiography || null;
   if (bio && bio.length > 20) {
     console.log(`📝 TheAudioDB 获取到简介: ${artistName} (${bio.length} 字符)`);
     return bio;
@@ -473,6 +474,8 @@ async function fetchBioFromWikipedia(
 async function fetchArtistBio(artistName: string): Promise<string | null> {
   // 1. 先尝试 TheAudioDB
   const audioDbBio = await fetchBioFromAudioDB(artistName);
+  console.log("audioDbBio", audioDbBio);
+
   if (audioDbBio) return audioDbBio;
 
   await sleep(200);

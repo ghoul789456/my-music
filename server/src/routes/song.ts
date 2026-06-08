@@ -71,7 +71,7 @@ router.get("/hot", async (req: Request, res: Response) => {
   }
 });
 
-const resourcePath = "C:/Users/DGZ/Desktop/resource";
+const resourcePath = "C:/Users/15175/Desktop/resource";
 // 获取歌词接口
 router.get("/:id/lyric", async (req: Request, res: Response) => {
   try {

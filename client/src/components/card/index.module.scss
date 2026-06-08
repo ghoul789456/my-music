@@ -1,67 +1,143 @@
-.singerList {
-  padding: 1rem;
-  color: var(--foreground);
+/* ===== 卡片区块 ===== */
+.cardSection {
+  margin-bottom: 3rem;
+}
 
-  .singerBox {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 15.3%;
-    gap: 1rem;
-    align-items: start;
-    overflow-x: auto;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
+/* ===== 区块标题 ===== */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+.sectionTitle {
+  font-family: "Noto Serif SC", serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--foreground, #1e1b18);
+  margin: 0;
+}
 
-    .singerItem {
-      padding: 10px;
+/* ===== 横向滚动容器 ===== */
+.scrollContainer {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
 
-      .singerImgWrapper {
-        position: relative;
-        cursor: pointer;
-      }
-
-      img {
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        display: block;
-      }
-
-      .playBtn {
-        background: var(--overlay);
-        color: var(--foreground);
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        transform: translateY(10px);
-        transition: all 0.25s ease;
-        opacity: 0;
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
-      }
-
-      &:hover .playBtn {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .singerName {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        font-size: 0.8rem;
-        color: var(--muted);
-      }
-      .songName {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        font-size: 1rem;
-        color: var(--foreground);
-      }
-    }
+  &::-webkit-scrollbar {
+    display: none;
   }
+
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+/* ===== 单张卡片 ===== */
+.card {
+  flex-shrink: 0;
+  width: 12rem;
+  cursor: pointer;
+}
+
+.imgWrapper {
+  position: relative;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--surface-container, #f5ece7);
+  box-shadow: 0 1px 3px rgba(30, 27, 24, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover .imgWrapper {
+  box-shadow: 0 4px 12px rgba(30, 27, 24, 0.08);
+  transform: translateY(-4px);
+}
+
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imgRounded {
+  border-radius: 0.5rem;
+}
+
+.imgRound {
+  border-radius: 50%;
+}
+
+/* ===== Hover 播放叠加层 ===== */
+.playOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(1px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.card:hover .playOverlay {
+  opacity: 1;
+}
+
+.playCircle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--primary, #605e5c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30, 27, 24, 0.12);
+  transform: scale(0.9);
+  transition: transform 0.25s ease;
+
+  span {
+    font-size: 1.5rem;
+  }
+}
+
+.card:hover .playCircle {
+  transform: scale(1);
+}
+
+.playCircle:hover {
+  background: white;
+  transform: scale(1.05) !important;
+}
+
+/* ===== 卡片文字 ===== */
+.cardTitle {
+  margin-top: 1rem;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--on-surface, #1e1b18);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSub {
+  margin-top: 0.15rem;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--on-surface-variant, #484740);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

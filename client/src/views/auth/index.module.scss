@@ -1,27 +1,22 @@
 /*
- * LoginPage.module.css
- * 需在全局 CSS 或 index.html 引入字体：
- * @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap');
+ * Auth Page — Acoustic Warmth
  */
 
 /* ─────────────────────────────────────────────
-   CSS 变量
+   CSS Variables
 ───────────────────────────────────────────── */
 
 .page {
-  --gold: #c8923a;
-  --gold-dim: rgba(200, 146, 58, 0.5);
-  --cream: #f0e8d8;
-  --bg: #0a0a0f;
-  // --font-mono: "DM Mono", monospace;
-  --font-mono:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-serif: "Playfair Display", serif;
-
-  
+  --gold: #605e5c;
+  --gold-dim: rgba(96, 94, 92, 0.5);
+  --cream: #f8efea;
+  --bg: #1a1715;
+  --font-mono: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ─────────────────────────────────────────────
-   页面布局
+   Page Layout
 ───────────────────────────────────────────── */
 
 .page {
@@ -48,9 +43,11 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle,
-      rgba(180, 120, 60, 0.12) 0%,
-      transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(113, 82, 70, 0.15) 0%,
+    transparent 70%
+  );
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -77,7 +74,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   黑胶唱片
+   Vinyl Record
 ───────────────────────────────────────────── */
 
 .vinylWrap {
@@ -86,8 +83,7 @@
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04),
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04),
     0 20px 60px rgba(0, 0, 0, 0.8);
 }
 
@@ -95,13 +91,15 @@
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  background: repeating-radial-gradient(circle at center,
-      #1a1a1a 0px,
-      #111 2px,
-      #1c1c1c 4px,
-      #0f0f0f 6px);
+  background: repeating-radial-gradient(
+    circle at center,
+    #1a1a1a 0px,
+    #111 2px,
+    #1c1c1c 4px,
+    #0f0f0f 6px
+  );
   position: relative;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5); // 只留 inset
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   border: none;
   overflow: hidden;
@@ -115,18 +113,19 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from 0deg,
-      rgba(255, 255, 255, 0.03) 0deg,
-      transparent 60deg,
-      rgba(255, 255, 255, 0.015) 120deg,
-      transparent 180deg,
-      rgba(255, 255, 255, 0.03) 240deg,
-      transparent 300deg,
-      rgba(255, 255, 255, 0.015) 360deg);
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 255, 255, 0.03) 0deg,
+    transparent 60deg,
+    rgba(255, 255, 255, 0.015) 120deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.03) 240deg,
+    transparent 300deg,
+    rgba(255, 255, 255, 0.015) 360deg
+  );
 }
 
 .vinylSpinning {
-  // animation: spin 6s linear infinite;
   animation-play-state: running;
 }
 
@@ -138,17 +137,18 @@
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg,
-      #c8923a 0%,
-      #e8b86d 40%,
-      #a06828 70%,
-      #c8923a 100%);
+  background: linear-gradient(
+    135deg,
+    #715246 0%,
+    #8c6a5d 40%,
+    #5d4034 70%,
+    #715246 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.6),
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6),
     inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
@@ -165,7 +165,7 @@
 .labelTop,
 .labelBottom {
   font-family: var(--font-mono);
-  color: rgba(10, 10, 15, 0.65);
+  color: rgba(255, 246, 243, 0.65);
   text-transform: uppercase;
   letter-spacing: 2px;
   line-height: 1;
@@ -184,7 +184,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   唱臂
+   Tonearm
 ───────────────────────────────────────────── */
 
 .tonearm {
@@ -196,7 +196,6 @@
   transform-origin: top right;
   transform: rotate(-25deg);
   transition: transform 0.5s ease-in-out;
-  // transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tonearm svg {
@@ -205,12 +204,11 @@
 }
 
 .tonearmPlaying {
-  // animation: tonearmSway 6s ease-in-out infinite;
   transform: rotate(0deg);
 }
 
 /* ─────────────────────────────────────────────
-   声波条
+   Waveform Bars
 ───────────────────────────────────────────── */
 
 .waveform {
@@ -227,7 +225,7 @@
 .bar {
   display: block;
   width: 2px;
-  background: rgba(200, 146, 58, 0.45);
+  background: rgba(113, 82, 70, 0.5);
   border-radius: 1px;
   opacity: 0.3;
 }
@@ -238,7 +236,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   表单面板
+   Form Panel
 ───────────────────────────────────────────── */
 
 .formSide {
@@ -247,10 +245,10 @@
   flex-direction: column;
   max-width: 500px;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
+  background: rgba(255, 246, 243, 0.04);
+  border-radius: 1rem;
   backdrop-filter: blur(13px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 246, 243, 0.08);
 }
 
 .title {
@@ -261,9 +259,7 @@
   line-height: 1.1;
   margin-bottom: 20px;
   letter-spacing: -1px;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .titleFading {
@@ -277,7 +273,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   表单内容区
+   Form Content Area
 ───────────────────────────────────────────── */
 .form {
   height: 100%;
@@ -291,26 +287,22 @@
   position: relative;
 }
 
-/* 注册表单：正常文档流，撑开 formBody 高度 */
 .formSliderRegister {
   will-change: transform, opacity;
 }
 
-/* 登录表单：绝对定位叠在注册表单上方，不占文档流高度 */
 .formSliderLogin {
   position: absolute;
   inset: 0;
   will-change: transform, opacity;
 }
 
-/* 居中可见（当前激活态） */
 .slideCenter {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
 }
 
-/* 完全隐藏（非动画状态下的非激活表单） */
 .slideHidden {
   transform: translateX(0);
   opacity: 0;
@@ -318,32 +310,28 @@
   visibility: hidden;
 }
 
-/* 进入：从右滑入（login → register，register 面板） */
 .slideInFromRight {
   animation: slideInFromRight 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
   pointer-events: auto;
 }
 
-/* 进入：从左滑入（register → login，login 面板） */
 .slideInFromLeft {
   animation: slideInFromLeft 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
   pointer-events: auto;
 }
 
-/* 退出：向左飞出（login → register，login 面板） */
 .slideOutToLeft {
   animation: slideOutToLeft 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
   pointer-events: none;
 }
 
-/* 退出：向右飞出（register → login，register 面板） */
 .slideOutToRight {
   animation: slideOutToRight 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
   pointer-events: none;
 }
 
 /* ─────────────────────────────────────────────
-   输入字段
+   Input Fields
 ───────────────────────────────────────────── */
 
 .field {
@@ -366,9 +354,9 @@
 
 .input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: rgba(255, 246, 243, 0.04);
+  border: 1px solid rgba(255, 246, 243, 0.1);
+  border-radius: 0.5rem;
   color: var(--cream);
   font-family: var(--font-mono);
   font-size: 14px;
@@ -378,13 +366,13 @@
   box-sizing: border-box;
 
   &::placeholder {
-    color: rgba(240, 232, 216, 0.2);
+    color: rgba(255, 246, 243, 0.2);
   }
 
   &:focus {
-    background: rgba(200, 146, 58, 0.05);
+    background: rgba(113, 82, 70, 0.08);
     border-color: var(--gold);
-    box-shadow: 0 0 15px rgba(200, 146, 58, 0.2);
+    box-shadow: 0 0 15px rgba(113, 82, 70, 0.2);
   }
 }
 
@@ -404,12 +392,12 @@
 }
 
 .togglePw:hover {
-  color: rgba(200, 146, 58, 0.8);
+  color: rgba(113, 82, 70, 0.8);
 }
 
 .error {
   font-size: 13px;
-  color: rgba(220, 80, 80, 0.8);
+  color: rgba(255, 180, 171, 0.8);
   margin-top: 4px;
   letter-spacing: 0.5px;
 }
@@ -419,7 +407,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   记住我 & 忘记密码
+   Remember & Forgot
 ───────────────────────────────────────────── */
 
 .optionsRow {
@@ -434,7 +422,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  color: rgba(240, 232, 216, 0.6);
+  color: rgba(255, 246, 243, 0.6);
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -448,9 +436,7 @@
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .checkbox:checked {
@@ -472,18 +458,18 @@
 
 .forgot {
   font-size: 13px;
-  color: rgba(200, 146, 58, 0.5);
+  color: rgba(113, 82, 70, 0.5);
   text-decoration: none;
   letter-spacing: 1px;
   transition: color 0.2s;
 }
 
 .forgot:hover {
-  color: rgba(200, 146, 58, 0.9);
+  color: rgba(113, 82, 70, 0.9);
 }
 
 /* ─────────────────────────────────────────────
-   提交按钮
+   Submit Button
 ───────────────────────────────────────────── */
 
 .btnLogin {
@@ -495,7 +481,7 @@
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 3px;
-  border-radius: 4px;
+  border-radius: 0.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   position: relative;
@@ -519,7 +505,7 @@
   &:hover:not(:disabled) {
     background: var(--cream);
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(200, 146, 58, 0.3);
+    box-shadow: 0 6px 25px rgba(113, 82, 70, 0.3);
     color: var(--bg);
     border-color: var(--gold);
   }
@@ -541,7 +527,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   分割线
+   Divider
 ───────────────────────────────────────────── */
 
 .divider {
@@ -561,13 +547,13 @@
 
 .divider span {
   font-size: 15px;
-  color: rgba(240, 232, 216, 0.4);
+  color: rgba(255, 246, 243, 0.4);
   padding: 0 13px;
   letter-spacing: 2px;
 }
 
 /* ─────────────────────────────────────────────
-   第三方登录
+   Social Login
 ───────────────────────────────────────────── */
 
 .socialRow {
@@ -587,28 +573,26 @@
   font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
   text-align: center;
+  border-radius: 0.5rem;
 
   &:hover {
-    color: rgba(240, 232, 216, 0.8);
+    color: rgba(255, 246, 243, 0.8);
     border-color: var(--gold);
-    background: rgba(200, 146, 58, 0.1);
+    background: rgba(113, 82, 70, 0.12);
   }
 }
 
 .signupRow {
   font-size: 13px;
-  color: rgba(240, 232, 216, 0.2);
+  color: rgba(255, 246, 243, 0.2);
   letter-spacing: 1px;
   text-align: center;
 }
 
 .signupRow a {
-  color: rgba(200, 146, 58, 0.6);
+  color: rgba(113, 82, 70, 0.6);
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -617,7 +601,6 @@
   color: var(--gold);
 }
 
-/* 用于表单内切换链接（button 模拟 a 样式） */
 .switchLink {
   background: none;
   border: none;
@@ -625,7 +608,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 1px;
-  color: rgba(200, 146, 58, 0.6);
+  color: rgba(113, 82, 70, 0.6);
   cursor: pointer;
   transition: color 0.2s;
 
@@ -635,28 +618,15 @@
 }
 
 /* ─────────────────────────────────────────────
-   关键帧
+   Keyframes
 ───────────────────────────────────────────── */
 
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes tonearmSway {
-
-  0%,
-  100% {
-    transform: rotate(-15deg);
-  }
-
-  50% {
-    transform: rotate(-13deg);
   }
 }
 
@@ -665,24 +635,9 @@
     transform: scaleY(1);
     opacity: 0.4;
   }
-
   to {
     transform: scaleY(0.3);
     opacity: 0.9;
-  }
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.4;
-    transform: scale(0.8);
   }
 }
 
@@ -691,7 +646,6 @@
     opacity: 0;
     transform: translateX(32px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -703,7 +657,6 @@
     opacity: 0;
     transform: translateX(-32px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -715,7 +668,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-
   to {
     opacity: 0;
     transform: translateX(-32px);
@@ -727,7 +679,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-
   to {
     opacity: 0;
     transform: translateX(32px);

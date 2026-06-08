@@ -1,64 +1,141 @@
-@use "../../styles/page" as page;
-
+/* ===== 专辑页 ===== */
 .albumBox {
-  @include page.contentPanel;
-  @include page.contentPanelShadow;
+  width: 100%;
+  padding: 0 1rem 2rem;
+  box-sizing: border-box;
 }
 
+@media (min-width: 768px) {
+  .albumBox {
+    padding: 0 1.5rem 2rem;
+  }
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16rem;
+  color: var(--muted, #484740);
+  font-size: 1rem;
+}
+
+/* ===== 头部 ===== */
 .header {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
   margin-bottom: 2rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    text-align: left;
+    gap: 2rem;
+  }
 }
 
 .cover {
-  width: 200px;
-  height: 200px;
-  border-radius: 12px;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 0.5rem;
   object-fit: cover;
-  box-shadow: var(--surface-shadow);
+  box-shadow: 0 4px 12px rgba(30, 27, 24, 0.08);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .cover {
+    width: 14rem;
+    height: 14rem;
+  }
 }
 
 .info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--foreground);
+  font-family: "Noto Serif SC", serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--foreground, #1e1b18);
+  margin: 0;
 }
 
-.artist,
-.release {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.actions {
-  margin-bottom: 1rem;
-
-  button {
-    padding: 0.5rem 1.5rem;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    background: var(--brand);
-    color: var(--snow);
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: var(--brand-hover);
-    }
+@media (min-width: 768px) {
+  .title {
+    font-size: 2rem;
   }
 }
 
+.artist {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--secondary, #615e58);
+  margin: 0.25rem 0 0;
+}
+
+.bio {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.875rem;
+  color: var(--muted, #484740);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 36rem;
+}
+
+.release {
+  font-size: 0.875rem;
+  color: var(--muted, #484740);
+  margin: 0;
+}
+
+/* ===== 操作区 ===== */
+.actions {
+  margin-bottom: 1.5rem;
+}
+
+.playAllBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  background: var(--on-primary-fixed, #1c1b1a);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30, 27, 24, 0.1);
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  span {
+    font-size: 1.25rem;
+  }
+
+  &:hover {
+    background: var(--primary, #605e5c);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ===== 歌曲列表 ===== */
 .songList {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .songItem {
@@ -66,34 +143,44 @@
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   cursor: pointer;
-  color: var(--foreground);
+  color: var(--foreground, #1e1b18);
+  transition: background 0.15s ease;
 
   &:hover {
-    background: var(--hover-overlay);
+    background: var(--surface-container-high, #efe6e2);
   }
 
   &.active .songTitle {
-    color: var(--brand);
+    color: var(--secondary, #615e58);
   }
 }
 
 .songInfo {
   flex: 1;
+  min-width: 0;
 }
 
 .songTitle {
+  font-family: "Source Sans 3", sans-serif;
   font-size: 0.95rem;
-  color: var(--foreground);
+  font-weight: 600;
+  color: var(--foreground, #1e1b18);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .songArtist {
   font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--muted, #484740);
+  margin: 0;
 }
 
 .duration {
-  color: var(--muted);
   font-size: 0.85rem;
+  color: var(--muted, #484740);
+  flex-shrink: 0;
 }

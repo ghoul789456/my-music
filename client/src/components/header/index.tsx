@@ -1,16 +1,6 @@
 import { useState, type Key } from "react";
 import {
-  Moon,
-  Sun,
-  ArrowRightFromSquare,
-  Gear,
-  Persons,
-  ChevronLeft,
-} from "@gravity-ui/icons";
-import {
-  Switch,
   Avatar,
-  SearchField,
   Dropdown,
   Label,
   Button,
@@ -26,34 +16,23 @@ export default function Header() {
   const { isDark, setTheme } = useTheme();
 
   const navigate = useNavigate();
-  const goHome = () => {
-    navigate("/");
-  };
+  const goHome = () => navigate("/");
 
-  //获取个人信息
   const { userInfo, isLoggedIn } = useSelector(
     (state: RootState) => state.user,
   );
   const dispatch = useDispatch<AppDispatch>();
-  console.log("userInfo", userInfo);
 
-  //判断是否登录
   const [isOpen, setIsOpen] = useState(false);
-  const handleOpenChange = (isOpen: boolean) => {
-    console.log("isOpen", isOpen);
-    console.log("isLoggedIn", isLoggedIn);
+  const handleOpenChange = (open: boolean) => {
     if (isLoggedIn) {
-      if (isOpen) {
-        setIsOpen(true);
-      } else {
-        setIsOpen(false);
-      }
+      setIsOpen(open);
     } else {
       navigate("/auth");
       setIsOpen(false);
     }
   };
-  //处理头像下拉框选项
+
   const handleAction = (key: Key) => {
     switch (key) {
       case "logout":
@@ -70,182 +49,113 @@ export default function Header() {
     }
   };
 
-  //回退
-  const backup = () => {
-    navigate(-1);
-  };
+  const backup = () => navigate(-1);
+
+  const [searchValue, setSearchValue] = useState("");
 
   return (
-    <div className={styles.header}>
-      <div className={styles.logoImg} onClick={goHome}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 100 100"
-          width="100%"
-          height="100%"
-        >
-          <circle cx="50" cy="50" r="50" fill={isDark ? "#111111" : "white"} />
-          <ellipse
-            cx="33"
-            cy="64"
-            rx="10"
-            ry="7"
-            transform="rotate(-22 33 64)"
-            fill={isDark ? "white" : "#111111"}
-          />
-          <line
-            x1="42"
-            y1="58"
-            x2="42"
-            y2="25"
-            stroke={isDark ? "white" : "#111111"}
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <ellipse
-            cx="60"
-            cy="55"
-            rx="10"
-            ry="7"
-            transform="rotate(-22 60 55)"
-            fill={isDark ? "white" : "#111111"}
-          />
-          <line
-            x1="69"
-            y1="49"
-            x2="69"
-            y2="16"
-            stroke={isDark ? "white" : "#111111"}
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <path
-            d="M42 25 Q55.5 16 69 16"
-            stroke={isDark ? "white" : "#111111"}
-            strokeWidth="4.5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <path
-            d="M73 30 Q82 25 83 35 Q84 45 73 49"
-            stroke={isDark ? "white" : "#111111"}
-            strokeWidth="1.8"
-            fill="none"
-            strokeLinecap="round"
-            opacity={isDark ? 0.7 : 0.65}
-          />
-          <path
-            d="M76 20 Q91 13 93 30 Q95 47 77 54"
-            stroke={isDark ? "white" : "#111111"}
-            strokeWidth="1.5"
-            fill="none"
-            strokeLinecap="round"
-            opacity={isDark ? 0.35 : 0.32}
-          />
-        </svg>
-      </div>
-      <div className={styles.backBtn}>
-        <Button isIconOnly variant="tertiary" aria-label="上一页" onClick={backup}>
-          <ChevronLeft />
-        </Button>
-        <SearchField name="search">
-          <SearchField.Group>
-            <SearchField.SearchIcon />
-            <SearchField.Input className="w-80" placeholder="想播放什么？" />
-            <SearchField.ClearButton />
-          </SearchField.Group>
-        </SearchField>
-      </div>
-      <div className={styles.setting}>
-        <Dropdown isOpen={isOpen} onOpenChange={handleOpenChange}>
-          <Dropdown.Trigger className="rounded-full">
-            <Avatar aria-label="图片" className={styles.avatarBox}>
-              <Avatar.Image
-                alt="user"
-                
-                src={
-                  userInfo?.avatar ||
-                  "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
-                }
-              />
-              <Avatar.Fallback>{userInfo?.username}</Avatar.Fallback>
-            </Avatar>
-          </Dropdown.Trigger>
-
-          <Dropdown.Popover>
-            <div className="px-3 pt-3 pb-1">
-              <div className="flex items-center gap-2">
-                <Avatar size="sm" aria-label="图片">
+    <>
+      {/* 移动端头部 */}
+      <header className={`${styles.header} md:hidden`}>
+        {/* 简易 Logo */}
+        <div className={styles.mobileLogo} onClick={goHome} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && goHome()}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+            <rect x="38" y="35" width="6" height="30" rx="3" fill="var(--primary, #605e5c)" />
+            <rect x="47" y="30" width="6" height="40" rx="3" fill="var(--primary, #605e5c)" />
+            <rect x="56" y="40" width="6" height="20" rx="3" fill="var(--primary, #605e5c)" />
+          </svg>
+        </div>
+        <div className={styles.headerRight}>
+          <button className="material-symbols-outlined" style={{ color: "var(--on-surface-variant)" }} aria-label="通知">
+            notifications
+          </button>
+          <Dropdown isOpen={isOpen} onOpenChange={handleOpenChange}>
+            <Dropdown.Trigger>
+              <div className={styles.avatarTrigger}>
+                <Avatar aria-label="用户" className={styles.avatarBtn}>
                   <Avatar.Image
-                    alt="user"
-                    src={
-                      userInfo?.avatar ||
-                      "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
-                    }
+                    alt="用户头像"
+                    src={userInfo?.avatar || "https://lh3.googleusercontent.com/aida-public/default-avatar.png"}
                   />
-                  <Avatar.Fallback delayMs={600}>
-                    {userInfo?.username}
-                  </Avatar.Fallback>
+                  <Avatar.Fallback>{userInfo?.username?.[0] || "U"}</Avatar.Fallback>
                 </Avatar>
-                <div className="flex flex-col gap-0">
-                  <p className="text-sm leading-5 font-medium">
-                    {userInfo?.username}
-                  </p>
-                  <p className="text-xs leading-none text-muted">
-                    {userInfo?.email}
-                  </p>
+              </div>
+            </Dropdown.Trigger>
+            <Dropdown.Popover className={styles.userPopover}>
+              <div className={styles.popoverUserInfo}>
+                <Avatar size="md" aria-label="用户">
+                  <Avatar.Image alt="用户头像" src={userInfo?.avatar || "https://lh3.googleusercontent.com/aida-public/default-avatar.png"} />
+                  <Avatar.Fallback delayMs={600}>{userInfo?.username}</Avatar.Fallback>
+                </Avatar>
+                <div className={styles.popoverUserText}>
+                  <p className={styles.popoverUserName}>{userInfo?.username || "未登录"}</p>
+                  <p className={styles.popoverUserEmail}>{userInfo?.email || ""}</p>
                 </div>
               </div>
-            </div>
-            <Dropdown.Menu onAction={handleAction}>
-              <Dropdown.Item id="profile" textValue="Profile">
-                <Label>个人资料</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="settings" textValue="Settings">
-                <div className="flex w-full items-center justify-between gap-2">
-                  <Label>设置</Label>
-                  <Gear className="size-3.5 text-muted" />
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item id="new-project" textValue="New project">
-                <div className="flex w-full items-center justify-between gap-2">
-                  <Label>Create Team</Label>
-                  <Persons className="size-3.5 text-muted" />
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item id="logout" textValue="Logout" variant="danger">
-                <div className="flex w-full items-center justify-between gap-2">
-                  <Label>退出</Label>
-                  <ArrowRightFromSquare className="size-3.5 text-danger" />
-                </div>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
+              <Dropdown.Menu onAction={handleAction}>
+                <Dropdown.Item id="profile" textValue="Profile"><Label>个人资料</Label></Dropdown.Item>
+                <Dropdown.Item id="settings" textValue="Settings"><Label>设置</Label></Dropdown.Item>
+                <Dropdown.Item id="logout" textValue="Logout" variant="danger"><Label>退出登录</Label></Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown.Popover>
+          </Dropdown>
+        </div>
+      </header>
 
-        <Switch
-          isSelected={isDark}
-          onChange={(selected) => setTheme(selected ? "dark" : "light")}
-          size="lg"
-          aria-label="切换明暗主题"
-        >
-          {({ isSelected }) => (
-            <>
-              <Switch.Control>
-                <Switch.Thumb>
-                  <Switch.Icon>
-                    {isSelected ? (
-                      <Moon className="size-4 text-inherit opacity-70" />
-                    ) : (
-                      <Sun className="size-4 text-inherit opacity-100" />
-                    )}
-                  </Switch.Icon>
-                </Switch.Thumb>
-              </Switch.Control>
-            </>
-          )}
-        </Switch>
-      </div>
-    </div>
+      {/* 桌面端头部 */}
+      <header className={`${styles.header} hidden md:flex`}>
+        {/* 左侧占位 */}
+        <div className={styles.desktopLeft} />
+
+        {/* 右侧 */}
+        <div className={styles.headerRight}>
+          <button className={`material-symbols-outlined ${styles.iconBtn}`} aria-label="通知">
+            notifications
+          </button>
+
+          <button
+            className={`material-symbols-outlined ${styles.iconBtn}`}
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            aria-label="切换主题"
+          >
+            {isDark ? "light_mode" : "dark_mode"}
+          </button>
+
+          {/* 分隔 + 头像 */}
+          <div className={styles.userSection}>
+            <Dropdown isOpen={isOpen} onOpenChange={handleOpenChange}>
+              <Dropdown.Trigger>
+                <div className={styles.avatarTrigger}>
+                  <Avatar aria-label="用户" className={styles.avatarBtn}>
+                    <Avatar.Image
+                      alt="用户头像"
+                      src={userInfo?.avatar || "https://lh3.googleusercontent.com/aida-public/default-avatar.png"}
+                    />
+                    <Avatar.Fallback>{userInfo?.username?.[0]?.toUpperCase() || "U"}</Avatar.Fallback>
+                  </Avatar>
+                </div>
+              </Dropdown.Trigger>
+              <Dropdown.Popover className={styles.userPopover}>
+                <div className={styles.popoverUserInfo}>
+                  <Avatar size="md" aria-label="用户">
+                    <Avatar.Image alt="用户头像" src={userInfo?.avatar || "https://lh3.googleusercontent.com/aida-public/default-avatar.png"} />
+                    <Avatar.Fallback delayMs={600}>{userInfo?.username}</Avatar.Fallback>
+                  </Avatar>
+                  <div className={styles.popoverUserText}>
+                    <p className={styles.popoverUserName}>{userInfo?.username || "未登录"}</p>
+                    <p className={styles.popoverUserEmail}>{userInfo?.email || ""}</p>
+                  </div>
+                </div>
+                <Dropdown.Menu onAction={handleAction}>
+                  <Dropdown.Item id="profile" textValue="Profile"><Label>个人资料</Label></Dropdown.Item>
+                  <Dropdown.Item id="settings" textValue="Settings"><Label>设置</Label></Dropdown.Item>
+                  <Dropdown.Item id="logout" textValue="Logout" variant="danger"><Label>退出登录</Label></Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }

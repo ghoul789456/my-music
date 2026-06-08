@@ -1,6 +1,4 @@
 import React from "react";
-import { Card, Button } from "@heroui/react";
-import { PlayFill } from "@gravity-ui/icons";
 import styles from "./index.module.scss";
 
 // 定义 Props 接口
@@ -10,6 +8,7 @@ interface SingerItem {
   primary: string;
   secondary: string;
 }
+
 interface SingerCardProps {
   title: string;
   list: SingerItem[];
@@ -26,46 +25,55 @@ export default function SingerCard({
   onPlayClick,
 }: SingerCardProps) {
   return (
-    <Card className={styles.singerList}>
-      <Card.Content>
-        <p>{title}</p>
-      </Card.Content>
+    <div className={styles.cardSection}>
+      {/* Section Header */}
+      <div className={styles.sectionHeader}>
+        <div>
+          <h3 className={styles.sectionTitle}>{title}</h3>
+        </div>
+      </div>
 
-      <Card.Content className={styles.singerBox}>
+      {/* Horizontal Scroll Container */}
+      <div className={styles.scrollContainer}>
         {list.map((item) => (
           <div
             key={item.id}
-            className={styles.singerItem}
+            className={styles.card}
             onClick={() => onCardClick?.(item)}
           >
-            <div className={styles.singerImgWrapper}>
+            {/* Image Wrapper */}
+            <div className={styles.imgWrapper}>
               <img
                 alt={item.primary}
                 src={item.url}
-                className={`object-cover ${
-                  isRound ? "rounded-full" : "rounded-xl"
+                className={`${styles.cardImg} ${
+                  isRound ? styles.imgRound : styles.imgRounded
                 }`}
               />
 
-              <Button
-                isIconOnly
-                variant="tertiary"
-                className={styles.playBtn}
-                aria-label="播放"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPlayClick?.(item);
-                }}
-              >
-                <PlayFill />
-              </Button>
+              {/* Hover Play Overlay */}
+              <div className={styles.playOverlay}>
+                <button
+                  className={styles.playCircle}
+                  aria-label="Play"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPlayClick?.(item);
+                  }}
+                >
+                  <span className="material-symbols-outlined">
+                    play_arrow
+                  </span>
+                </button>
+              </div>
             </div>
 
-            <p className={styles.songName}>{item.primary}</p>
-            <p className={styles.singerName}>{item.secondary}</p>
+            {/* Text */}
+            <p className={styles.cardTitle}>{item.primary}</p>
+            <p className={styles.cardSub}>{item.secondary}</p>
           </div>
         ))}
-      </Card.Content>
-    </Card>
+      </div>
+    </div>
   );
 }

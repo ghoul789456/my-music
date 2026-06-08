@@ -1,161 +1,148 @@
 @import "tailwindcss";
-@import "@heroui/styles"; 
+@import "@heroui/styles";
 
 @custom-variant dark (&:is(.dark *));
 
+/* 字体基础 */
 @layer base {
-  /* HeroUI Default Theme */
+  html {
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Noto Serif SC", serif;
+  }
+}
+
+/* Material Symbols 基础样式 */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@layer base {
   :root {
     color-scheme: light;
 
-    /* == Common Variables == */
-
-    /* Primitive Colors (Do not change between light and dark) */
-    --white: oklch(100% 0 0);
-    --black: oklch(0% 0 0);
+    /* == 基础变量 == */
+    --white: #ffffff;
+    --black: #000000;
     --snow: oklch(0.9911 0 0);
-    --eclipse: oklch(0.2103 0.0059 285.89);
 
-    /* Spacing scale */
     --spacing: 0.25rem;
-
-    /* Border */
     --border-width: 1px;
     --field-border-width: 0px;
     --disabled-opacity: 0.5;
-
-    /* Ring offset - Used for focus ring */
     --ring-offset-width: 2px;
-
-    /* Cursor */
     --cursor-interactive: pointer;
     --cursor-disabled: not-allowed;
 
-    /* Radius */
-    --radius: 0.5rem;
+    /* 圆角 — 更精致克制 */
+    --radius: 0.35rem;
     --field-radius: calc(var(--radius) * 1.5);
 
-    /* App brand (music player gold) */
-    --brand: #c8923a;
-    --brand-hover: #a06828;
-    --slider-track: oklch(85% 0.004 286.32);
-    --hover-overlay: rgba(0, 0, 0, 0.05);
+    /* Brand 映射到 primary */
+    --brand: #605e5c;
+    --brand-hover: #484745;
+    --slider-track: #c9c6be;
+    --hover-overlay: rgba(96, 94, 92, 0.06);
 
-    /* == Light Theme Variables == */
+    /* == 浅色主题 — 声学暖意 == */
+    --background: #fff8f5;
+    --foreground: #1e1b18;
 
-    /* Base Colors */
-    --background: oklch(0.9702 0 0);
-    --foreground: var(--eclipse);
-
-    /* Surface: Used for non-overlay components (cards, accordions, disclosure groups) */
-    --surface: var(--white);
+    --surface: #f5ece7;
     --surface-foreground: var(--foreground);
 
-    /* Overlay: Used for floating/overlay components (tooltips, popovers, modals, menus) */
     --overlay: var(--white);
     --overlay-foreground: var(--foreground);
 
-    --muted: oklch(0.5517 0.0138 285.94);
-    --scrollbar: oklch(87.1% 0.006 286.286);
+    --muted: #484740;
+    --scrollbar: #c9c6be;
 
-    --default: oklch(94% 0.001 286.375);
-    --default-foreground: var(--eclipse);
+    --default: #fbf2ed;
+    --default-foreground: #1e1b18;
 
-    --accent: oklch(0.6204 0.195 253.83);
-    --accent-foreground: var(--snow);
+    --accent: #615e58;
+    --accent-foreground: var(--white);
 
-    /* Form Field Defaults - Colors */
+    /* 表单 */
     --field-background: var(--white);
-    --field-foreground: oklch(0.2103 0.0059 285.89);
-    --field-placeholder: var(--muted);
-    --field-border: transparent; /* no border by default on form fields */
+    --field-foreground: #1e1b18;
+    --field-placeholder: #797770;
+    --field-border: transparent;
 
-    /* Status Colors */
+    /* 状态色 */
     --success: oklch(0.7329 0.1935 150.81);
-    --success-foreground: var(--eclipse);
-
+    --success-foreground: #1e1b18;
     --warning: oklch(0.7819 0.1585 72.33);
-    --warning-foreground: var(--eclipse);
+    --warning-foreground: #1e1b18;
+    --danger: #ba1a1a;
+    --danger-foreground: var(--white);
 
-    --danger: oklch(0.6532 0.2328 25.74);
-    --danger-foreground: var(--snow);
-
-    /* Component Colors */
+    /* 组件 */
     --segment: var(--white);
-    --segment-foreground: var(--eclipse);
+    --segment-foreground: #1e1b18;
 
-    /* Misc Colors */
-    --border: oklch(92% 0.004 286.32);
-    --separator: oklch(92% 0.004 286.32);
-    --focus: var(--accent);
+    /* 其他 */
+    --border: #c9c6be;
+    --separator: #c9c6be;
+    --focus: #615e58;
     --link: var(--foreground);
 
-    /* Shadows */
-    --surface-shadow:
-      0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06),
-      0 0 1px 0 rgba(0, 0, 0, 0.06);
-    /* Overlay shadow */
-    --overlay-shadow: 0 4px 16px 0 rgba(24, 24, 27, 0.08), 0 8px 24px 0 rgba(24, 24, 27, 0.09);
-    --field-shadow:
-      0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06),
-      0 0 1px 0 rgba(0, 0, 0, 0.06);
-    /* Skeleton Default Global Animation */
-    --skeleton-animation: shimmer; /* shimmer, pulse, none */
+    /* 阴影 — 极克制 */
+    --surface-shadow: 0 1px 3px 0 rgba(30, 27, 24, 0.04), 0 1px 2px 0 rgba(30, 27, 24, 0.03);
+    --overlay-shadow: 0 4px 16px 0 rgba(30, 27, 24, 0.05), 0 2px 8px 0 rgba(30, 27, 24, 0.04);
+    --field-shadow: 0 1px 2px 0 rgba(30, 27, 24, 0.04);
+    --skeleton-animation: shimmer;
   }
 
   :root.dark,
   .dark {
     color-scheme: dark;
 
-    --brand: #d4a04a;
-    --brand-hover: #e8b86d;
-    --slider-track: oklch(35% 0.006 286.033);
-    --hover-overlay: rgba(255, 255, 255, 0.08);
+    --brand: #c9c6c3;
+    --brand-hover: #e5e2df;
+    --slider-track: #484740;
+    --hover-overlay: rgba(201, 198, 195, 0.06);
 
-    /* == Dark Theme Variables == */
+    /* == 深色主题 == */
+    --background: #1a1715;
+    --foreground: #f8efea;
 
-    /* Base Colors */
-    --background: oklch(12% 0.005 285.823);
-    --foreground: var(--snow);
-
-    /* Surface: Used for non-overlay components (cards, accordions, disclosure groups) */
-    --surface: oklch(0.2103 0.0059 285.89);
+    --surface: #2c2825;
     --surface-foreground: var(--foreground);
 
-    /* Overlay: Used for floating/overlay components (tooltips, popovers, modals, menus) - lighter for contrast */
-    --overlay: oklch(0.22 0.0059 285.89); /* A bit lighter than surface for visibility in dark mode */
+    --overlay: #2c2825;
     --overlay-foreground: var(--foreground);
 
-    --muted: oklch(70.5% 0.015 286.067);
-    --scrollbar: oklch(70.5% 0.015 286.067);
+    --muted: #c9c6be;
+    --scrollbar: #484740;
 
-    --default: oklch(27.4% 0.006 286.033);
-    --default-foreground: var(--snow);
+    --default: #2c2825;
+    --default-foreground: #f8efea;
 
-    /* Form Field Defaults - Colors (only the ones that are different from light theme) */
-    --field-background: var(--default);
-    --field-foreground: var(--foreground);
+    --field-background: #2c2825;
+    --field-foreground: #f8efea;
 
-    /* Status Colors */
     --warning: oklch(0.8203 0.1388 76.34);
-    --warning-foreground: var(--eclipse);
+    --warning-foreground: #1e1b18;
 
-    --danger: oklch(0.594 0.1967 24.63);
-    --danger-foreground: var(--snow);
+    --danger: #ffb4ab;
+    --danger-foreground: #1e1b18;
 
-    /* Component Colors */
-    --segment: oklch(0.3964 0.01 285.93);
+    --segment: #34302c;
     --segment-foreground: var(--foreground);
 
-    /* Misc Colors */
-    --border: oklch(22% 0.006 286.033);
-    --separator: oklch(22% 0.006 286.033);
-    --focus: var(--accent);
+    --border: #484740;
+    --separator: #484740;
+    --focus: #c9c6c3;
     --link: var(--foreground);
 
-    /* Shadows */
-    --surface-shadow: 0 0 0 0 transparent inset; /* No shadow on dark mode */
-    --overlay-shadow: 0 0 0 0 transparent inset; /* No shadow on dark mode */
-    --field-shadow: 0 0 0 0 transparent inset; /* Transparent shadow to allow ring utilities to work */
+    --surface-shadow: 0 0 0 0 transparent inset;
+    --overlay-shadow: 0 0 0 0 transparent inset;
+    --field-shadow: 0 0 0 0 transparent inset;
   }
 }

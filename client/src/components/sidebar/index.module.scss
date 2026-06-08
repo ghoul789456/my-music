@@ -1,122 +1,84 @@
-/* ===== Sidebar Glass ===== */
+/* ===== 侧边栏 ===== */
 .sideBar {
-  width: 10%;
-  height: 100%;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  border-radius: 0.75rem;
-
-  /* Glass base */
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-
-  /* Layered border for glass edge highlight */
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08);
-
-  color: var(--surface-foreground);
-  transition:
-    background 0.3s ease,
-    box-shadow 0.3s ease;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  display: none;
 }
 
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
+@media (min-width: 768px) {
   .sideBar {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      0 2px 8px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 18rem;
+    z-index: 40;
+    background: var(--surface-container-low, #fbf2ed);
+    border-right: 1px solid rgba(201, 198, 190, 0.3);
   }
 }
 
-/* Class-based dark mode (e.g. .dark on <html>) */
-:global(.dark) .sideBar {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.25);
+/* ===== 品牌 Logo ===== */
+.brand {
+  padding: 2.5rem 2rem 1.5rem;
 }
 
-/* ===== Nav Items ===== */
-.navItem {
+.logoBox {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* ===== 导航 ===== */
+.nav {
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 0.4rem;
+  border-radius: 0.5rem;
+  color: var(--on-surface-variant, #484740);
+  text-decoration: none;
+  font-weight: 500;
   font-size: 1rem;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-  color: var(--surface-foreground);
-  position: relative;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateX(4px);
+    background: var(--surface-container-high, #efe6e2);
   }
 
-  &.navActive {
-    background: rgba(255, 255, 255, 0.28);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      0 1px 3px rgba(0, 0, 0, 0.1);
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      height: 60%;
-      width: 3px;
-      background: var(--brand);
-      border-radius: 0 4px 4px 0;
-    }
+  &:active {
+    transform: scale(0.97);
   }
 }
 
-/* Dark mode nav items */
-@media (prefers-color-scheme: dark) {
-  .navItem:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .navItem.navActive {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      0 1px 3px rgba(0, 0, 0, 0.3);
-  }
+.navIcon {
+  font-size: 24px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-:global(.dark) .navItem:hover {
-  background: rgba(255, 255, 255, 0.1);
+.navLabel {
+  font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
-:global(.dark) .navItem.navActive {
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 1px 3px rgba(0, 0, 0, 0.3);
+.navActive {
+  color: var(--secondary, #615e58);
+  font-weight: 600;
+  background: var(--surface-container-highest, #e9e1dc);
+}
+
+/* ===== 底部占位 ===== */
+.footer {
+  padding: 1.5rem;
 }
