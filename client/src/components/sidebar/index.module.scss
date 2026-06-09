@@ -1,84 +1,51 @@
-/* ===== 侧边栏 ===== */
+/* ===== 侧边栏 — 玻璃面板 ===== */
 .sideBar {
   display: none;
 }
 
 @media (min-width: 768px) {
   .sideBar {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 18rem;
-    z-index: 40;
-    background: var(--surface-container-low, #fbf2ed);
-    border-right: 1px solid rgba(201, 198, 190, 0.3);
+    display: flex; flex-direction: column;
+    position: fixed; left: 0; top: 4rem; height: calc(100% - 4rem); width: 16rem; z-index: 40;
+    background: rgba(30, 30, 30, 0.7);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
   }
-}
-
-/* ===== 品牌 Logo ===== */
-.brand {
-  padding: 2.5rem 2rem 1.5rem;
-}
-
-.logoBox {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 /* ===== 导航 ===== */
 .nav {
-  flex: 1;
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex: 1; display: flex; flex-direction: column; gap: 2px;
+}
+
+.sectionLabel {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: rgba(255,255,255,0.35);
+  padding: 0.75rem 0.75rem 0.25rem;
 }
 
 .navItem {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  color: var(--on-surface-variant, #484740);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  display: flex; align-items: center; gap: 0.875rem;
+  padding: 0.65rem 0.75rem; border-radius: 0.5rem;
+  color: rgba(255,255,255,0.65); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500;
+  transition: background 0.12s, color 0.12s;
 
-  &:hover {
-    background: var(--surface-container-high, #efe6e2);
-  }
-
-  &:active {
-    transform: scale(0.97);
-  }
+  &:hover { background: rgba(255,255,255,0.05); color: #fff; }
 }
 
 .navIcon {
-  font-size: 24px;
-  width: 24px;
-  text-align: center;
-  flex-shrink: 0;
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; opacity: 0.85;
 }
 
-.navLabel {
-  font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
-  font-size: 1rem;
-  line-height: 1.5;
-}
+.navLabel { line-height: 1; }
 
 .navActive {
-  color: var(--secondary, #615e58);
-  font-weight: 600;
-  background: var(--surface-container-highest, #e9e1dc);
-}
-
-/* ===== 底部占位 ===== */
-.footer {
-  padding: 1.5rem;
+  color: var(--brand, #b4233c);
+  font-weight: 700;
+  background: rgba(255,255,255,0.06);
+  .navIcon { opacity: 1; color: var(--brand, #b4233c); }
 }

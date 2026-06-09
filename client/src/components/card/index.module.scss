@@ -1,143 +1,92 @@
-/* ===== 卡片区块 ===== */
-.cardSection {
-  margin-bottom: 3rem;
-}
-
-/* ===== 区块标题 ===== */
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 1.5rem;
-}
+.cardSection { margin-bottom: 2.5rem; }
 
 .sectionTitle {
-  font-family: "Noto Serif SC", serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--foreground, #1e1b18);
-  margin: 0;
+  font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em;
+  color: #fff; margin: 0 0 1rem;
 }
 
-/* ===== 横向滚动容器 ===== */
+/* ===== 布局 ===== */
 .scrollContainer {
-  display: flex;
-  overflow-x: auto;
-  gap: 1.5rem;
-  padding-bottom: 1rem;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  mask-image: linear-gradient(to right, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  display: flex; overflow-x: auto; gap: 1rem;
+  padding-bottom: 0.5rem; scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+  mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
 }
 
-/* ===== 单张卡片 ===== */
-.card {
-  flex-shrink: 0;
-  width: 12rem;
-  cursor: pointer;
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  @media (min-width: 480px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 768px) { grid-template-columns: repeat(4, 1fr); }
+  @media (min-width: 1024px) { grid-template-columns: repeat(6, 1fr); }
 }
 
+/* ===== 卡片 ===== */
+.card { cursor: pointer; }
+.scrollContainer .card { flex-shrink: 0; }
+
+/* 尺寸 */
+.sm {
+  &.card { width: 7rem; }
+  &.imgWrapper { width: 7rem; height: 7rem; }
+}
+
+.md {
+  &.card { width: 10rem; }
+  &.imgWrapper { width: 10rem; height: 10rem; }
+}
+
+.lg {
+  &.card { width: 12rem; }
+  &.imgWrapper { width: 12rem; height: 12rem; }
+}
+
+/* 网格模式自动撑满 */
+.gridContainer .card { width: auto; }
+.gridContainer .imgWrapper { width: 100%; height: auto; aspect-ratio: 1; }
+
+/* ===== 图片容器 ===== */
 .imgWrapper {
-  position: relative;
-  width: 12rem;
-  height: 12rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  background: var(--surface-container, #f5ece7);
-  box-shadow: 0 1px 3px rgba(30, 27, 24, 0.05);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative; border-radius: 0.75rem; overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.25s, transform 0.25s;
 }
-
 .card:hover .imgWrapper {
-  box-shadow: 0 4px 12px rgba(30, 27, 24, 0.08);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  transform: translateY(-3px);
 }
 
-.cardImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+.cardImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.square { border-radius: 0.75rem; }
+.round { border-radius: 50%; }
 
-.imgRounded {
-  border-radius: 0.5rem;
-}
-
-.imgRound {
-  border-radius: 50%;
-}
-
-/* ===== Hover 播放叠加层 ===== */
+/* ===== 播放覆盖层 ===== */
 .playOverlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(1px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
 }
-
-.card:hover .playOverlay {
-  opacity: 1;
-}
+.card:hover .playOverlay { opacity: 1; }
 
 .playCircle {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--primary, #605e5c);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(30, 27, 24, 0.12);
-  transform: scale(0.9);
-  transition: transform 0.25s ease;
-
-  span {
-    font-size: 1.5rem;
-  }
+  width: 2.75rem; height: 2.75rem; border-radius: 50%; border: none;
+  background: var(--brand, #b4233c); color: #fff;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transform: translateY(8px); transition: transform 0.2s;
 }
+.card:hover .playCircle { transform: translateY(0); }
 
-.card:hover .playCircle {
-  transform: scale(1);
-}
-
-.playCircle:hover {
-  background: white;
-  transform: scale(1.05) !important;
-}
-
-/* ===== 卡片文字 ===== */
+/* ===== 文字 ===== */
 .cardTitle {
-  margin-top: 1rem;
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--on-surface, #1e1b18);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.82rem; font-weight: 600; color: #fff; margin: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
 .cardSub {
-  margin-top: 0.15rem;
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--on-surface-variant, #484740);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.72rem; color: rgba(255,255,255,0.5); margin: 2px 0 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }

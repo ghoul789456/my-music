@@ -1,12 +1,11 @@
-/* ===== 沉浸式全屏播放器 ===== */
+/* ===== 全屏播放器 ===== */
 .foot {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: var(--background, #fff8f5);
+  background: #121212;
   transform: translate3d(0, 100%, 0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -16,129 +15,74 @@
   }
 }
 
-/* ===== 背景层（不透明） ===== */
-.bgLayer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.12;
-}
-
-.bgOverlay {
-  position: absolute;
-  inset: 0;
-  background: var(--surface-dim, #e1d8d4);
-  z-index: 1;
-}
-
-.bgImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: blur(60px) saturate(0.5);
-  transform: scale(1.05);
-}
-
-/* ===== 顶部关闭栏 ===== */
+/* ===== 顶部栏 ===== */
 .topBar {
-  position: relative;
-  z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1.25rem;
-  height: 4rem;
-}
-
-@media (min-width: 768px) {
-  .topBar {
-    padding: 0 2.5rem;
-    height: 5rem;
-  }
+  padding: 0 1rem;
+  height: 3.5rem;
+  flex-shrink: 0;
 }
 
 .closeBtn {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
-  border: 1px solid rgba(201, 198, 190, 0.3);
-  background: var(--surface-container-low, #fbf2ed);
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--on-surface-variant, #484740);
-  transition: background 0.15s, color 0.15s;
-
-  span {
-    font-size: 28px;
-  }
+  color: #fff;
+  transition: background 0.12s;
 
   &:hover {
-    background: var(--surface-container-high, #efe6e2);
-    color: var(--on-surface, #1e1b18);
+    background: rgba(255, 255, 255, 0.12);
   }
 }
 
-.topBarInfo {
-  text-align: center;
-}
 
-.topBarLabel {
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--on-surface-variant, #484740);
-  margin: 0;
-}
-
-/* ===== 主内容区 ===== */
+/* ===== 主内容 ===== */
 .playerMain {
-  position: relative;
-  z-index: 10;
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 1.25rem 2rem;
-  gap: 2rem;
-}
+  padding: 0 1rem;
+  gap: 1rem;
+  min-height: 0;
 
-@media (min-width: 768px) {
-  .playerMain {
+  @media (min-width: 768px) {
     flex-direction: row;
-    padding: 0 2.5rem 2rem;
-    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+    gap: 2rem;
   }
 }
 
-/* ===== 专辑封面区 ===== */
+/* ===== 封面区 ===== */
 .artSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  flex: 1;
-  max-width: 30rem;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  width: 25%;
 }
 
 .artWrapper {
-  width: 100%;
-  max-width: 20rem;
+  width: min(16rem, 60vw);
   aspect-ratio: 1;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(30, 27, 24, 0.15);
-}
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 
-@media (min-width: 768px) {
-  .artWrapper {
-    max-width: 26rem;
+  @media (min-width: 768px) {
+    width: min(20rem, 36vw);
   }
 }
 
@@ -153,27 +97,19 @@
   text-align: center;
 }
 
-@media (min-width: 768px) {
-  .songMeta {
-    text-align: left;
-    padding-left: 0.5rem;
-  }
-}
-
 .metaRow {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-end;
+  gap: 1.5rem;
 }
 
 .favBtn {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--primary, #605e5c);
-  font-size: 26px;
-  padding: 0.5rem;
-  transition: transform 0.15s ease;
+  color: var(--brand, #b4233c);
+  padding: 0.25rem;
 
   &:active {
     transform: scale(1.2);
@@ -181,51 +117,46 @@
 }
 
 .songTitle {
-  font-family: "Noto Serif SC", serif;
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  line-height: 1.25;
-  color: var(--on-background, #1e1b18);
-  margin: 0 0 0.25rem;
-}
+  letter-spacing: -0.02em;
+  margin: 0 0 0.15rem;
+  color: #fff;
 
-@media (min-width: 768px) {
-  .songTitle {
-    font-size: 1.75rem;
+  @media (min-width: 768px) {
+    font-size: 1.4rem;
   }
 }
 
 .songArtist {
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--secondary, #615e58);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--brand, #b4233c);
   margin: 0;
 }
 
-/* ===== 歌词区（桌面端右侧） ===== */
+/* ===== 歌词区 ===== */
 .lyricSection {
   display: none;
-}
+  overflow: hidden;
+  min-height: 0;
+  width: 25%;
 
-@media (min-width: 768px) {
-  .lyricSection {
+  @media (min-width: 768px) {
     display: flex;
-    flex: 1;
-    height: 100%;
-    max-width: 28rem;
+    align-items: center;
     justify-content: center;
-    padding-left: 1rem;
+    max-width: 24rem;
+    align-self: stretch;
   }
 }
 
 .lyricBox {
-  height: 75%;
   width: 100%;
+  max-height: 32rem; // ← 不撑满，让父容器居中生效
   overflow-y: auto;
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-  position: relative;
 
   &::-webkit-scrollbar {
     display: none;
@@ -233,72 +164,66 @@
 }
 
 .lyricPlaceholder {
-  height: 50%;
+  height: 16rem;
   flex-shrink: 0;
 }
 
 .lyricLine {
-  font-family: "Noto Serif SC", serif;
   text-align: center;
-  font-size: 1.4rem;
-  font-weight: 600;
-  padding: 0.75rem 0;
-  color: rgba(72, 71, 64, 0.3);
-  transition: color 0.4s ease, font-size 0.4s ease;
+  font-size: 1.15rem;
+  font-weight: 500;
+  padding: 0.55rem 0;
+  color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
+  transition: color 0.3s, font-size 0.3s;
 
   &:hover {
-    color: rgba(72, 71, 64, 0.5);
+    color: rgba(255, 255, 255, 0.35);
   }
 }
 
 .lyricActive {
-  color: var(--on-background, #1e1b18);
-  font-size: 1.6rem;
-  opacity: 1;
+  color: #fff !important;
+  font-size: 1.35rem;
+  font-weight: 600;
 }
 
 .lyricTranslation {
   display: block;
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 0.7em;
-  opacity: 0.5;
-  margin-top: 0.25rem;
+  font-size: 0.68em;
+  opacity: 0.45;
+  margin-top: 0.15rem;
 }
 
 .lyricActive .lyricTranslation {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 .lyricEmpty {
   text-align: center;
-  color: var(--muted, #484740);
-  opacity: 0.5;
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
 }
 
 /* ===== 底部控制栏 ===== */
 .controlBar {
-  position: relative;
-  z-index: 20;
-  padding: 0 1.25rem 1.5rem;
-}
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
 
-@media (min-width: 768px) {
-  .controlBar {
-    padding: 0 2.5rem 2.5rem;
+  @media (min-width: 768px) {
+    padding: 0.5rem 2rem;
   }
 }
 
 .controlInner {
-  max-width: 80rem;
+  max-width: 48rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
-/* ===== 进度条 ===== */
+/* 进度条 */
 .progressWrapper {
   display: flex;
   align-items: center;
@@ -307,10 +232,8 @@
 }
 
 .progressTime {
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--on-surface-variant, #484740);
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.35);
   flex-shrink: 0;
 }
 
@@ -323,23 +246,23 @@
 }
 
 .pgTrack {
-  height: 6px;
-  background: rgba(72, 71, 64, 0.12);
-  border-radius: 3px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
   border: 0;
 }
 
 .pgFill {
   height: 100%;
-  background: var(--secondary, #615e58);
+  background: var(--brand, #b4233c);
   border-radius: 2px;
 }
 
 .pgThumb {
-  width: 14px;
-  height: 14px;
-  background: var(--primary, #605e5c);
-  box-shadow: 0 2px 4px rgba(30, 27, 24, 0.15);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
   &::after {
     width: 100% !important;
@@ -348,7 +271,7 @@
   }
 }
 
-/* ===== 控制按钮行 ===== */
+/* 控制按钮 */
 .controlsRow {
   display: flex;
   align-items: center;
@@ -358,10 +281,8 @@
 
 .controlLeft {
   display: none;
-}
 
-@media (min-width: 768px) {
-  .controlLeft {
+  @media(min-width:768px) {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -373,22 +294,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.75rem;
   flex: 1;
-}
 
-@media (min-width: 768px) {
-  .controlCenter {
-    gap: 1.5rem;
+  @media(min-width:768px) {
+    gap: 1.25rem;
   }
 }
 
 .controlRight {
   display: none;
-}
 
-@media (min-width: 768px) {
-  .controlRight {
+  @media(min-width:768px) {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -401,26 +318,23 @@
   display: flex;
   flex: 1;
   justify-content: flex-end;
-}
 
-@media (min-width: 768px) {
-  .controlMobileExtra {
+  @media(min-width:768px) {
     display: none;
   }
 }
 
-/* ===== 控制图标 ===== */
 .ctrlIcon {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--on-surface-variant, #484740);
-  font-size: 20px;
-  padding: 0.25rem;
-  transition: color 0.15s;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.3rem;
+  display: flex;
+  transition: color 0.12s;
 
   &:hover {
-    color: var(--primary, #605e5c);
+    color: #fff;
   }
 }
 
@@ -428,51 +342,48 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--on-surface, #1e1b18);
-  font-size: 1.9rem;
-  padding: 0.5rem;
-  transition: transform 0.15s, color 0.15s;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.4rem;
+  display: flex;
+  transition: transform 0.12s;
 
   &:hover {
-    color: var(--primary, #605e5c);
     transform: scale(1.08);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.94);
   }
 }
 
 .bigPlay {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 50%;
   border: none;
-  background: var(--on-primary-fixed, #1c1b1a);
-  color: var(--on-primary, #ffffff);
+  background: #fff;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(30, 27, 24, 0.18);
-  transition: transform 0.15s, background 0.15s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.12s;
 
   &:hover {
-    background: var(--primary, #605e5c);
     transform: scale(1.05);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.93);
   }
 
   &:disabled {
-    opacity: 0.6;
-    cursor: default;
+    opacity: 0.4;
   }
 }
 
-/* ===== 播放列表弹窗 ===== */
+/* 播放列表 */
 .listHeader {
   display: flex;
   justify-content: space-between;
@@ -487,21 +398,21 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 0.8rem;
 }
 
 .playListBox {
-  min-height: 200px;
-  max-height: 400px;
+  min-height: 160px;
+  max-height: 320px;
   padding: 0.5rem;
-  width: 320px;
+  width: 280px;
 }
 
 .songLists {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -520,13 +431,15 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  width: 80%;
 }
 
 .plCover {
-  width: 3rem;
-  height: 3rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 0.25rem;
   overflow: hidden;
+  flex-shrink: 0;
 
   img {
     width: 100%;
@@ -538,25 +451,31 @@
 .plText {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .plTitle {
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--foreground);
   margin: 0;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .plArtist {
-  font-size: 0.75rem;
-  color: var(--muted);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .listName {
-  font-family: "Noto Serif SC", serif;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: #fff;
 }

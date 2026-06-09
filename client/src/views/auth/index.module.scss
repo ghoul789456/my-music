@@ -7,10 +7,10 @@
 ───────────────────────────────────────────── */
 
 .page {
-  --gold: #605e5c;
-  --gold-dim: rgba(96, 94, 92, 0.5);
-  --cream: #f8efea;
-  --bg: #1a1715;
+  --gold: #fa586a;
+  --gold-dim: rgba(250, 88, 106, 0.45);
+  --cream: #ffffff;
+  --bg: #000000;
   --font-mono: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
@@ -139,10 +139,10 @@
   border-radius: 50%;
   background: linear-gradient(
     135deg,
-    #715246 0%,
-    #8c6a5d 40%,
-    #5d4034 70%,
-    #715246 100%
+    #fa586a 0%,
+    #ff6b7a 40%,
+    #e64555 70%,
+    #fa586a 100%
   );
   display: flex;
   flex-direction: column;
