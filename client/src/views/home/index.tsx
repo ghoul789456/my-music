@@ -18,18 +18,30 @@ export default function Home() {
   const [artistList, setArtistList] = useState<any[]>([]);
   const [rawSongs, setRawSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
-    server.get<any, HomeHotResponse>("/api/song/hot").then(({ songs, albums, artists }) => {
+  const loadHomeData = async () => {
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const { songs, albums, artists } = await server.get<any, HomeHotResponse>("/api/song/hot");
       setRawSongs(songs);
       setList(songs.map(s => ({ id: String(s.id), primary: s.title, secondary: s.artists.map(a => a.name).join("/"), url: s.coverUrl })));
       setAlbumList(albums.map(a => ({ id: String(a.id), primary: a.title, secondary: a.artist.name, url: a.coverUrl })));
       setArtistList(artists.map(a => ({ id: String(a.id), primary: a.name, secondary: "艺人", url: a.avatar })));
+    } catch {
+      setLoadError(true);
+    } finally {
       setLoading(false);
-    });
+    }
+  };
+
+  useEffect(() => {
+    loadHomeData();
   }, []);
 
   const dispatch = useDispatch();
+  const hasContent = list.length > 0 || artistList.length > 0 || albumList.length > 0;
   const handlePlay = (id: string) => {
     const index = rawSongs.findIndex(s => String(s.id) === id);
     if (index === -1) return;
@@ -43,25 +55,44 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      {loading ? <AnimationTypes /> : (
+      {loading ? <AnimationTypes /> : loadError ? (
+        <div className={styles.errorState} role="status">
+          <div className={styles.errorIcon}>!</div>
+          <h2 className={styles.errorTitle}>暂时无法加载推荐音乐</h2>
+          <p className={styles.errorText}>请检查服务是否已启动，或稍后再试。</p>
+          <button className={styles.retryButton} onClick={loadHomeData}>重试</button>
+        </div>
+      ) : !hasContent ? (
+        <div className={styles.errorState} role="status">
+          <div className={styles.errorIcon}>♪</div>
+          <h2 className={styles.errorTitle}>暂无推荐内容</h2>
+          <p className={styles.errorText}>歌曲同步完成后，推荐音乐会显示在这里。</p>
+        </div>
+      ) : (
         <>
           {/* 为你推荐 — 网格布局 */}
-          <SingerCard
-            title="为你推荐"
-            list={list.slice(0, 12)}
-            layout="scroll"
-            size="lg"
-            onCardClick={() => {}}
-            onPlayClick={(item: any) => handlePlay(item.id)}
-          />
+          {list.length > 0 && (
+            <SingerCard
+              title="为你推荐"
+              list={list.slice(0, 12)}
+              layout="scroll"
+              size="lg"
+              onCardClick={() => {}}
+              onPlayClick={(item: any) => handlePlay(item.id)}
+            />
+          )}
 
           {/* 当红艺人 — 横向滚动 + 圆形 */}
-          <SingerCard title="当红艺人" list={artistList.slice(0, 12)} isRound layout="scroll" size="lg"
-            onCardClick={() => { }} onPlayClick={() => { }} />
+          {artistList.length > 0 && (
+            <SingerCard title="当红艺人" list={artistList.slice(0, 12)} isRound layout="scroll" size="lg"
+              onCardClick={() => { }} onPlayClick={() => { }} />
+          )}
 
           {/* 精选专辑 — 横向滚动 + 大尺寸 */}
-          <SingerCard title="精选专辑" list={albumList.slice(0, 12)} layout="scroll" size="lg"
-            onCardClick={(item) => navigate(`/album/${item.id}`)} onPlayClick={() => { }} />
+          {albumList.length > 0 && (
+            <SingerCard title="精选专辑" list={albumList.slice(0, 12)} layout="scroll" size="lg"
+              onCardClick={(item) => navigate(`/album/${item.id}`)} onPlayClick={() => { }} />
+          )}
         </>
       )}
     </div>

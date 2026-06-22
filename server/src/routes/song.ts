@@ -15,7 +15,7 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
 });
 
-const BASE_URL = "http://localhost:3000/static";
+const BASE_URL = process.env.STATIC_BASE_URL || "http://localhost:3000/static";
 // 获取热门歌曲、专辑、歌手接口
 router.get("/hot", async (req: Request, res: Response) => {
   try {
@@ -71,7 +71,8 @@ router.get("/hot", async (req: Request, res: Response) => {
   }
 });
 
-const resourcePath = "C:/Users/15175/Desktop/resource";
+const resourcePath =
+  process.env.RESOURCE_PATH || "C:/Users/15175/Desktop/resource";
 // 获取歌词接口
 router.get("/:id/lyric", async (req: Request, res: Response) => {
   try {

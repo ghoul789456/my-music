@@ -18,7 +18,7 @@
 
 .miniPlayer {
   position: fixed;
-  bottom: 0;
+  bottom: 4.5rem;
   left: 0;
   right: 0;
   z-index: 100;
@@ -32,11 +32,11 @@
   flex-direction: column;
 }
 
-// @media (min-width: 768px) {
-//   .miniPlayer {
-//     left: 16rem;
-//   }
-// }
+@media (min-width: 768px) {
+  .miniPlayer {
+    bottom: 0;
+  }
+}
 
 /* ===== 顶部进度条 ===== */
 .progressTrack {

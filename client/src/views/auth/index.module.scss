@@ -360,7 +360,7 @@
   color: var(--cream);
   font-family: var(--font-mono);
   font-size: 14px;
-  padding: 9px 14px;
+  padding: 9px 42px 9px 14px;
   outline: none;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -380,19 +380,30 @@
 .togglePw {
   position: absolute;
   right: 12px;
-  bottom: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--gold-dim);
-  font-size: 12px;
   background: none;
   border: none;
   cursor: pointer;
+  width: 1.75rem;
+  height: 1.75rem;
   padding: 0;
-  line-height: 1;
   transition: color 0.2s;
 }
 
+.fieldIcon {
+  pointer-events: none;
+}
+
+.togglePw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .togglePw:hover {
-  color: rgba(113, 82, 70, 0.8);
+  color: var(--gold);
 }
 
 .error {
@@ -406,54 +417,11 @@
   margin-bottom: 12px;
 }
 
-/* ─────────────────────────────────────────────
-   Remember & Forgot
-───────────────────────────────────────────── */
-
 .optionsRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin: 4px 0 24px;
-}
-
-.remember {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: rgba(255, 246, 243, 0.6);
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-
-.checkbox {
-  appearance: none;
-  border: 1.5px solid var(--gold-dim);
-  width: 16px;
-  height: 16px;
-  background: transparent;
-  cursor: pointer;
-  position: relative;
-  flex-shrink: 0;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.checkbox:checked {
-  background: var(--gold);
-  border-color: var(--gold);
-}
-
-.checkbox:checked::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 4px;
-  width: 4px;
-  height: 7px;
-  border-right: 1.5px solid var(--bg);
-  border-bottom: 1.5px solid var(--bg);
-  transform: rotate(45deg);
 }
 
 .forgot {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Avatar, Card, Button, Modal, Label, Input } from "@heroui/react";
+import { Avatar, Button, Modal, Label, Input } from "@heroui/react";
 import { Gear } from "@gravity-ui/icons";
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { type AppDispatch, type RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+import { type RootState } from "../../store/store";
 import imageCompression from "browser-image-compression";
 import SingerCard from "../../components/card";
 import styles from "./index.module.scss";

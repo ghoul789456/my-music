@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye, EyeOff, Mail, User } from "lucide-react";
 import styles from "./index.module.scss";
 
 // ─────────────────────────────────────────────
@@ -8,7 +9,6 @@ import styles from "./index.module.scss";
 interface LoginValues {
   email: string;
   password: string;
-  remember: boolean;
 }
 
 interface RegisterValues {
@@ -35,7 +35,6 @@ interface RegisterErrors {
 export interface LoginCredentials {
   email: string;
   password: string;
-  remember: boolean;
 }
 
 export interface RegisterCredentials {
@@ -54,16 +53,15 @@ function useLoginForm() {
   const [values, setValues] = useState<LoginValues>({
     email: "",
     password: "",
-    remember: false,
   });
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setValues((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
     if (errors[name as keyof LoginErrors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -287,7 +285,7 @@ function LoginForm({
             autoComplete="email"
             className={styles.input}
           />
-          <span className={styles.fieldIcon}>♩</span>
+          <Mail size={16} className={styles.fieldIcon} aria-hidden="true" />
         </div>
         {errors.email && (
           <p className={styles.error} role="alert">
@@ -317,7 +315,7 @@ function LoginForm({
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? "隐藏密码" : "显示密码"}
           >
-            {showPassword ? "♪" : "♫"}
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {errors.password && (
@@ -328,18 +326,8 @@ function LoginForm({
       </div>
 
       <div className={styles.optionsRow}>
-        <label className={styles.remember}>
-          <input
-            type="checkbox"
-            name="remember"
-            checked={values.remember}
-            onChange={handleChange}
-            className={styles.checkbox}
-          />
-          <span>记住我</span>
-        </label>
         <a href="/forgot-password" className={styles.forgot}>
-          忘记密码?
+          忘记密码？
         </a>
       </div>
 
@@ -350,11 +338,11 @@ function LoginForm({
       )}
 
       <button aria-label="登录" type="submit" className={styles.btnLogin} disabled={isLoading}>
-        <span>{isLoading ? "▸ Loading..." : "▶ Play Session"}</span>
+        <span>{isLoading ? "正在登录..." : "登录并开始聆听"}</span>
       </button>
 
       <div className={styles.divider}>
-        <span>or</span>
+        <span>或</span>
       </div>
 
       <div className={styles.socialRow}>
@@ -362,7 +350,7 @@ function LoginForm({
           <button
             key={provider}
             type="button"
-            aria-label="登录"
+            aria-label={`使用 ${provider} 登录`}
             className={styles.socialBtn}
             onClick={() => console.log(`Login with ${provider}`)}
           >
@@ -372,14 +360,14 @@ function LoginForm({
       </div>
 
       <p className={styles.signupRow}>
-        没有账号?{" "}
+        没有账号？{" "}
         <button
           type="button"
           aria-label="注册"
           className={styles.switchLink}
           onClick={onSwitchToRegister}
         >
-          加入我们 →
+          创建账号
         </button>
       </p>
     </form>
@@ -418,7 +406,7 @@ function RegisterForm({
             autoComplete="username"
             className={styles.input}
           />
-          <span className={styles.fieldIcon}>♬</span>
+          <User size={16} className={styles.fieldIcon} aria-hidden="true" />
         </div>
         {errors.username && (
           <p className={styles.error} role="alert">
@@ -442,7 +430,7 @@ function RegisterForm({
             autoComplete="email"
             className={styles.input}
           />
-          <span className={styles.fieldIcon}>♩</span>
+          <Mail size={16} className={styles.fieldIcon} aria-hidden="true" />
         </div>
         {errors.email && (
           <p className={styles.error} role="alert">
@@ -472,7 +460,7 @@ function RegisterForm({
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? "隐藏密码" : "显示密码"}
           >
-            {showPassword ? "♪" : "♫"}
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {errors.password && (
@@ -503,7 +491,7 @@ function RegisterForm({
             onClick={() => setShowConfirm((v) => !v)}
             aria-label={showConfirm ? "隐藏密码" : "显示密码"}
           >
-            {showConfirm ? "♪" : "♫"}
+            {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {errors.confirmPassword && (
@@ -520,11 +508,11 @@ function RegisterForm({
       )}
 
       <button aria-label="注册" type="submit" className={styles.btnLogin} disabled={isLoading}>
-        <span>{isLoading ? "▸ Loading..." : "♪ Start Listening"}</span>
+        <span>{isLoading ? "正在创建..." : "创建账号"}</span>
       </button>
 
       <div className={styles.divider}>
-        <span>or</span>
+        <span>或</span>
       </div>
 
       <div className={styles.socialRow}>
@@ -533,7 +521,7 @@ function RegisterForm({
             key={provider}
             type="button"
             className={styles.socialBtn}
-            aria-label="登录"
+            aria-label={`使用 ${provider} 注册`}
             onClick={() => console.log(`Register with ${provider}`)}
           >
             {provider}
@@ -542,14 +530,14 @@ function RegisterForm({
       </div>
 
       <p className={styles.signupRow}>
-        已经有账户?{" "}
+        已经有账户？{" "}
         <button
           type="button"
           aria-label="登录"
           className={styles.switchLink}
           onClick={onSwitchToLogin}
         >
-          登录 →
+          去登录
         </button>
       </p>
     </form>
@@ -586,12 +574,12 @@ function FormPanel({
   const titles: Record<AuthTab, React.ReactNode> = {
     login: (
       <>
-        Your <em>music</em>, your world.
+        你的<em>音乐</em>世界
       </>
     ),
     register: (
       <>
-        Join the <em>session</em>.
+        创建你的<em>听歌</em>账号
       </>
     ),
   };

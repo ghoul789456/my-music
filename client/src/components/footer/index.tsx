@@ -93,6 +93,8 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
   const clearAll = () => dispatch(removeAllSong());
   const handleAction = (key: Key) => { if (key === "delete-song") dispatch(removeSong(currentIndex)); };
 
+  if (!currentSong) return null;
+
   return (
     <div className={`${styles.foot} ${isOpen ? styles.active : ""}`}>
       <AudioController />
@@ -133,7 +135,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
           <div className={styles.progressWrapper}>
             <span className={styles.progressTime}>{fmt(currentTime)}</span>
             <div className={styles.progressTrack}>
-              <Slider className={styles.progressSlider} value={[currentTime]} minValue={0} maxValue={currentSong?.duration || 1} step={1}
+              <Slider aria-label="播放进度" className={styles.progressSlider} value={[currentTime]} minValue={0} maxValue={currentSong?.duration || 1} step={1}
                 onChange={val => dispatch(setCurrentTime(Array.isArray(val) ? val[0] : val))}>
                 <Slider.Track className={styles.pgTrack}><Slider.Fill className={styles.pgFill} /><Slider.Thumb className={styles.pgThumb} /></Slider.Track>
               </Slider>
@@ -143,19 +145,19 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
           <div className={styles.controlsRow}>
             <div className={styles.controlLeft}>
-              <button className={styles.ctrlIcon} onClick={handleModeChange}>{modeIcons[mode]}</button>
+              <button className={styles.ctrlIcon} onClick={handleModeChange} aria-label="切换播放模式">{modeIcons[mode]}</button>
             </div>
             <div className={styles.controlCenter}>
-              <button className={styles.bigSkip} onClick={() => dispatch(prevSong())}><SkipBack size={28} fill="#fff" /></button>
-              <button className={styles.bigPlay} onClick={() => dispatch(togglePlay())} disabled={isLoading}>
+              <button className={styles.bigSkip} onClick={() => dispatch(prevSong())} aria-label="上一首"><SkipBack size={28} fill="#fff" /></button>
+              <button className={styles.bigPlay} onClick={() => dispatch(togglePlay())} disabled={isLoading} aria-label={isPlaying ? "暂停" : "播放"}>
                 {isLoading ? <Spinner size="sm" /> : isPlaying ? <Pause size={28} fill="#000" color="#000" /> : <Play size={28} fill="#000" color="#000" />}
               </button>
-              <button className={styles.bigSkip} onClick={() => dispatch(nextSong())}><SkipForward size={28} fill="#fff" /></button>
+              <button className={styles.bigSkip} onClick={() => dispatch(nextSong())} aria-label="下一首"><SkipForward size={28} fill="#fff" /></button>
             </div>
             <div className={styles.controlRight}>
-              <button className={styles.ctrlIcon} onClick={handleMute}>{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}</button>
+              <button className={styles.ctrlIcon} onClick={handleMute} aria-label={volume === 0 ? "取消静音" : "静音"}>{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}</button>
               <Popover>
-                <Popover.Trigger><button className={styles.ctrlIcon}><ListMusic size={20} /></button></Popover.Trigger>
+                <Popover.Trigger><button className={styles.ctrlIcon} aria-label="播放列表"><ListMusic size={20} /></button></Popover.Trigger>
                 <Popover.Content placement="top" className={styles.playListBox}>
                   <Popover.Dialog>
                     <Popover.Heading>
@@ -172,7 +174,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
                             </div>
                           </div>
                           <Dropdown>
-                            <Button isIconOnly variant="tertiary"><MoreVertical size={16} /></Button>
+                            <Button isIconOnly variant="tertiary" aria-label="更多操作"><MoreVertical size={16} /></Button>
                             <Dropdown.Popover><Dropdown.Menu onAction={handleAction}><Dropdown.Item id="delete-song" variant="danger"><Label>移除</Label></Dropdown.Item></Dropdown.Menu></Dropdown.Popover>
                           </Dropdown>
                         </div>
@@ -183,7 +185,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
               </Popover>
             </div>
             <div className={styles.controlMobileExtra}>
-              <button className={styles.ctrlIcon}><Heart size={20} /></button>
+              <button className={styles.ctrlIcon} aria-label="喜欢"><Heart size={20} /></button>
             </div>
           </div>
         </div>

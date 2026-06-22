@@ -93,7 +93,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
             <SkipBack size={22} fill="#fff" />
           </button>
           <button className={styles.playBtn} onClick={() => dispatch(togglePlay())} disabled={isLoading} aria-label="播放">
-            {isLoading ? <Spinner size="sm" color="default" /> :
+            {isLoading ? <Spinner size="sm" /> :
               isPlaying ? <Pause size={20} fill="#000" color="#000" /> : <Play size={20} fill="#000" color="#000" />
             }
           </button>

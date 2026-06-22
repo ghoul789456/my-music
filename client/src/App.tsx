@@ -1,16 +1,14 @@
 import { type ReactNode, useEffect, useState, lazy, Suspense } from "react";
-import { Spinner } from '@heroui/react'
 import {
   Route,
   Routes,
-  NavLink,
   Outlet,
   Navigate,
   useNavigate,
 } from "react-router-dom";
 import server from "./axios/server";
-import { useDispatch, useSelector } from "react-redux";
-import { setLoginInfo, setUserInfo } from "./store/userSlice.ts";
+import { useDispatch } from "react-redux";
+import { logout, setLoginInfo, setUserInfo } from "./store/userSlice.ts";
 
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
@@ -74,7 +72,7 @@ function App() {
     },
     {
       id: "playlist",
-      name: "歌单",
+      name: "歌曲",
       path: "/playlist",
       element: <Playlist />,
     },
@@ -118,7 +116,7 @@ function App() {
   useEffect(() => {
     const authData = localStorage.getItem("auth_data");
     if (authData) {
-      const { token, userId, expiry } = JSON.parse(authData);
+      const { expiry } = JSON.parse(authData);
 
       // 检查是否过期
       if (Date.now() < expiry) {
@@ -129,6 +127,7 @@ function App() {
           })
           .catch(() => {
             localStorage.removeItem("auth_data"); // 请求失败说明 token 失效
+            dispatch(logout());
           });
       }
     }
@@ -190,6 +189,7 @@ function App() {
       id: number;
       username: string;
       email: string;
+      avatar: string | null;
     };
   }
 
@@ -209,6 +209,15 @@ function App() {
         expiry: Date.now() + 7 * 24 * 60 * 60 * 1000, // 当前时间 + 7天的毫秒数
       };
       localStorage.setItem("auth_data", JSON.stringify(loginInfo));
+      dispatch(
+        setLoginInfo({
+          user: {
+            ...res.user,
+            avatar: res.user.avatar ?? null,
+          },
+          token: res.token,
+        }),
+      );
       navigate("/");
     } catch (err) {
       throw new Error("邮箱或密码错误");

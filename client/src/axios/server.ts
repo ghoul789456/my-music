@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const server = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
   timeout: 5000,
   headers: { "Content-Type": "application/json" },
 });
@@ -47,18 +47,17 @@ server.interceptors.response.use(
           window.location.href = "/auth";
           break;
         case 403:
-          // 提示用户权限不足，但不删 Token
-          alert("你没有权限访问该功能");
+          console.error("权限不足");
           break;
         case 500:
-          alert("服务器打瞌睡了，请稍后再试");
+          console.error("服务器错误");
           break;
         default:
           console.error("其他错误：", error.response.data.message);
       }
     } else {
       // 处理断网或请求超时
-      alert("网络好像断了，检查一下网络设置吧");
+      console.error("网络错误或请求超时");
     }
     // 必须返回 reject，否则业务代码里的 .catch 就捕获不到错误了
     return Promise.reject(error);

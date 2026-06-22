@@ -3,6 +3,23 @@
   display: none;
 }
 
+.mobileNav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  height: 4.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  padding: 0.35rem 0.75rem calc(0.35rem + env(safe-area-inset-bottom));
+  background: rgba(18, 18, 18, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+}
+
 @media (min-width: 768px) {
   .sideBar {
     display: flex; flex-direction: column;
@@ -12,6 +29,10 @@
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     padding: 0.5rem 1rem;
+  }
+
+  .mobileNav {
+    display: none;
   }
 }
 
@@ -48,4 +69,40 @@
   font-weight: 700;
   background: rgba(255,255,255,0.06);
   .navIcon { opacity: 1; color: var(--brand, #b4233c); }
+}
+
+.mobileNavItem {
+  height: 3.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: rgba(255, 255, 255, 0.58);
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: background 0.12s, color 0.12s;
+}
+
+.mobileNavIcon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileNavLabel {
+  line-height: 1;
+}
+
+.mobileNavActive {
+  color: #fff;
+  background: rgba(180, 35, 60, 0.16);
+
+  .mobileNavIcon {
+    color: var(--brand-bright, #fa586a);
+  }
 }

@@ -12,7 +12,8 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const RESOURCE_PATH = "C:/Users/15175/Desktop/resource";
+const RESOURCE_PATH =
+  process.env.RESOURCE_PATH || "C:/Users/15175/Desktop/resource";
 
 const FETCH_HEADERS = {
   "User-Agent":

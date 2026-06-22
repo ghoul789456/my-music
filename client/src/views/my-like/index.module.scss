@@ -23,12 +23,12 @@
 .heading {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--foreground, #251911);
+  color: var(--foreground, #ffffff);
   margin: 0;
 }
 
 .subtext {
   font-size: 0.95rem;
-  color: var(--muted, #504440);
+  color: var(--muted, rgba(255, 255, 255, 0.55));
   margin: 0;
 }
