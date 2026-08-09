@@ -1,20 +1,207 @@
 .homeContainer {
-  padding: 0 1.25rem 2rem; width: 100%; box-sizing: border-box;
+  padding: 0 1rem 2rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
-  .homeContainer { padding: 0 2.5rem 2rem; }
+  .homeContainer { padding: 1.5rem clamp(1.5rem, 3vw, 3.25rem) 2rem; }
+}
+
+.hero {
+  position: relative;
+  min-height: 31rem;
+  margin: 0 -1rem 2.75rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: #061014;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.heroEffect,
+.heroShade {
+  position: absolute;
+  inset: 0;
+}
+
+.heroEffect {
+  z-index: -2;
+  opacity: 0.78;
+}
+
+.heroShade {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(2, 8, 11, 0.98) 0%, rgba(2, 8, 11, 0.76) 48%, rgba(2, 8, 11, 0.24) 100%),
+    linear-gradient(0deg, rgba(2, 8, 11, 0.94) 0%, transparent 58%);
+}
+
+.heroContent {
+  min-height: 31rem;
+  display: flex;
+  align-items: flex-end;
+  padding: 4.5rem 1.25rem 2rem;
+}
+
+.heroCopy {
+  max-width: 36rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: rgba(244, 184, 127, 0.82);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.18em;
+}
+
+.heroTitle {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.25rem, 8.4vw, 4.5rem);
+  font-weight: 650;
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+  text-wrap: balance;
+}
+
+.heroDescription {
+  max-width: 31rem;
+  margin: 1.35rem 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.75rem;
+}
+
+.primaryAction,
+.secondaryAction {
+  min-height: 2.75rem;
+  border-radius: 999px;
+  padding: 0 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.primaryAction {
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  background: #fff;
+  color: #171113;
+}
+
+.secondaryAction {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  backdrop-filter: blur(12px);
+}
+
+.primaryAction:hover,
+.secondaryAction:hover {
+  transform: translateY(-1px);
+}
+
+.secondaryAction:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.primaryAction:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.featuredArt {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: 28rem;
+    margin: 0 0 3.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 1.5rem;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+  }
+
+  .heroContent {
+    min-height: 28rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    padding: clamp(2.25rem, 5vw, 4.5rem);
+  }
+
+  .featuredArt {
+    width: min(34%, 18rem);
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .artFrame {
+    position: relative;
+    aspect-ratio: 1;
+    padding: 0.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.055);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+    transform: rotate(2.5deg);
+  }
+
+  .artImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82) contrast(1.04);
+  }
+
+  .artMeta {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.15rem;
+    color: #fff;
+  }
+
+  .artMeta span {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+  }
+
+  .artMeta strong {
+    font-size: 0.92rem;
+    font-weight: 680;
+  }
+
+  .artMeta small {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.7rem;
+  }
 }
 
 .errorState {
-  min-height: 26rem;
+  min-height: 16rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   text-align: center;
-  color: #fff;
+  color: var(--foreground, #fff);
 }
 
 .errorIcon {
@@ -24,9 +211,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(180, 35, 60, 0.16);
-  color: var(--brand-bright, #fa586a);
-  border: 1px solid rgba(250, 88, 106, 0.22);
+  background: rgba(230, 108, 120, 0.14);
+  color: var(--favorite, #e66c78);
+  border: 1px solid rgba(230, 108, 120, 0.24);
   font-size: 1.3rem;
   font-weight: 800;
 }
@@ -39,7 +226,7 @@
 
 .errorText {
   margin: 0;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--muted, rgba(255, 255, 255, 0.52));
   font-size: 0.9rem;
 }
 
@@ -49,8 +236,8 @@
   padding: 0 1rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--brand, #b4233c);
-  color: #fff;
+  background: var(--brand, #4fb9a8);
+  color: #03110f;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -58,9 +245,21 @@
 }
 
 .retryButton:hover {
-  background: var(--brand-hover, #d4354d);
+  background: var(--brand-hover, #63cdbc);
 }
 
 .retryButton:active {
   transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryAction,
+  .secondaryAction {
+    transition: none;
+  }
+
+  .primaryAction:hover,
+  .secondaryAction:hover {
+    transform: none;
+  }
 }

@@ -3,7 +3,10 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #121212;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(79, 185, 168, 0.14), transparent 34%),
+    radial-gradient(circle at 84% 88%, rgba(228, 170, 105, 0.1), transparent 31%),
+    #061014;
   transform: translate3d(0, 100%, 0);
   transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
@@ -108,7 +111,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--brand, #b4233c);
+  color: var(--brand, #4fb9a8);
   padding: 0.25rem;
 
   &:active {
@@ -131,7 +134,7 @@
 .songArtist {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--brand, #b4233c);
+  color: var(--brand, #4fb9a8);
   margin: 0;
 }
 
@@ -254,7 +257,7 @@
 
 .pgFill {
   height: 100%;
-  background: var(--brand, #b4233c);
+  background: var(--brand, #4fb9a8);
   border-radius: 2px;
 }
 

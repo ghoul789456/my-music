@@ -7,7 +7,7 @@
 .cover { width: 11rem; height: 11rem; border-radius: 0.5rem; object-fit: cover; box-shadow: 0 8px 24px rgba(0,0,0,0.08); flex-shrink: 0; @media (min-width: 768px) { width: 13rem; height: 13rem; } }
 .info { display: flex; flex-direction: column; justify-content: center; gap: 0.35rem; }
 .title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; color: var(--foreground); @media (min-width: 768px) { font-size: 1.75rem; } }
-.artist { font-size: 1rem; font-weight: 500; color: var(--brand, #fa586a); margin: 0; }
+.artist { font-size: 1rem; font-weight: 500; color: var(--brand, #4fb9a8); margin: 0; }
 .bio { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin: 0.25rem 0 0; max-width: 34rem; }
 .release { font-size: 0.8rem; color: var(--muted); margin: 0; }
 
@@ -16,7 +16,7 @@
 .playAllBtn {
   display: flex; align-items: center; gap: 0.4rem;
   padding: 0.55rem 1.5rem; border-radius: 9999px; border: none;
-  background: var(--brand, #fa586a); color: #fff;
+  background: var(--brand, #4fb9a8); color: #03110f;
   font-size: 0.88rem; font-weight: 600; cursor: pointer;
   transition: opacity 0.12s, transform 0.12s;
   span { font-size: 1.1rem; }
@@ -31,7 +31,7 @@
   padding: 0.6rem 0.75rem; border-radius: 0.5rem; cursor: pointer;
   transition: background 0.1s;
   &:hover { background: rgba(0,0,0,0.03); }
-  &.active .songTitle { color: var(--brand, #fa586a); }
+  &.active .songTitle { color: var(--brand, #4fb9a8); }
 }
 :global(.dark) .songItem:hover { background: rgba(255,255,255,0.04); }
 

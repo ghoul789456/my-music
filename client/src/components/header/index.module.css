@@ -1,17 +1,21 @@
 /* ===== Header ===== */
 .header {
+  position: fixed; top: 0.75rem; left: 0.75rem; right: 0.75rem; z-index: 70;
   height: 3.5rem;
   display: flex; justify-content: space-between; align-items: center;
   padding: 0 1rem;
-  background: color-mix(in srgb, var(--background, #121212) 92%, transparent);
+  background: color-mix(in srgb, var(--surface, #0e1b20) 78%, transparent);
   color: var(--foreground, #fff);
-  border-bottom: 1px solid var(--separator, rgba(255,255,255,0.08));
-  backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--border, rgba(255,255,255,0.09));
+  border-radius: 1rem;
+  box-shadow: 0 18px 54px rgba(0, 6, 9, 0.24), inset 0 1px 0 rgba(255,255,255,0.04);
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
 }
 
 @media (min-width: 768px) {
   .header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    top: 1rem; left: 1rem; right: 1rem;
     height: 4rem; padding: 0 1.5rem;
   }
 }
@@ -25,28 +29,24 @@
   .desktopOnly { display: flex !important; }
 }
 
-.mobileTitle { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; color: var(--brand-bright, #fa586a); }
+.mobileTitle { font-size: 0.82rem; font-weight: 760; letter-spacing: 0.14em; color: var(--foreground, #fff); }
 
-/* ===== 品牌 Logo ===== */
-.brand { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; margin-right: 1.5rem; }
-.logo {
-  width: 2.25rem; height: 2.25rem; border-radius: 50%;
-  background: var(--brand, #b4233c); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; font-weight: 700;
-}
+/* ===== 纯文字标识 ===== */
+.brand { display: flex; align-items: center; flex-shrink: 0; margin-right: 1.5rem; }
 .brandText { line-height: 1.2; }
-.brandTitle { font-size: 0.9rem; font-weight: 700; color: var(--foreground, #fff); margin: 0; letter-spacing: -0.01em; }
-.brandSub { font-size: 0.65rem; color: var(--muted, rgba(255,255,255,0.45)); margin: 0; }
+.brandTitle { font-size: 0.78rem; font-weight: 760; color: var(--foreground, #fff); margin: 0; letter-spacing: 0.13em; }
+.brandSub { font-size: 0.55rem; color: var(--muted, rgba(255,255,255,0.45)); margin: 0.16rem 0 0; letter-spacing: 0.12em; }
 
 /* ===== 搜索框 ===== */
 .searchBox {
   display: flex; align-items: center; gap: 0.5rem;
   background: var(--field-background, rgba(255,255,255,0.06));
   backdrop-filter: blur(12px); border-radius: 9999px;
-  padding: 0.5rem 1rem; border: 1px solid var(--border, rgba(255,255,255,0.08));
+  min-height: 2.65rem; padding: 0.5rem 1rem; border: 1px solid var(--border, rgba(255,255,255,0.08));
   width: 100%; max-width: 18rem;
+  transition: border-color 180ms ease, background 180ms ease;
 }
+.searchBox:focus-within { border-color: color-mix(in srgb, var(--brand-bright, #73d8c6) 48%, transparent); background: color-mix(in srgb, var(--field-background) 82%, var(--surface) 18%); }
 .searchIcon { color: var(--muted, rgba(255,255,255,0.45)); flex-shrink: 0; }
 .searchInput {
   background: transparent; border: none; outline: none;
@@ -62,7 +62,8 @@
 
 .iconBtn {
   background: none; border: none; cursor: pointer;
-  color: var(--muted, rgba(255,255,255,0.65)); padding: 0.4rem; border-radius: 50%;
+  width: 2.75rem; height: 2.75rem;
+  color: var(--muted, rgba(255,255,255,0.65)); padding: 0; border-radius: 50%;
   transition: background 0.12s, color 0.12s;
   display: flex; align-items: center; justify-content: center;
 }
@@ -76,7 +77,7 @@
   display: flex;
 }
 .avatarWrap:hover { transform: scale(1.06); }
-.avatar { width: 2rem; height: 2rem; border: 1px solid rgba(255,255,255,0.15); }
+.avatar { width: 2.75rem; height: 2.75rem; border: 1px solid var(--border, rgba(255,255,255,0.15)); }
 
 /* ===== 弹窗 ===== */
 .popover {
@@ -93,162 +94,3 @@
 }
 .popName { font-size: 0.9rem; font-weight: 600; color: var(--foreground, #fff); margin: 0; }
 .popEmail { font-size: 0.75rem; color: var(--muted, rgba(255,255,255,0.45)); margin: 0; }
-
-.settingsBackdrop {
-  background: rgba(0, 0, 0, 0.48) !important;
-  backdrop-filter: blur(8px);
-}
-
-.settingsDialog {
-  width: min(92vw, 34rem) !important;
-  border-radius: 0.75rem !important;
-  background: var(--overlay, #1e1e1e) !important;
-  color: var(--overlay-foreground, #fff) !important;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
-  box-shadow: var(--overlay-shadow, 0 8px 30px rgba(0, 0, 0, 0.4)) !important;
-  overflow: hidden;
-}
-
-.settingsHeader {
-  padding: 1rem 1.1rem !important;
-  border-bottom: 1px solid var(--separator, rgba(255, 255, 255, 0.08));
-}
-
-.settingsTitleWrap {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.settingsIcon {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(180, 35, 60, 0.14);
-  color: var(--brand-bright, #fa586a);
-}
-
-.settingsTitle {
-  font-size: 1.05rem !important;
-  font-weight: 750 !important;
-  margin: 0 !important;
-  color: var(--foreground, #fff) !important;
-}
-
-.settingsSubtitle {
-  margin: 0.15rem 0 0;
-  font-size: 0.78rem;
-  color: var(--muted, rgba(255, 255, 255, 0.55));
-}
-
-.settingsBody {
-  padding: 1rem !important;
-}
-
-.settingSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.sectionHead {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--foreground, #fff);
-}
-
-.sectionHead h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 750;
-}
-
-.settingRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.85rem;
-  padding: 0.95rem;
-  border-radius: 0.5rem;
-  background: var(--surface, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-}
-
-.settingLabel {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--foreground, #fff);
-}
-
-.settingHint {
-  margin: 0.2rem 0 0;
-  font-size: 0.78rem;
-  color: var(--muted, rgba(255, 255, 255, 0.55));
-}
-
-.themeOptions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
-}
-
-.themeOption {
-  min-height: 3rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-  background: color-mix(in srgb, var(--surface, #1e1e1e) 86%, var(--foreground, #fff) 4%);
-  color: var(--foreground, #fff);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0 0.7rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  transition: border-color 0.12s, background 0.12s, transform 0.12s;
-}
-
-.themeOption:hover {
-  border-color: color-mix(in srgb, var(--brand, #b4233c) 45%, var(--border, transparent));
-}
-
-.themeOption:active {
-  transform: scale(0.99);
-}
-
-.themeOptionActive {
-  border-color: var(--brand, #b4233c);
-  background: rgba(180, 35, 60, 0.13);
-}
-
-.themeSwatch {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-  flex-shrink: 0;
-}
-
-.lightSwatch {
-  background: linear-gradient(135deg, #ffffff 0%, #f6f3f4 55%, #d4354d 56%, #d4354d 100%);
-}
-
-.darkSwatch {
-  background: linear-gradient(135deg, #121212 0%, #1e1e1e 55%, #fa586a 56%, #fa586a 100%);
-}
-
-.themeCheck {
-  margin-left: auto;
-  color: var(--brand-bright, #fa586a);
-}
-
-@media (min-width: 560px) {
-  .settingRow {
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 1.2fr);
-    align-items: center;
-  }
-}

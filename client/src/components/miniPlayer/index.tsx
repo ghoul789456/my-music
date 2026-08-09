@@ -80,7 +80,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
             <p className={styles.artist}>{currentSong?.artist}</p>
           </div>
           <button className={styles.heartBtn} aria-label="喜欢">
-            <Heart size={18} fill="#b4233c" color="#b4233c" />
+            <Heart size={18} fill="#e66c78" color="#e66c78" />
           </button>
         </div>
 

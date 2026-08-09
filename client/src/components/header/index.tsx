@@ -1,7 +1,6 @@
 import { useState, type Key } from "react";
-import { Avatar, Dropdown, Label, Modal } from "@heroui/react";
-import { Check, MonitorCog, Moon, Search, Bell, Settings, Sun } from "lucide-react";
-import { useTheme } from "../../contexts/ThemeContext";
+import { Avatar, Dropdown, Label } from "@heroui/react";
+import { Search, Bell } from "lucide-react";
 import styles from "./index.module.css";
 import { useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,14 +8,12 @@ import { type RootState, type AppDispatch } from "../../store/store";
 import { logout } from "../../store/userSlice";
 
 export default function Header() {
-  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { userInfo, isLoggedIn } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const handleMobileOpenChange = (open: boolean) => {
     if (isLoggedIn) setIsMobileOpen(open);
     else { navigate("/auth"); }
@@ -41,73 +38,10 @@ export default function Header() {
 
   return (
     <>
-      <Modal isOpen={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <Modal.Backdrop className={styles.settingsBackdrop}>
-          <Modal.Container>
-            <Modal.Dialog className={styles.settingsDialog}>
-              <Modal.Header className={styles.settingsHeader}>
-                <div className={styles.settingsTitleWrap}>
-                  <span className={styles.settingsIcon}>
-                    <Settings size={18} />
-                  </span>
-                  <div>
-                    <Modal.Heading className={styles.settingsTitle}>设置</Modal.Heading>
-                    <p className={styles.settingsSubtitle}>调整播放器的基础偏好</p>
-                  </div>
-                </div>
-              </Modal.Header>
-              <Modal.Body className={styles.settingsBody}>
-                <section className={styles.settingSection}>
-                  <div className={styles.sectionHead}>
-                    <MonitorCog size={18} />
-                    <h3>通用设置</h3>
-                  </div>
-                  <div className={styles.settingRow}>
-                    <div>
-                      <p className={styles.settingLabel}>更改主题色</p>
-                      <p className={styles.settingHint}>选择浅色或深色界面</p>
-                    </div>
-                    <div className={styles.themeOptions} role="radiogroup" aria-label="更改主题色">
-                      <button
-                        type="button"
-                        className={`${styles.themeOption} ${theme === "light" ? styles.themeOptionActive : ""}`}
-                        onClick={() => setTheme("light")}
-                        role="radio"
-                        aria-checked={theme === "light"}
-                      >
-                        <span className={`${styles.themeSwatch} ${styles.lightSwatch}`} />
-                        <Sun size={16} />
-                        <span>浅色</span>
-                        {theme === "light" && <Check size={15} className={styles.themeCheck} />}
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.themeOption} ${theme === "dark" ? styles.themeOptionActive : ""}`}
-                        onClick={() => setTheme("dark")}
-                        role="radio"
-                        aria-checked={theme === "dark"}
-                      >
-                        <span className={`${styles.themeSwatch} ${styles.darkSwatch}`} />
-                        <Moon size={16} />
-                        <span>深色</span>
-                        {theme === "dark" && <Check size={15} className={styles.themeCheck} />}
-                      </button>
-                    </div>
-                  </div>
-                </section>
-              </Modal.Body>
-            </Modal.Dialog>
-          </Modal.Container>
-        </Modal.Backdrop>
-      </Modal>
-
       {/* 移动端 */}
       <header className={`${styles.header} ${styles.mobileOnly}`}>
-        <span className={styles.mobileTitle}>Music</span>
+        <span className={styles.mobileTitle}>MY MUSIC</span>
         <div className={styles.actions}>
-          <button className={styles.iconBtn} aria-label="设置" onClick={() => setIsSettingsOpen(true)}>
-            <Settings size={20} />
-          </button>
           <Dropdown isOpen={isMobileOpen} onOpenChange={handleMobileOpenChange}>
             <Dropdown.Trigger aria-label="打开用户菜单">
               <Avatar className={`${styles.avatar} ${styles.avatarWrap}`}>
@@ -134,12 +68,10 @@ export default function Header() {
 
       {/* 桌面端 */}
       <header className={`${styles.header} ${styles.desktopOnly}`}>
-        {/* Logo */}
         <div className={styles.brand}>
-          <div className={styles.logo}>M</div>
           <div className={styles.brandText}>
-            <h1 className={styles.brandTitle}>Music Premium</h1>
-            <p className={styles.brandSub}>聆听无限</p>
+            <p className={styles.brandTitle}>MY MUSIC</p>
+            <p className={styles.brandSub}>PRIVATE LISTENING</p>
           </div>
         </div>
 
@@ -158,10 +90,6 @@ export default function Header() {
           <button className={styles.iconBtn} aria-label="通知">
             <Bell size={20} />
           </button>
-          <button className={styles.iconBtn} aria-label="设置" onClick={() => setIsSettingsOpen(true)}>
-            <Settings size={20} />
-          </button>
-
           <Dropdown isOpen={isDesktopOpen} onOpenChange={handleDesktopOpenChange}>
             <Dropdown.Trigger aria-label="打开用户菜单">
               <Avatar className={`${styles.avatar} ${styles.avatarWrap}`}>

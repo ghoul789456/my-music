@@ -32,6 +32,8 @@ export default function SingerCard({
               <img
                 alt={item.primary}
                 src={item.url}
+                loading="lazy"
+                decoding="async"
                 className={`${styles.cardImg} ${isRound ? styles.round : styles.square}`}
               />
               <div className={styles.playOverlay}>
@@ -40,7 +42,7 @@ export default function SingerCard({
                   onClick={(e) => { e.stopPropagation(); onPlayClick?.(item); }}
                   aria-label="播放"
                 >
-                  <Play size={size === "sm" ? 16 : 20} fill="#fff" color="#fff" />
+                  <Play size={size === "sm" ? 16 : 20} fill="currentColor" color="currentColor" />
                 </button>
               </div>
             </div>

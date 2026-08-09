@@ -14,8 +14,8 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
   padding: 0.35rem 0.75rem calc(0.35rem + env(safe-area-inset-bottom));
-  background: rgba(18, 18, 18, 0.92);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--background, #061014) 82%, transparent);
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
 }
@@ -23,12 +23,19 @@
 @media (min-width: 768px) {
   .sideBar {
     display: flex; flex-direction: column;
-    position: fixed; left: 0; top: 4rem; height: calc(100% - 4rem); width: 16rem; z-index: 40;
-    background: rgba(30, 30, 30, 0.7);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
+    position: fixed;
+    left: 1rem;
+    top: 6rem;
+    bottom: 6.5rem;
+    width: 14rem;
+    z-index: 40;
+    background: linear-gradient(180deg, rgba(236, 255, 250, 0.065), rgba(236, 255, 250, 0.025));
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    border-radius: 1rem;
+    box-shadow: 0 18px 54px rgba(0, 6, 9, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    padding: 1rem 1.1rem;
   }
 
   .mobileNav {
@@ -43,18 +50,19 @@
 
 .sectionLabel {
   font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.05em; color: rgba(255,255,255,0.35);
+  letter-spacing: 0.12em; color: var(--muted, rgba(255,255,255,0.35));
   padding: 0.75rem 0.75rem 0.25rem;
 }
 
 .navItem {
   display: flex; align-items: center; gap: 0.875rem;
   padding: 0.65rem 0.75rem; border-radius: 0.5rem;
-  color: rgba(255,255,255,0.65); text-decoration: none;
+  min-height: 2.75rem;
+  color: var(--muted, rgba(255,255,255,0.65)); text-decoration: none;
   font-size: 0.9rem; font-weight: 500;
   transition: background 0.12s, color 0.12s;
 
-  &:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  &:hover { background: var(--hover-overlay, rgba(255,255,255,0.05)); color: var(--foreground, #fff); }
 }
 
 .navIcon {
@@ -65,10 +73,11 @@
 .navLabel { line-height: 1; }
 
 .navActive {
-  color: var(--brand, #b4233c);
+  color: var(--foreground, #fff);
   font-weight: 700;
-  background: rgba(255,255,255,0.06);
-  .navIcon { opacity: 1; color: var(--brand, #b4233c); }
+  background: color-mix(in srgb, var(--brand, #4fb9a8) 16%, transparent);
+  box-shadow: inset 2px 0 0 var(--brand-bright, #73d8c6);
+  .navIcon { opacity: 1; color: var(--brand-bright, #73d8c6); }
 }
 
 .mobileNavItem {
@@ -79,7 +88,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
-  color: rgba(255, 255, 255, 0.58);
+  color: var(--muted, rgba(255, 255, 255, 0.58));
   text-decoration: none;
   font-size: 0.68rem;
   font-weight: 600;
@@ -99,10 +108,10 @@
 }
 
 .mobileNavActive {
-  color: #fff;
-  background: rgba(180, 35, 60, 0.16);
+  color: var(--foreground, #fff);
+  background: color-mix(in srgb, var(--brand, #4fb9a8) 16%, transparent);
 
   .mobileNavIcon {
-    color: var(--brand-bright, #fa586a);
+    color: var(--brand-bright, #73d8c6);
   }
 }

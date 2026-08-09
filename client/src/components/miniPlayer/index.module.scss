@@ -9,9 +9,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(30, 30, 30, 0.7);
+  background: rgba(6, 18, 22, 0.78);
   backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(214, 244, 237, 0.08);
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.85rem;
 }
@@ -23,10 +23,10 @@
   right: 0;
   z-index: 100;
   height: 5.5rem;
-  background: rgba(30, 30, 30, 0.7);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(6, 18, 22, 0.76);
+  backdrop-filter: blur(28px) saturate(130%);
+  -webkit-backdrop-filter: blur(28px) saturate(130%);
+  border-top: 1px solid rgba(214, 244, 237, 0.08);
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
@@ -49,7 +49,7 @@
 
 .progressFill {
   height: 100%;
-  background: var(--brand, #b4233c);
+  background: var(--brand, #4fb9a8);
   position: relative;
   transition: width 0.15s linear;
 }

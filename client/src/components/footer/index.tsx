@@ -113,7 +113,7 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
                 <h1 className={styles.songTitle}>{currentSong?.title || "未知歌曲"}</h1>
                 <p className={styles.songArtist}>{currentSong?.artist || "未知艺人"}</p>
               </div>
-              <button className={styles.favBtn} aria-label="喜欢"><Heart size={24} fill="#b4233c" color="#b4233c" /></button>
+              <button className={styles.favBtn} aria-label="喜欢"><Heart size={24} fill="#e66c78" color="#e66c78" /></button>
             </div>
           </div>
         </section>

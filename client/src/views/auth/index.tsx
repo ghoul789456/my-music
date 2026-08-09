@@ -221,14 +221,14 @@ function VinylPlayer({
             cx="80"
             cy="18"
             r="10"
-            stroke="rgba(200,146,58,0.5)"
+            stroke="rgba(228,170,105,0.5)"
             strokeWidth="1.5"
-            fill="rgba(200,146,58,0.1)"
+            fill="rgba(228,170,105,0.1)"
           />
-          <circle cx="80" cy="18" r="4" fill="rgba(200,146,58,0.4)" />
+          <circle cx="80" cy="18" r="4" fill="rgba(228,170,105,0.4)" />
           <path
             d="M74 24 Q50 60 30 120"
-            stroke="rgba(200,146,58,0.6)"
+            stroke="rgba(228,170,105,0.6)"
             strokeWidth="1.5"
             strokeLinecap="round"
           />
@@ -236,8 +236,8 @@ function VinylPlayer({
             cx="30"
             cy="122"
             r="4"
-            fill="rgba(200,146,58,0.4)"
-            stroke="rgba(200,146,58,0.8)"
+            fill="rgba(228,170,105,0.4)"
+            stroke="rgba(228,170,105,0.8)"
             strokeWidth="1"
           />
         </svg>
