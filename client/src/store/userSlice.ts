@@ -11,6 +11,7 @@ interface UserState {
   userInfo: UserInfo | null;
   token: string | null;
   isLoggedIn: boolean;
+  loginPromptOpen: boolean;
 }
 
 // 1. 核心修改：初始化时解析本地 auth_data
@@ -38,6 +39,7 @@ const initialState: UserState = {
   userInfo: null,
   token: auth.token,
   isLoggedIn: auth.isLoggedIn,
+  loginPromptOpen: false,
 };
 
 const userSlice = createSlice({
@@ -52,6 +54,7 @@ const userSlice = createSlice({
       state.userInfo = action.payload.user;
       state.token = action.payload.token;
       state.isLoggedIn = true;
+      state.loginPromptOpen = false;
     },
 
     // 存入从接口获取到的最新用户信息
@@ -66,8 +69,22 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
       localStorage.removeItem("auth_data");
     },
+
+    openLoginPrompt: (state) => {
+      state.loginPromptOpen = true;
+    },
+
+    closeLoginPrompt: (state) => {
+      state.loginPromptOpen = false;
+    },
   },
 });
 
-export const { setLoginInfo, setUserInfo, logout } = userSlice.actions;
+export const {
+  setLoginInfo,
+  setUserInfo,
+  logout,
+  openLoginPrompt,
+  closeLoginPrompt,
+} = userSlice.actions;
 export default userSlice.reducer;

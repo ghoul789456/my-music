@@ -10,7 +10,6 @@ import {
   Shuffle, SkipBack, Play, Pause, SkipForward, Repeat, Repeat1,
   Heart, Volume2, VolumeX, ListMusic, MoreVertical, Trash2,
 } from "lucide-react";
-import AudioController from "../audio";
 import img from "../../assets/song.png";
 import styles from "./index.module.scss";
 
@@ -44,10 +43,6 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
 
   if (!currentSong) {
     return (
-      // <div className={styles.emptyBar}>
-      //   <AudioController />
-      //   <span>未在播放</span>
-      // </div>
       <></>
     );
   }
@@ -56,7 +51,6 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
 
   return (
     <div className={styles.miniPlayer}>
-      <AudioController />
 
       {/* 顶部进度条 */}
       <div className={styles.progressTrack}

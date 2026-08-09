@@ -11,7 +11,6 @@ import {
   Shuffle, Repeat, Repeat1, Volume2, VolumeX, ListMusic, Trash2,
 } from "lucide-react";
 import server from "../../axios/server";
-import AudioController from "../audio";
 import img from "../../assets/song.png";
 import styles from "./index.module.scss";
 
@@ -97,7 +96,6 @@ export default function Footer({ isOpen, onClose }: FooterProps) {
 
   return (
     <div className={`${styles.foot} ${isOpen ? styles.active : ""}`}>
-      <AudioController />
       {/* <div className={styles.bgLayer}><div className={styles.bgOverlay} /><img className={styles.bgImage} src={currentSong?.coverUrl || img} alt="" /></div> */}
 
       <nav className={styles.topBar}>

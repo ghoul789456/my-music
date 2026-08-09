@@ -6,7 +6,7 @@ import cors from "cors";
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const RESOURCE_PATH =
-  process.env.RESOURCE_PATH || "C:/Users/15175/Desktop/resource";
+  process.env.RESOURCE_PATH || "C:/Users/DGZ/Desktop/resource";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

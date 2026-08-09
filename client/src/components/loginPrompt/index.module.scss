@@ -1,0 +1,90 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(3, 8, 12, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.dialog {
+  width: min(100%, 25rem);
+  padding: 1.75rem;
+  color: #f5f7f7;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(24, 38, 40, 0.98), rgba(12, 20, 23, 0.98));
+  border: 1px solid rgba(132, 211, 195, 0.22);
+  border-radius: 1.25rem;
+  box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, 0.45);
+
+  h2 {
+    margin: 0.9rem 0 0.45rem;
+    font-size: 1.35rem;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(229, 238, 237, 0.68);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+}
+
+.icon {
+  display: grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto;
+  color: #78d4bf;
+  background: rgba(120, 212, 191, 0.12);
+  border: 1px solid rgba(120, 212, 191, 0.2);
+  border-radius: 50%;
+  place-items: center;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+
+  button {
+    min-height: 2.75rem;
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-weight: 650;
+    border: 0;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: transform 160ms ease, background 160ms ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #78d4bf;
+      outline-offset: 3px;
+    }
+  }
+}
+
+.cancelButton {
+  color: rgba(245, 247, 247, 0.82);
+  background: rgba(255, 255, 255, 0.08);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.13);
+  }
+}
+
+.loginButton {
+  color: #07110f;
+  background: #78d4bf;
+
+  &:hover {
+    background: #91dfcd;
+  }
+}

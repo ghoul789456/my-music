@@ -15,6 +15,16 @@ const AudioController = () => {
   );
   const currentSong = useSelector(selectCurrentSong);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    return () => {
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    };
+  }, []);
+
   // 切歌
   useEffect(() => {
     const audio = audioRef.current;

@@ -13,7 +13,7 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 const RESOURCE_PATH =
-  process.env.RESOURCE_PATH || "C:/Users/15175/Desktop/resource";
+  process.env.RESOURCE_PATH || "C:/Users/DGZ/Desktop/resource";
 
 const FETCH_HEADERS = {
   "User-Agent":
@@ -395,16 +395,18 @@ async function fetchArtistImage(artistName: string): Promise<string | null> {
 async function fetchBioFromAudioDB(artistName: string): Promise<string | null> {
   const data = await fetchJson<{
     artists?:
-    | {
-      strArtist?: string;
-      strBiographyCN?: string;
-      strBiography?: string;
-    }[]
-    | null;
+      | {
+          strArtist?: string;
+          strBiographyCN?: string;
+          strBiography?: string;
+        }[]
+      | null;
   }>(
     `https://www.theaudiodb.com/api/v1/json/123/search.php?s=${encodeURIComponent(artistName)}`,
   );
-  console.log(`https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`);
+  console.log(
+    `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`,
+  );
 
   const artists = data?.artists;
   if (!artists?.length) return null;

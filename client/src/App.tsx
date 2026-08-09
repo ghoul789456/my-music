@@ -7,13 +7,17 @@ import {
   useNavigate,
 } from "react-router-dom";
 import server from "./axios/server";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, setLoginInfo, setUserInfo } from "./store/userSlice.ts";
+import { removeAllSong } from "./store/songSlice.ts";
+import type { RootState } from "./store/store.ts";
 
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
 import Footer from "./components/footer";
 import MiniPlayer from "./components/miniPlayer";
+import AudioController from "./components/audio";
+import LoginPrompt from "./components/loginPrompt";
 //懒加载子组件
 const Home = lazy(() => import('./views/home'));
 const Playlist = lazy(() => import('./views/song_list'));
@@ -55,6 +59,7 @@ const MainLayout = ({ paths, isFooterOpen, setIsFooterOpen }: MainLayoutProps) =
     {/* 这里使用传进来的状态 */}
     <MiniPlayer onExpand={() => setIsFooterOpen(true)} />
     <Footer isOpen={isFooterOpen} onClose={() => setIsFooterOpen(false)} />
+    <AudioController />
   </div>
 );
 function App() {
@@ -102,6 +107,11 @@ function App() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    if (!isLoggedIn) dispatch(removeAllSong());
+  }, [dispatch, isLoggedIn]);
 
   // 1.用户信息返回的数据结构
   interface MeResponse {
@@ -225,7 +235,8 @@ function App() {
   };
 
   return (
-    <Routes>
+    <>
+      <Routes>
       {/* 登录页完全独立 */}
       <Route
         path="/auth"
@@ -252,7 +263,9 @@ function App() {
         {/* 根路径重定向等 */}
         <Route path="/" element={<Navigate to="/home" replace />} />
       </Route>
-    </Routes>
+      </Routes>
+      <LoginPrompt />
+    </>
   );
 }
 

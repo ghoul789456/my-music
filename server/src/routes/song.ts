@@ -72,7 +72,7 @@ router.get("/hot", async (req: Request, res: Response) => {
 });
 
 const resourcePath =
-  process.env.RESOURCE_PATH || "C:/Users/15175/Desktop/resource";
+  process.env.RESOURCE_PATH || "C:/Users/DGZ/Desktop/resource";
 // 获取歌词接口
 router.get("/:id/lyric", async (req: Request, res: Response) => {
   try {
