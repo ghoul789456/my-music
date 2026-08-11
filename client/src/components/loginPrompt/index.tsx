@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LockKeyhole } from "lucide-react";
-import type { RootState } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { closeLoginPrompt } from "../../store/userSlice";
 import styles from "./index.module.scss";
 
 export default function LoginPrompt() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isOpen = useSelector((state: RootState) => state.user.loginPromptOpen);
+  const isOpen = useAppSelector((state) => state.user.loginPromptOpen);
 
   useEffect(() => {
     if (!isOpen) return;

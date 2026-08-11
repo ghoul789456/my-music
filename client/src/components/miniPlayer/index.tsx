@@ -1,10 +1,4 @@
-import { useRef, type Key } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  togglePlay, nextSong, prevSong, selectCurrentSong,
-  setVolume, setMode, setCurrentTime, removeSong, removeAllSong,
-} from "../../store/songSlice";
-import type { RootState } from "../../store/store";
+import { usePlayerControls } from "../../features/player/usePlayerControls";
 import { Spinner, Popover, Dropdown, Label, Button } from "@heroui/react";
 import {
   Shuffle, SkipBack, Play, Pause, SkipForward, Repeat, Repeat1,
@@ -16,30 +10,22 @@ import styles from "./index.module.scss";
 interface PlayerProps { onExpand: () => void; }
 
 export default function MiniPlayer({ onExpand }: PlayerProps) {
-  const dispatch = useDispatch();
-  const { isPlaying, volume, mode, isLoading, currentTime, playlist, currentIndex } =
-    useSelector((state: RootState) => state.player);
-  const currentSong = useSelector(selectCurrentSong);
-
-  const handleModeChange = () => {
-    const modes: ("loop" | "single" | "shuffle")[] = ["loop", "single", "shuffle"];
-    dispatch(setMode(modes[(modes.indexOf(mode) + 1) % modes.length]));
-  };
+  const {
+    isPlaying,
+    volume,
+    mode,
+    isLoading,
+    currentTime,
+    playlist,
+    currentSong,
+    actions,
+  } = usePlayerControls();
 
   const modeIcons: Record<string, React.ReactNode> = {
     loop: <Repeat size={17} />,
     single: <Repeat1 size={17} />,
     shuffle: <Shuffle size={17} />,
   };
-
-  const lastVolumeRef = useRef(0.5);
-  const handleMute = () => {
-    if (volume === 0) dispatch(setVolume(lastVolumeRef.current));
-    else { lastVolumeRef.current = volume; dispatch(setVolume(0)); }
-  };
-
-  const clearAll = () => dispatch(removeAllSong());
-  const handleAction = (key: Key) => { if (key === "delete-song") dispatch(removeSong(currentIndex)); };
 
   if (!currentSong) {
     return (
@@ -56,7 +42,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
       <div className={styles.progressTrack}
         onClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
-          dispatch(setCurrentTime(((e.clientX - rect.left) / rect.width) * (currentSong?.duration || 1)));
+          actions.seek(((e.clientX - rect.left) / rect.width) * (currentSong?.duration || 1));
         }}>
         <div className={styles.progressFill} style={{ width: `${pct}%` }}>
           <div className={styles.progressThumb} />
@@ -80,22 +66,19 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
 
         {/* 中间：控制 */}
         <div className={styles.controlSection}>
-          <button className={styles.ctrlBtn} onClick={handleModeChange} aria-label="模式">
+          <button className={styles.ctrlBtn} onClick={actions.cycleMode} aria-label="模式">
             {modeIcons[mode]}
           </button>
-          <button className={styles.ctrlBtn} onClick={() => dispatch(prevSong())} aria-label="上一首">
+          <button className={styles.ctrlBtn} onClick={actions.previous} aria-label="上一首">
             <SkipBack size={22} fill="#fff" />
           </button>
-          <button className={styles.playBtn} onClick={() => dispatch(togglePlay())} disabled={isLoading} aria-label="播放">
+          <button className={styles.playBtn} onClick={actions.togglePlay} disabled={isLoading} aria-label={isPlaying ? "暂停" : "播放"}>
             {isLoading ? <Spinner size="sm" /> :
               isPlaying ? <Pause size={20} fill="#000" color="#000" /> : <Play size={20} fill="#000" color="#000" />
             }
           </button>
-          <button className={styles.ctrlBtn} onClick={() => dispatch(nextSong())} aria-label="下一首">
+          <button className={styles.ctrlBtn} onClick={actions.next} aria-label="下一首">
             <SkipForward size={22} fill="#fff" />
-          </button>
-          <button className={styles.ctrlBtn} onClick={handleModeChange} aria-label="循环">
-            {modeIcons[mode]}
           </button>
         </div>
 
@@ -112,7 +95,7 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
                 <Popover.Heading>
                   <div className={styles.listHead}>
                     <p className={styles.listName}>播放列表</p>
-                    <button onClick={clearAll} className={styles.clearBtn}>
+                    <button onClick={actions.clearQueue} className={styles.clearBtn}>
                       <Trash2 size={14} /> 清空
                     </button>
                   </div>
@@ -130,7 +113,11 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
                       <Dropdown>
                         <Button isIconOnly variant="tertiary" aria-label="更多"><MoreVertical size={16} /></Button>
                         <Dropdown.Popover>
-                          <Dropdown.Menu onAction={handleAction}>
+                          <Dropdown.Menu
+                            onAction={(key) => {
+                              if (key === "delete-song") actions.removeFromQueue(item.id);
+                            }}
+                          >
                             <Dropdown.Item id="delete-song" variant="danger"><Label>移除</Label></Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown.Popover>
@@ -143,11 +130,11 @@ export default function MiniPlayer({ onExpand }: PlayerProps) {
           </Popover>
 
           <div className={styles.volWrap}>
-            <button className={styles.ghostBtn} onClick={handleMute} aria-label="音量">
+            <button className={styles.ghostBtn} onClick={actions.toggleMute} aria-label={volume === 0 ? "取消静音" : "静音"}>
               {volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
             </button>
             <input type="range" min="0" max="1" step="0.01" value={volume}
-              onChange={(e) => dispatch(setVolume(Number(e.target.value)))} className={styles.volSlider} />
+              onChange={(e) => actions.setVolume(Number(e.target.value))} className={styles.volSlider} />
           </div>
         </div>
       </div>

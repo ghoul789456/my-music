@@ -2,16 +2,15 @@ import React, { useEffect, useState, useRef } from "react";
 import { Avatar, Button, Modal, Label, Input } from "@heroui/react";
 import { Gear } from "@gravity-ui/icons";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
-import { type RootState } from "../../store/store";
+import { useAppSelector } from "../../store/hooks";
 import imageCompression from "browser-image-compression";
 import SingerCard from "../../components/card";
 import styles from "./index.module.scss";
 export default function Profile() {
 
 
-  const { userInfo, isLoggedIn } = useSelector(
-    (state: RootState) => state.user,
+  const { userInfo, isLoggedIn } = useAppSelector(
+    (state) => state.user,
   );
   const navigate = useNavigate();
   useEffect(() => {
@@ -20,15 +19,16 @@ export default function Profile() {
     }
   }, [isLoggedIn, navigate]);
 
-  const [tempUsername, setTempUsername] = useState("");
-  useEffect(() => {
-    if (userInfo?.username) {
-      setTempUsername(userInfo.username);
-    }
-  }, [userInfo]);
+  const [usernameDraft, setUsernameDraft] = useState<string | null>(null);
+  const tempUsername = usernameDraft ?? userInfo?.username ?? "";
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState("");
+  const previewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  }, []);
 
   const handleChooseAvatar = () => {
     fileRef.current?.click();
@@ -37,12 +37,11 @@ export default function Profile() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setPreview(url);
     const compressedFile = await compressImage(file);
-    console.log("compressedFile", compressedFile);
-
-    //  await uploadAvatar(compressedFile);
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    const url = URL.createObjectURL(compressedFile);
+    previewUrlRef.current = url;
+    setPreview(url);
   };
 
   const compressImage = async (file: File) => {
@@ -154,7 +153,7 @@ export default function Profile() {
 
                     <div className={styles.fieldGroup}>
                       <Label htmlFor="username">用户名</Label>
-                      <Input id="username" value={tempUsername} type="text"  onChange={(e) => setTempUsername(e.target.value)} />
+                      <Input id="username" value={tempUsername} type="text" onChange={(e) => setUsernameDraft(e.target.value)} />
                     </div>
                   </div>
                 </Modal.Body>
@@ -186,12 +185,8 @@ export default function Profile() {
               secondary: "艺人",
             },
           ]}
-          onCardClick={() => {
-            console.log("打开详情");
-          }}
-          onPlayClick={() => {
-            console.log("播放");
-          }}
+          onCardClick={() => {}}
+          onPlayClick={() => {}}
         />
       </div>
     </div>

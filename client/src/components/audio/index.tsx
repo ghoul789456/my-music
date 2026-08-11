@@ -1,19 +1,19 @@
 import { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   nextSong,
   setCurrentTime,
   selectCurrentSong,
 } from "../../store/songSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 const AudioController = () => {
   const audioRef = useRef<HTMLAudioElement>(new Audio());
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { isPlaying, volume, currentTime } = useSelector(
-    (state: any) => state.player,
+  const { isPlaying, volume, currentTime } = useAppSelector(
+    (state) => state.player,
   );
-  const currentSong = useSelector(selectCurrentSong);
+  const currentSong = useAppSelector(selectCurrentSong);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -30,27 +30,29 @@ const AudioController = () => {
     const audio = audioRef.current;
     if (!currentSong) {
       audio.pause();
-      audio.src = "";
+      audio.removeAttribute("src");
+      audio.load();
       return;
     }
     if (currentSong.filePath) {
       audio.src = currentSong.filePath;
       audio.load();
-      if (isPlaying) {
-        audio.play().catch(() => {});
-      }
+    } else {
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
     }
   }, [currentSong]);
 
   // 播放/暂停控制
   useEffect(() => {
     const audio = audioRef.current;
-    if (isPlaying) {
+    if (isPlaying && currentSong?.filePath) {
       audio.play().catch(() => {});
     } else {
       audio.pause();
     }
-  }, [isPlaying]);
+  }, [currentSong, isPlaying]);
 
   // ✅ 新增：timeupdate → 同步进度到 store
   useEffect(() => {

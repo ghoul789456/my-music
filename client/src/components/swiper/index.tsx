@@ -19,6 +19,8 @@ interface SlideItem {
   label: string;
 }
 
+type ProgressSlide = HTMLElement & { progress?: number };
+
 const defaultSlides: SlideItem[] = [
   {
     src: img1,
@@ -46,7 +48,7 @@ export default function SwiperOverlapCarousel() {
         // 自定义过渡逻辑，模拟原生的阴影和缩放
         onProgress={(swiper) => {
           swiper.slides.forEach((slide) => {
-            const progress = (slide as any).progress;
+            const progress = (slide as ProgressSlide).progress ?? 0;
             const absProgress = Math.abs(progress);
 
             // 越远越暗

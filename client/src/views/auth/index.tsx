@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, User } from "lucide-react";
+import type {
+  LoginCredentials,
+  RegisterCredentials,
+} from "../../features/auth/types";
 import styles from "./index.module.scss";
 
 // ─────────────────────────────────────────────
@@ -30,17 +34,6 @@ interface RegisterErrors {
   password?: string;
   confirmPassword?: string;
   form?: string;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterCredentials {
-  username: string;
-  email: string;
-  password: string;
 }
 
 type AuthTab = "login" | "register";
@@ -655,7 +648,7 @@ export default function Auth({ onLogin, onRegister }: AuthPageProps) {
     if (onLogin) {
       await onLogin(credentials);
     } else {
-      console.log("Login:", credentials);
+      throw new Error("未配置登录服务");
     }
   };
 
@@ -663,7 +656,7 @@ export default function Auth({ onLogin, onRegister }: AuthPageProps) {
     if (onRegister) {
       await onRegister(credentials);
     } else {
-      console.log("Register:", credentials);
+      throw new Error("未配置注册服务");
     }
   };
 

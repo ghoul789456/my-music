@@ -1,4 +1,5 @@
 import axios from "axios";
+import { clearSession, readSession } from "../features/auth/session";
 
 const server = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
@@ -6,24 +7,14 @@ const server = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 const whiteList = ["/login", "/register"];
-
-const authData = JSON.parse(localStorage.getItem("auth_data") || "{}");
-if (authData.expiry && Date.now() > authData.expiry) {
-  localStorage.removeItem("auth_data");
-  // 引导去登录
-  window.location.href = "/auth";
-}
 // 请求拦截器
 server.interceptors.request.use((config) => {
   const url = config.url || "";
   const isWhiteListed = whiteList.some((path) => url.includes(path));
   
   if (!isWhiteListed) {
-    const authData = localStorage.getItem("auth_data");
-    if (authData) {
-      const { token } = JSON.parse(authData);
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    const session = readSession();
+    if (session) config.headers.Authorization = `Bearer ${session.token}`;
   }
   return config;
 });
@@ -31,7 +22,6 @@ server.interceptors.request.use((config) => {
 // 响应拦截器
 server.interceptors.response.use(
   (response) => {
-    console.log("response", response.data);
     return response.data;
   },
   (error) => {
@@ -41,10 +31,10 @@ server.interceptors.response.use(
 
       switch (status) {
         case 401:
-          // 精准打击：只有 401 才清理并跳登录
-          console.error("身份过期或无效");
-          localStorage.removeItem("token");
-          window.location.href = "/auth";
+          clearSession();
+          if (window.location.pathname !== "/auth") {
+            window.location.assign("/auth");
+          }
           break;
         case 403:
           console.error("权限不足");

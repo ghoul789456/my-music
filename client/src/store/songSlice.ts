@@ -1,22 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { PlaybackMode, PlayerSong } from "../features/player/types";
 
-interface SongInfo {
-  id: number;
-  title: string;
-  duration: number;
-  filePath: string | null;
-  coverUrl: string | null;
-  playCount: number | null;
-  artist?: string;
-  lyricPath?:string | null;
-}
-
-interface PlayerState {
-  playlist: SongInfo[]; // 播放队列
+export interface PlayerState {
+  playlist: PlayerSong[]; // 播放队列
   currentIndex: number; // 当前播放歌曲的下标
   isPlaying: boolean;
   volume: number;
-  mode: "loop" | "single" | "shuffle";
+  previousVolume: number;
+  mode: PlaybackMode;
   currentTime: number;
   isLoading: boolean;
   error: string | null;
@@ -27,6 +18,7 @@ const initialState: PlayerState = {
   currentIndex: -1, // -1 表示当前没有歌曲在播放
   isPlaying: false,
   volume: 0.5,
+  previousVolume: 0.5,
   mode: "loop",
   currentTime: 0,
   isLoading: false,
@@ -41,7 +33,7 @@ const songSlice = createSlice({
     setPlaylist: (
       state,
       action: PayloadAction<{
-        list: SongInfo[];
+        list: PlayerSong[];
         startIndex?: number;
       }>,
     ) => {
@@ -105,12 +97,24 @@ const songSlice = createSlice({
     },
     // 设置音量
     setVolume: (state, action: PayloadAction<number>) => {
-      state.volume = action.payload;
+      const volume = Math.min(1, Math.max(0, action.payload));
+      state.volume = volume;
+      if (volume > 0) state.previousVolume = volume;
+    },
+    toggleMute: (state) => {
+      if (state.volume === 0) {
+        state.volume = state.previousVolume || 0.5;
+      } else {
+        state.previousVolume = state.volume;
+        state.volume = 0;
+      }
     },
     // 删除播放列表中的歌曲
-    removeSong: (state, action: PayloadAction<number>) => {
-      const index = action.payload;
-      if (index < 0 || index >= state.playlist.length) return;
+    removeSongById: (state, action: PayloadAction<number>) => {
+      const index = state.playlist.findIndex(
+        (song) => song.id === action.payload,
+      );
+      if (index === -1) return;
 
       state.playlist.splice(index, 1);
 
@@ -120,6 +124,7 @@ const songSlice = createSlice({
       }
       // 如果删掉的是当前正在播的歌
       else if (index === state.currentIndex) {
+        state.currentTime = 0;
         if (state.playlist.length === 0) {
           state.currentIndex = -1;
           state.isPlaying = false;
@@ -144,6 +149,11 @@ const songSlice = createSlice({
     setMode: (state, action: PayloadAction<PlayerState["mode"]>) => {
       state.mode = action.payload;
     },
+    cycleMode: (state) => {
+      const modes: PlaybackMode[] = ["loop", "single", "shuffle"];
+      const current = modes.indexOf(state.mode);
+      state.mode = modes[(current + 1) % modes.length];
+    },
     // 是否在加载中
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -152,13 +162,6 @@ const songSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    // 清空播放列表
-    clearPlaylist: (state) => {
-      state.playlist = [];
-      state.currentIndex = -1;
-      state.isPlaying = false;
-    },
-
     setCurrentIndex: (state, action: PayloadAction<number>) => {
       if (action.payload >= 0 && action.payload < state.playlist.length) {
         state.currentIndex = action.payload;
@@ -175,12 +178,13 @@ export const {
   prevSong,
   togglePlay,
   setVolume,
-  removeSong,
+  toggleMute,
+  removeSongById,
   setCurrentTime,
   setMode,
+  cycleMode,
   setLoading,
   setError,
-  clearPlaylist,
   setCurrentIndex,
   removeAllSong
 } = songSlice.actions;

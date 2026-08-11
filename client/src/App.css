@@ -50,6 +50,23 @@ a:focus-visible {
   transform: scale(1.08);
 }
 
+.appContainer::after {
+  content: "";
+  position: fixed;
+  z-index: 60;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5rem;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 8, 11, 0.99) 0%,
+    rgba(4, 13, 17, 0.98) 82%,
+    rgba(4, 13, 17, 0) 100%
+  );
+}
+
 main {
   display: flex; flex-direction: row;
   position: relative;
@@ -61,6 +78,10 @@ main {
 }
 
 @media (min-width: 768px) {
+  .appContainer::after {
+    height: 6rem;
+  }
+
   main {
     margin-left: 16rem;
     padding-top: 6rem;

@@ -1,44 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import server from "../../axios/server";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 import { setPlaylist } from "../../store/songSlice";
+import { useAppDispatch } from "../../store/hooks";
+import { musicApi } from "../../features/music/api";
+import type { SongDto } from "../../features/music/types";
+import { toPlayerSong } from "../../features/player/mappers";
 import { ArrowUpRight, Play } from "lucide-react";
 import SingerCard from "../../components/card";
 import AnimationTypes from "../../components/skeleton";
 import Aurora from "../../components/reactbits/Aurora";
 import defaultCover from "../../assets/default.jpg";
 import styles from "./index.module.scss";
-
-interface Song {
-  id: number;
-  title: string;
-  duration: number;
-  filePath: string;
-  coverUrl: string | null;
-  playCount: number | null;
-  lyricPath?: string | null;
-  artists: { id: number; name: string }[];
-}
-
-interface Album {
-  id: number;
-  title: string;
-  coverUrl: string | null;
-  artist: { name: string };
-}
-
-interface Artist {
-  id: number;
-  name: string;
-  avatar: string | null;
-}
-
-interface HomeHotResponse {
-  songs: Song[];
-  albums: Album[];
-  artists: Artist[];
-}
 
 interface DisplayItem {
   id: string;
@@ -51,7 +23,7 @@ export default function Home() {
   const [list, setList] = useState<DisplayItem[]>([]);
   const [albumList, setAlbumList] = useState<DisplayItem[]>([]);
   const [artistList, setArtistList] = useState<DisplayItem[]>([]);
-  const [rawSongs, setRawSongs] = useState<Song[]>([]);
+  const [rawSongs, setRawSongs] = useState<SongDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
@@ -59,7 +31,7 @@ export default function Home() {
     setLoading(true);
     setLoadError(false);
     try {
-      const { songs, albums, artists } = await server.get<unknown, HomeHotResponse>("/api/song/hot");
+      const { songs, albums, artists } = await musicApi.getHomeHot();
       setRawSongs(songs);
       setList(songs.map(s => ({ id: String(s.id), primary: s.title, secondary: s.artists.map(a => a.name).join("/"), url: s.coverUrl || defaultCover })));
       setAlbumList(albums.map(a => ({ id: String(a.id), primary: a.title, secondary: a.artist.name, url: a.coverUrl || defaultCover })));
@@ -75,13 +47,13 @@ export default function Home() {
     loadHomeData();
   }, [loadHomeData]);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const hasContent = list.length > 0 || artistList.length > 0 || albumList.length > 0;
   const handlePlay = (id: string) => {
     const index = rawSongs.findIndex(s => String(s.id) === id);
     if (index === -1) return;
     dispatch(setPlaylist({
-      list: rawSongs.map(s => ({ id: s.id, title: s.title, duration: s.duration, filePath: s.filePath, coverUrl: s.coverUrl, playCount: s.playCount, artist: s.artists.map(a => a.name).join("/"), lyricPath: s.lyricPath })),
+      list: rawSongs.map(toPlayerSong),
       startIndex: index,
     }));
   };

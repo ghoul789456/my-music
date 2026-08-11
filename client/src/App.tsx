@@ -6,11 +6,15 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import server from "./axios/server";
-import { useDispatch, useSelector } from "react-redux";
 import { logout, setLoginInfo, setUserInfo } from "./store/userSlice.ts";
 import { removeAllSong } from "./store/songSlice.ts";
-import type { RootState } from "./store/store.ts";
+import { useAppDispatch, useAppSelector } from "./store/hooks.ts";
+import { authApi } from "./features/auth/api.ts";
+import { clearSession, readSession, saveSession } from "./features/auth/session.ts";
+import type {
+  LoginCredentials,
+  RegisterCredentials,
+} from "./features/auth/types.ts";
 
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
@@ -27,10 +31,6 @@ const Auth = lazy(() => import('./views/auth/'));
 const PageLoading  = lazy(() => import('./components/pageLoading'));
 const Album  = lazy(() => import('./views/album'));
 
-import {
-  type LoginCredentials,
-  type RegisterCredentials,
-} from "./views/auth/index";
 import "./App.css";
 interface PathType {
   id: string;
@@ -106,131 +106,55 @@ function App() {
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+  const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
 
   useEffect(() => {
     if (!isLoggedIn) dispatch(removeAllSong());
   }, [dispatch, isLoggedIn]);
 
-  // 1.用户信息返回的数据结构
-  interface MeResponse {
-    message: string;
-    user: {
-      id: number;
-      username: string;
-      email: string;
-      avatar: string | null;
-    };
-  }
   useEffect(() => {
-    const authData = localStorage.getItem("auth_data");
-    if (authData) {
-      const { expiry } = JSON.parse(authData);
+    if (!readSession()) return;
 
-      // 检查是否过期
-      if (Date.now() < expiry) {
-        server
-          .get<any, MeResponse>("/api/auth/me")
-          .then((res) => {
-            dispatch(setUserInfo(res.user)); // 把获取到的最新用户信息存入 Redux
-          })
-          .catch(() => {
-            localStorage.removeItem("auth_data"); // 请求失败说明 token 失效
-            dispatch(logout());
-          });
-      }
-    }
+    authApi
+      .getCurrentUser()
+      .then((response) => dispatch(setUserInfo(response.user)))
+      .catch(() => {
+        clearSession();
+        dispatch(logout());
+      });
   }, [dispatch]);
 
-  // 1. 定义后端返回的数据结构
-  interface LoginResponse {
-    message: string;
-    token: string;
-    user: {
-      id: number;
-      username: string;
-      email: string;
-      avatar: string | null;
-    };
-  }
-  // 处理登录
-  // data: LoginCredentials(类型注解) ：声明变量必须为指定的LoginCredentials格式
   const handleLogin = async (data: LoginCredentials) => {
-    console.log("正在提交登录请求:", data);
     try {
-      const { email, password } = data;
-
-      // server.post<LoginResponse>()(泛型参数):通常出现在函数名后面。它是告诉函数内部：“我这次调用，希望处理的是 MyTokenPayload 这种类型的数据。”,也就是函数返回的值的类型是LoginResponse
-
-      /* <any, LoginResponse> 泛型，Axios的post方法的前两个参数：第一个指的是你发给后端的数据类型（即 request.data）。填 any 意味着：“我发给后端的东西随便什么类型都行，不需要 TS 帮我检查”。
-       第二个指的是请求执行完后，最终返回给你的 res 的类型。填 LoginResponse是告诉ts已经返回的是response.data，不是response， 意味着：“我已经知道拦截器把壳剥掉了，最终拿到的 res 就是我定义的那个包含 token 的对象”。*/
-      const res = await server.post<any, LoginResponse>("/api/auth/login", {
-        email,
-        password,
-      });
-      console.log("res", res);
-
-      const loginInfo = {
-        token: res.token,
-        userId: res.user.id,
-        expiry: Date.now() + 7 * 24 * 60 * 60 * 1000, // 当前时间 + 7天的毫秒数
-      };
-      localStorage.setItem("auth_data", JSON.stringify(loginInfo));
+      const res = await authApi.login(data);
+      saveSession(res.token, res.user.id);
       dispatch(
         setLoginInfo({
-          user: {
-            ...res.user,
-          },
+          user: res.user,
           token: res.token,
         }),
       );
 
       navigate("/");
-    } catch (error) {
+    } catch {
       throw new Error("邮箱或密码错误");
     }
   };
-  //注册返回的数据结构
-  interface RegisterResponse {
-    message: string;
-    token: string;
-    user: {
-      id: number;
-      username: string;
-      email: string;
-      avatar: string | null;
-    };
-  }
 
-  // 处理注册
   const handleRegister = async (data: RegisterCredentials) => {
-    console.log("正在提交注册请求:", data);
-    // 同样对接你的注册 API
     try {
-      const res = await server.post<any, RegisterResponse>(
-        "/api/auth/register",
-        data,
-      );
-      console.log("res", res);
-      const loginInfo = {
-        token: res.token,
-        userId: res.user.id,
-        expiry: Date.now() + 7 * 24 * 60 * 60 * 1000, // 当前时间 + 7天的毫秒数
-      };
-      localStorage.setItem("auth_data", JSON.stringify(loginInfo));
+      const res = await authApi.register(data);
+      saveSession(res.token, res.user.id);
       dispatch(
         setLoginInfo({
-          user: {
-            ...res.user,
-            avatar: res.user.avatar ?? null,
-          },
+          user: res.user,
           token: res.token,
         }),
       );
       navigate("/");
-    } catch (err) {
-      throw new Error("邮箱或密码错误");
+    } catch {
+      throw new Error("注册失败，请稍后再试");
     }
   };
 

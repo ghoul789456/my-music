@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { setPlaylist, togglePlay, selectCurrentSong } from "../../store/songSlice";
-import type { RootState } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Dropdown, Button, Label } from "@heroui/react";
 import { Play, MoreVertical } from "lucide-react";
-import server from "../../axios/server";
+import { musicApi } from "../../features/music/api";
+import type { AlbumDetailDto } from "../../features/music/types";
+import { toPlayerSong } from "../../features/player/mappers";
 import PageLoading from "../../components/pageLoading";
 import TrackIndex from "../../components/trackIndex";
 import styles from "./index.module.scss";
 
-interface AlbumDetailResponse {
-  message: string; album: {
-    id: number; title: string; coverUrl: string|null; releaseDate: string|null; artistId: number;
-    artist: { id: number; name: string; avatar: string|null; bio: string|null };
-    songs: { id: number; title: string; duration: number; filePath: string; coverUrl: string|null; playCount: number; lyricPath: string|null; albumId: number|null; artists: {id:number;name:string}[] }[];
-  };
-}
-type Album = AlbumDetailResponse["album"];
-
 export default function Album() {
-  const { id } = useParams(); const dispatch = useDispatch();
-  const [album, setAlbum] = useState<Album|null>(null); const [loading, setLoading] = useState(true);
+  const { id } = useParams(); const dispatch = useAppDispatch();
+  const [album, setAlbum] = useState<AlbumDetailDto|null>(null); const [loading, setLoading] = useState(true);
   const [hoveredId, setHoveredId] = useState<number|null>(null);
-  const { isPlaying } = useSelector((state: RootState) => state.player);
-  const currentSong = useSelector(selectCurrentSong);
+  const { isPlaying } = useAppSelector((state) => state.player);
+  const currentSong = useAppSelector(selectCurrentSong);
 
-  useEffect(() => { if(!id)return; server.get<any,AlbumDetailResponse>(`/api/song/album/${id}`).then(({album})=>setAlbum(album)).finally(()=>setLoading(false)); }, [id]);
+  useEffect(() => {
+    if (!id) return;
+    let active = true;
+    musicApi
+      .getAlbum(id)
+      .then((response) => {
+        if (active) setAlbum(response.album);
+      })
+      .catch(() => {
+        if (active) setAlbum(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
+  }, [id]);
 
   const fmtDur = (s:number) => { const m=Math.floor(s/60); return `${m}:${String(s%60).padStart(2,"0")}`; };
-  const toPL = () => album?album.songs.map(s=>({id:s.id,title:s.title,duration:s.duration,filePath:s.filePath,coverUrl:s.coverUrl,playCount:s.playCount,lyricPath:s.lyricPath,artist:s.artists.map(a=>a.name).join("/")})):[];
+  const toPL = () => album ? album.songs.map(toPlayerSong) : [];
 
   const playAll = () => { if(!album)return; dispatch(setPlaylist({list:toPL(),startIndex:0})); };
   const toggle = (idx:number,sid:number) => { if(!album)return; if(currentSong?.id===sid) dispatch(togglePlay()); else dispatch(setPlaylist({list:toPL(),startIndex:idx})); };

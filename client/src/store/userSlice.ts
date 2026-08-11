@@ -1,11 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-interface UserInfo {
-  id: number | null;
-  username: string;
-  email: string;
-  avatar: string | null;
-}
+import { readSession } from "../features/auth/session";
+import type { UserInfo } from "../features/auth/types";
 
 interface UserState {
   userInfo: UserInfo | null;
@@ -14,31 +9,12 @@ interface UserState {
   loginPromptOpen: boolean;
 }
 
-// 1. 核心修改：初始化时解析本地 auth_data
-const getInitialAuth = () => {
-  const authData = localStorage.getItem("auth_data");
-  if (!authData) return { token: null, isLoggedIn: false };
-
-  try {
-    const { token, expiry } = JSON.parse(authData);
-    // 检查是否过期
-    if (Date.now() > expiry) {
-      localStorage.removeItem("auth_data");
-      return { token: null, isLoggedIn: false };
-    }
-    return { token, isLoggedIn: true };
-  } catch (error) {
-    console.error("解析 auth_data 失败", error);
-    return { token: null, isLoggedIn: false };
-  }
-};
-
-const auth = getInitialAuth();
+const session = readSession();
 
 const initialState: UserState = {
   userInfo: null,
-  token: auth.token,
-  isLoggedIn: auth.isLoggedIn,
+  token: session?.token ?? null,
+  isLoggedIn: Boolean(session),
   loginPromptOpen: false,
 };
 
@@ -67,7 +43,7 @@ const userSlice = createSlice({
       state.userInfo = null;
       state.token = null;
       state.isLoggedIn = false;
-      localStorage.removeItem("auth_data");
+      state.loginPromptOpen = false;
     },
 
     openLoginPrompt: (state) => {
